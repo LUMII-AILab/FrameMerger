@@ -13,17 +13,20 @@ import cPickle as pickle
 from datetime import datetime
 import os
 
-import requests
+import requests, json
 
 import EntityFrames as EF
 
 from SemanticApi import SemanticApi
 from ConsolidateFrames import Consolidator, BaseConsolidator
+from FrameInfo import FrameInfo
 
 ENT_Bondars = 10 #274319
 ENT_Ziedonis = 274418
 ENT_Ziedonis2 = 250423
 ENT_Lembergs = 260970
+
+f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 def get_entity_frames(e_id_list):
     
@@ -189,7 +192,113 @@ def format_frame_for_output(frame):
 
     return buf
 
+# Izvelkam sarakstu ar entīšu ID, kas šajā entīšu un to freimu kopā ir pieminēti
+def get_mentioned_entities(entity_list):
+    mentioned_entities = set()    
+    for entity in entity_list:
+        for frame in entity.cons_frames:
+            for element in frame["FrameData"]:
+                mentioned_entities.add( element["Value"]["Entity"])
+    answers = SemanticApi().entities_by_id( list(mentioned_entities))
+    entity_data = {}
+    for answer in answers["Answers"]:
+        if answer["Answer"] == 0:
+            entity = answer["Entity"]
+            entity_data[entity["EntityId"]] = entity
+        else:
+            log.warning("Entity %s not found. Error code [%s], message: %s" % (e_id, data[0]["Answer"], data[0]["AnswerTypeString"]))
+    return entity_data # Dict no entītiju id uz entītijas pilnajiem datiem
+
+# Izveidot smuku aprakstu freimam
+def get_frame_text(mentioned_entities, frame):
+    frame_type = frame["FrameType"]
+    roles = {}
+    for element in frame["FrameData"]:
+        role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
+        entity = mentioned_entities[element["Value"]["Entity"]]
+        if entity["NameInflections"] == u'':
+            print 'Entītija bez locījumiem', entity
+        else:
+            roles[role] = json.loads(entity["NameInflections"])
+
+    def elem(role, case=u'Nominatīvs'):
+        if not role in roles:
+            return None
+        return roles[role][case]
+
+    # Tipiskās vispārīgās lomas
+    laiks = u''
+    if not elem(u'Laiks') is None:
+        laiks = u' ' + elem(u'Laiks',u'Lokatīvs') # ' 2002. gadā'
+
+    vieta = u''
+    if not elem(u'Vieta') is None:
+        vieta = u' ' + elem(u'Vieta',u'Lokatīvs') # ' Ķemeros'
+
+    amats = u''
+    if not elem(u'Amats') is None:
+        amats = u' par ' + elem(u'Amats',u'Akuzatīvs')
+
+    if frame_type == 0: # Dzimšana
+        return elem(u'Bērns') + " ir dzimis" + vieta + laiks + " " + elem(u'Radinieki',u'Lokatīvs')
+        # TODO - radinieki var būt datīvā vai lokatīvā atkarībā no konteksta, jāapdomā
+
+    if frame_type == 3: # Attiecības
+        return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2')
+
+    if frame_type == 6: # Izglītība        
+        return elem(u'Students') + laiks + u' ir mācījies ' + elem(u'Iestāde',u'Lokatīvs') 
+
+    if frame_type == 7: # Nodarbošanās
+        return elem(u'Persona') + " ir " + elem(u'Nodarbošanās')
+
+    if frame_type == 9: # Amats
+        if not elem(u'Sākums') is None:
+            laiks = laiks + u' no ' + elem(u'Sākums',u'Ģenitīvs') # ' 2002. gadā no janvāra'
+        if not elem(u'Beigas') is None:
+            laiks = laiks + u' līdz ' + elem(u'Beigas',u'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
+        darbavieta = u''
+        if not elem(u'Darbavieta') is None:
+            darbavieta = u' ' + elem(u'Darbavieta',u'Lokatīvs')
+        persona = u''
+        if not elem(u'Persona') is None:
+            persona = elem(u'Persona') + u' '
+
+        return persona + u'strādājis' + laiks + darbavieta + amats + vieta
+
+    if frame_type == 10: # Darba sākums
+        darbavieta = u''
+        if not elem(u'Darbavieta') is None:
+            darbavieta = u' ' + elem(u'Darbavieta',u'Lokatīvs')
+        persona = u''
+        if not elem(u'Persona') is None:
+            persona = elem(u'Persona') + u' '
+
+        return persona + laiks + u' kļuvis' + darbavieta + amats + vieta
+
+    if frame_type == 13: # Vēlēšanas
+        if elem(u'Dalībnieks') is None or elem(u'Vēlēšanas') is None:
+            print "Vēlēšanas bez dalībnieka vai vēlēšanām :( ", frame
+            return None
+        return elem(u'Dalībnieks') + laiks + u' ievēlēts ' + elem(u'Vēlēšanas', u'Lokatīvs') + amats
+
+    if frame_type == 22: # Sasniegums
+        sacensiibas = u''
+        if not elem(u'Sacensības') is None:
+            sacensiibas = elem(u'Sacensības')
+        if elem(u'Sasniegums') is None:
+            print "Sasniegums bez sasnieguma :( ", frame
+            return None
+
+        return sacensiibas + laiks + u' saņēmis ' + elem(u'Sasniegums', u'Akuzatīvs')
+
+    else:
+        return None
+
+
+
 def print_entity_frames(entity_list):
+    mentioned_entities = get_mentioned_entities(entity_list)
 
     for entity in entity_list:
 
@@ -201,11 +310,25 @@ def print_entity_frames(entity_list):
         print "Consolidated frames:", len(entity.cons_frames)
         print
 
-#        print "> Consolidated frames: <"
-#        print
-#        pprint(entity.cons_frames)
-#        print
-#
+        print "> Consolidated frames: <"
+        print
+
+        for frame in entity.cons_frames:
+            frametext = get_frame_text(mentioned_entities, frame)
+            frame_type = frame["FrameType"]
+
+            if not frametext is None:
+                print frametext
+            else: 
+                print f_info.type_name_from_id(frame_type)
+            # for element in frame["FrameData"]:
+            #     role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
+            #     entity = mentioned_entities[element["Value"]["Entity"]]
+            #     print role, ': ', entity["NameInflections"]
+                
+            print
+
+
 #        print "> Original frames: <"
 #        print
 #        pprint(entity.frames)
@@ -258,7 +381,7 @@ def main():
     save_entity_frames(out_dir, frames)
 
     api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
-    save_entity_frames_to_api(api, frames)
+    #save_entity_frames_to_api(api, frames)
 
 def start_logging(log_level = log.ERROR):
     log_dir = "log"
