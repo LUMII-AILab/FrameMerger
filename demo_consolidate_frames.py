@@ -45,6 +45,8 @@ def consolidate_frames(entity_list):
     c = BaseConsolidator()
     #c = Consolidator()
 
+    mentioned_entities = get_mentioned_entities(entity_list) # Ielasam visu freimos pieminēto (ne tikai galveno) entītiju vārdus un locījumus
+
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
 
@@ -54,6 +56,10 @@ def consolidate_frames(entity_list):
 
                 frames = c.apply(frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
+
+                # Building frame descriptions
+                for frame in frames:
+                    frame["FrameText"] = get_frame_text(mentioned_entities, frame)
             except TypeError:
                 log_data = "\n".join([repr(log_item) for log_item in entity.frames])
                 log.exception("Error consolidating frames:\n%s", log_data)
@@ -63,8 +69,7 @@ def consolidate_frames(entity_list):
 
             yield entity
 
-def save_entity_frames_to_api(api, entity_list):
-
+def save_entity_frames_to_api(api, entity_list):    
     for entity in entity_list:
 
         # insert all entity frames [as summary frames]
@@ -75,11 +80,7 @@ def save_entity_frames_to_api(api, entity_list):
         to_save = entity.cons_frames
         log.info("Save_entity_frames_to_api - summary frames to save for entity %s: %s", entity.entity_id, len(to_save))
 
-        ## XXX: trying inserting 1 frame for starters
-        #log.warning("Trying inserting 1 frame FOR NOW (!!!).")
-        #to_save = to_save[:1]
-
-        for frame in to_save:
+        for frame in to_save:            
             log.debug("Saving summary frame data to API: calling api.insert_summary_frame:\n%s", repr(frame))
             res = api.insert_summary_frame(frame)
 
@@ -196,7 +197,7 @@ def format_frame_for_output(frame):
 def get_mentioned_entities(entity_list):
     mentioned_entities = set()    
     for entity in entity_list:
-        for frame in entity.cons_frames:
+        for frame in entity.frames: # FIXME - ja sauc pēc konsolidācijas, tad var ņemt cons_frames kuru ir mazāk un tas ir ātrāk
             for element in frame["FrameData"]:
                 mentioned_entities.add( element["Value"]["Entity"])
     answers = SemanticApi().entities_by_id( list(mentioned_entities))
@@ -222,11 +223,12 @@ def get_frame_text(mentioned_entities, frame):
             roles[role] = json.loads(entity["NameInflections"])
 
     def elem(role, case=u'Nominatīvs'):
-        if not role in roles:
+        if not role in roles or roles[role] is None:
             return None
         return roles[role][case]
 
     # Tipiskās vispārīgās lomas
+    # FIXME - šausmīga atkārtošanās sanāk...
     laiks = u''
     if not elem(u'Laiks') is None:
         laiks = u' ' + elem(u'Laiks',u'Lokatīvs') # ' 2002. gadā'
@@ -240,26 +242,35 @@ def get_frame_text(mentioned_entities, frame):
         amats = u' par ' + elem(u'Amats',u'Akuzatīvs')
 
     if frame_type == 0: # Dzimšana
-        return elem(u'Bērns') + " ir dzimis" + vieta + laiks + " " + elem(u'Radinieki',u'Lokatīvs')
+        radinieki = u''    
+        if not elem(u'Radinieki') is None:
+            darbavieta = u' ' + elem(u'Radinieki',u'Lokatīvs')
+        return elem(u'Bērns') + " ir dzimis" + vieta + laiks + radinieki
         # TODO - radinieki var būt datīvā vai lokatīvā atkarībā no konteksta, jāapdomā
 
     if frame_type == 3: # Attiecības
         return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2')
 
-    if frame_type == 6: # Izglītība        
-        return elem(u'Students') + laiks + u' ir mācījies ' + elem(u'Iestāde',u'Lokatīvs') 
+    if frame_type == 6: # Izglītība    
+        iestaade = u''    
+        if not elem(u'Iestāde') is None:
+            iestaade = u' ' + elem(u'Iestāde', u'Lokatīvs')    
+        return elem(u'Students') + laiks + u' ir mācījies' + iestaade
 
     if frame_type == 7: # Nodarbošanās
+        if elem(u'Persona') is None or elem(u'Nodarbošanās') is None:
+            print "Nodarbošanās bez pašas nodarbošanās vai dalībnieka :( ", frame
+            return None
         return elem(u'Persona') + " ir " + elem(u'Nodarbošanās')
 
     if frame_type == 9: # Amats
         if not elem(u'Sākums') is None:
-            laiks = laiks + u' no ' + elem(u'Sākums',u'Ģenitīvs') # ' 2002. gadā no janvāra'
+            laiks = laiks + u' no ' + elem(u'Sākums', u'Ģenitīvs') # ' 2002. gadā no janvāra'
         if not elem(u'Beigas') is None:
-            laiks = laiks + u' līdz ' + elem(u'Beigas',u'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
+            laiks = laiks + u' līdz ' + elem(u'Beigas', u'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
         darbavieta = u''
         if not elem(u'Darbavieta') is None:
-            darbavieta = u' ' + elem(u'Darbavieta',u'Lokatīvs')
+            darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
         persona = u''
         if not elem(u'Persona') is None:
             persona = elem(u'Persona') + u' '
@@ -269,7 +280,7 @@ def get_frame_text(mentioned_entities, frame):
     if frame_type == 10: # Darba sākums
         darbavieta = u''
         if not elem(u'Darbavieta') is None:
-            darbavieta = u' ' + elem(u'Darbavieta',u'Lokatīvs')
+            darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
         persona = u''
         if not elem(u'Persona') is None:
             persona = elem(u'Persona') + u' '
@@ -298,8 +309,6 @@ def get_frame_text(mentioned_entities, frame):
 
 
 def print_entity_frames(entity_list):
-    mentioned_entities = get_mentioned_entities(entity_list)
-
     for entity in entity_list:
 
         print "-"*80
@@ -314,7 +323,7 @@ def print_entity_frames(entity_list):
         print
 
         for frame in entity.cons_frames:
-            frametext = get_frame_text(mentioned_entities, frame)
+            frametext = frame.get("FrameText")
             frame_type = frame["FrameType"]
 
             if not frametext is None:
@@ -344,7 +353,7 @@ def main():
 
     #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
     #entity_list = [ENT_Ziedonis]
-    entity_list = [42]
+    entity_list = [10,42,120272]
     # entity_list = [75362]
     # ENT_Bondars]
     #entity_list = [ENT_Lembergs]
@@ -381,7 +390,7 @@ def main():
     save_entity_frames(out_dir, frames)
 
     api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
-    #save_entity_frames_to_api(api, frames)
+    save_entity_frames_to_api(api, frames)
 
 def start_logging(log_level = log.ERROR):
     log_dir = "log"
