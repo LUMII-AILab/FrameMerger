@@ -39,10 +39,15 @@ def get_frame_text(mentioned_entities, frame):
     roles = {}
     for element in frame["FrameData"]:
         role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
+
+        # XXX - UB: what is this try/except block for?
+        #       - what type of exception needs to be caught and why do they occur?
+
         try:
             entity = mentioned_entities[element["Value"]["Entity"]]
         except:
             continue
+        
         if entity["NameInflections"] == u'':
             print 'Entītija bez locījumiem', entity
         else:
@@ -56,15 +61,15 @@ def get_frame_text(mentioned_entities, frame):
     # Tipiskās vispārīgās lomas
     # FIXME - šausmīga atkārtošanās sanāk...
     laiks = u''
-    if not elem(u'Laiks') is None:
+    if elem(u'Laiks') is not None:
         laiks = u' ' + elem(u'Laiks',u'Lokatīvs') # ' 2002. gadā'
 
     vieta = u''
-    if not elem(u'Vieta') is None:
+    if elem(u'Vieta') is not None:
         vieta = u' ' + elem(u'Vieta',u'Lokatīvs') # ' Ķemeros'
 
     amats = u''
-    if not elem(u'Amats') is None:
+    if elem(u'Amats') is not None:
         amats = u' par ' + elem(u'Amats',u'Akuzatīvs')
 
     if frame_type == 0: # Dzimšana
@@ -72,7 +77,7 @@ def get_frame_text(mentioned_entities, frame):
             print "Dzimšana bez bērna :( ", frame
             return None
         radinieki = u''    
-        if not elem(u'Radinieki') is None:
+        if elem(u'Radinieki') is not None:
             darbavieta = u' ' + elem(u'Radinieki',u'Lokatīvs')
         return elem(u'Bērns') + " ir dzimis" + vieta + laiks + radinieki
         # TODO - radinieki var būt datīvā vai lokatīvā atkarībā no konteksta, jāapdomā
@@ -88,7 +93,7 @@ def get_frame_text(mentioned_entities, frame):
             print "Izglītība bez studenta :( ", frame
             return None
         iestaade = u''    
-        if not elem(u'Iestāde') is None:
+        if elem(u'Iestāde') is not None:
             iestaade = u' ' + elem(u'Iestāde', u'Lokatīvs')    
         return elem(u'Students') + laiks + u' ir mācījies' + iestaade
 
@@ -99,25 +104,25 @@ def get_frame_text(mentioned_entities, frame):
         return elem(u'Persona') + " ir " + elem(u'Nodarbošanās')
 
     if frame_type == 9: # Amats
-        if not elem(u'Sākums') is None:
+        if elem(u'Sākums') is not None:
             laiks = laiks + u' no ' + elem(u'Sākums', u'Ģenitīvs') # ' 2002. gadā no janvāra'
-        if not elem(u'Beigas') is None:
+        if elem(u'Beigas') is not None:
             laiks = laiks + u' līdz ' + elem(u'Beigas', u'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
         darbavieta = u''
-        if not elem(u'Darbavieta') is None:
+        if elem(u'Darbavieta') is not None:
             darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
         persona = u''
-        if not elem(u'Persona') is None:
+        if elem(u'Persona') is not None:
             persona = elem(u'Persona') + u' '
 
         return persona + u'strādājis' + laiks + darbavieta + amats + vieta
 
     if frame_type == 10: # Darba sākums
         darbavieta = u''
-        if not elem(u'Darbavieta') is None:
+        if elem(u'Darbavieta') is not None:
             darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
         persona = u''
-        if not elem(u'Persona') is None:
+        if elem(u'Persona') is not None:
             persona = elem(u'Persona') + u' '
 
         return persona + laiks + u' kļuvis' + darbavieta + amats + vieta
@@ -130,7 +135,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 22: # Sasniegums
         sacensiibas = u''
-        if not elem(u'Sacensības') is None:
+        if elem(u'Sacensības') is not None:
             sacensiibas = elem(u'Sacensības')
         if elem(u'Sasniegums') is None:
             print "Sasniegums bez sasnieguma :( ", frame
