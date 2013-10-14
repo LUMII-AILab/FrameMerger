@@ -26,6 +26,8 @@ ENT_Ziedonis = 274418
 ENT_Ziedonis2 = 250423
 ENT_Lembergs = 260970
 
+Test50 = [131426,131427,131428,131429,131430,131431,131432,131433,131434,131435,131436,131437,131438,131439,131440,131441,131442,131443,131444,131445,131446,131447,131448,131449,131450,131451,131452,131453,131454,131455,131456,131457,131458,131459,131460,131461,131462,131463,131464,131465,131466,131467,131468,131469,131470,131471,131472,131473,131474,131475]
+
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 def get_entity_frames(e_id_list):
@@ -207,7 +209,7 @@ def get_mentioned_entities(entity_list):
             entity = answer["Entity"]
             entity_data[entity["EntityId"]] = entity
         else:
-            log.warning("Entity %s not found. Error code [%s], message: %s" % (e_id, data[0]["Answer"], data[0]["AnswerTypeString"]))
+            log.warning("Entity not found. Error code [%s], message: %s" % (answer["Answer"], answer["AnswerTypeString"]))
     return entity_data # Dict no entītiju id uz entītijas pilnajiem datiem
 
 # Izveidot smuku aprakstu freimam
@@ -216,7 +218,10 @@ def get_frame_text(mentioned_entities, frame):
     roles = {}
     for element in frame["FrameData"]:
         role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
-        entity = mentioned_entities[element["Value"]["Entity"]]
+        try:
+            entity = mentioned_entities[element["Value"]["Entity"]]
+        except:
+            continue
         if entity["NameInflections"] == u'':
             print 'Entītija bez locījumiem', entity
         else:
@@ -242,6 +247,9 @@ def get_frame_text(mentioned_entities, frame):
         amats = u' par ' + elem(u'Amats',u'Akuzatīvs')
 
     if frame_type == 0: # Dzimšana
+        if elem(u'Bērns') is None:
+            print "Dzimšana bez bērna :( ", frame
+            return None
         radinieki = u''    
         if not elem(u'Radinieki') is None:
             darbavieta = u' ' + elem(u'Radinieki',u'Lokatīvs')
@@ -249,9 +257,15 @@ def get_frame_text(mentioned_entities, frame):
         # TODO - radinieki var būt datīvā vai lokatīvā atkarībā no konteksta, jāapdomā
 
     if frame_type == 3: # Attiecības
+        if elem(u'Partneris_1') is None or elem(u'Partneris_2') is None or elem(u'Attiecības') is None:
+            print "Attiecības bez pilna komplekta :( ", frame
+            return None
         return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2')
 
     if frame_type == 6: # Izglītība    
+        if elem(u'Students') is None:
+            print "Izglītība bez studenta :( ", frame
+            return None
         iestaade = u''    
         if not elem(u'Iestāde') is None:
             iestaade = u' ' + elem(u'Iestāde', u'Lokatīvs')    
@@ -353,7 +367,8 @@ def main():
 
     #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
     #entity_list = [ENT_Ziedonis]
-    entity_list = [10,42,120272]
+    #entity_list = [10,42,120272]
+    entity_list = range(131427,131475)
     # entity_list = [75362]
     # ENT_Bondars]
     #entity_list = [ENT_Lembergs]
