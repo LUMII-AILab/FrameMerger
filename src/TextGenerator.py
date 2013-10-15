@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 import json
+from pprint import pprint
 
 import EntityFrames as EF
 
@@ -40,12 +41,13 @@ def get_frame_text(mentioned_entities, frame):
     for element in frame["FrameData"]:
         role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
 
-        # XXX - UB: what is this try/except block for?
-        #       - what type of exception needs to be caught and why do they occur?
-
+        # handle incorrect frame data
+        #  - when entity does not exist for the e_ID mentioned in the frame
         try:
             entity = mentioned_entities[element["Value"]["Entity"]]
-        except:
+        except KeyError, e:
+            log.error("Entity ID %s (used in a frame element) not found! Can not generate frame text. Data:\n%r\n", element["Value"]["Entity"], frame)
+            print "\nERROR: Entity ID %s (in frame element) not found! Can not generate frame text. Data:\n%r\n" % (element["Value"]["Entity"], frame)
             continue
         
         if entity["NameInflections"] == u'':
