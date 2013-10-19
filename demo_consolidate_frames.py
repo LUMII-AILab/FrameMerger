@@ -217,9 +217,9 @@ def print_entity_frames(entity_list):
             frame_type = frame["FrameType"]
 
             if not frametext is None:
-                print frametext
+                print frametext.encode("utf8")
             else: 
-                print f_info.type_name_from_id(frame_type)
+                print f_info.type_name_from_id(frame_type).encode("utf8")
             # for element in frame["FrameData"]:
             #     role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
             #     entity = mentioned_entities[element["Value"]["Entity"]]
