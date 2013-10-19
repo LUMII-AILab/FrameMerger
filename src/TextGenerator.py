@@ -80,7 +80,7 @@ def get_frame_text(mentioned_entities, frame):
             return None
         radinieki = u''    
         if elem(u'Radinieki') is not None:
-            darbavieta = u' ' + elem(u'Radinieki',u'Lokatīvs')
+            radinieki = u' ' + elem(u'Radinieki',u'Lokatīvs')
         return elem(u'Bērns') + " ir dzimis" + vieta + laiks + radinieki
         # TODO - radinieki var būt datīvā vai lokatīvā atkarībā no konteksta, jāapdomā
 
