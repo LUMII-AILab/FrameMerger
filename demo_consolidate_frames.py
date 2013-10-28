@@ -60,10 +60,16 @@ def consolidate_frames(entity_list):
 
                 frames = c.apply(frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
+                frames = filter(valid_frame, frames) # Izmetam tos kam arī pēc apvienošanas par maz datu
+                log.info("Frames after filtering for sparsity: %s\n", len(frames))
 
                 # Building frame descriptions
                 for frame in frames:
-                    frame["FrameText"] = get_frame_text(mentioned_entities, frame)
+                    frametext = get_frame_text(mentioned_entities, frame)
+                    if frametext is not None:
+                        frametext = frametext.strip()
+                    frame["FrameText"] = frametext
+
             except TypeError:
                 log_data = "\n".join([repr(log_item) for log_item in entity.frames])
                 log.exception("Error consolidating frames:\n%s", log_data)
@@ -72,6 +78,69 @@ def consolidate_frames(entity_list):
             entity.set_consolidated_frames(frames)
 
             yield entity
+
+def invalid_frame(frame):
+    return not valid_frame(frame)
+
+def valid_frame(frame):
+    if len(frame["FrameData"]) < 2:
+        return False  # Ja tikai 1 elements, tad fakta reāli nav
+
+    frame_type = frame["FrameType"]
+    roles = set()
+    for element in frame["FrameData"]:
+        roles.add(f_info.elem_name_from_id(frame_type,element["Key"]-1))
+
+    if frame_type == 0: # Dzimšana
+        if u'Bērns' not in roles: return False
+    if frame_type == 1: # Vecums
+        if u'Persona' not in roles: return False
+        if u'Vecums' not in roles: return False
+    if frame_type == 2: # Miršana
+        if u'Mirušais' not in roles: return False
+    if frame_type == 3: # Attiecības
+        if (u'Partneris_1' not in roles or u'Partneris_2' not in roles) and u'Partneri' not in roles: return False
+        if u'Attiecības' not in roles: return False
+    if frame_type == 4: # Vārds alternatīvais
+        if u'Vārds' not in roles: return False
+        if u'Entītija' not in roles: return False
+    if frame_type == 5: # Dzīvesvieta
+        if u'Rezidents' not in roles: return False  
+        if u'Vieta' not in roles: return False
+    if frame_type == 6: # Izglītība    
+        if u'Students' not in roles: return False  
+    if frame_type == 7: # Nodarbošanās
+        if u'Persona' not in roles: return False  
+        if u'Nodarbošanās' not in roles: return False  
+    if frame_type == 8: # Izcelsme
+        if u'Persona' not in roles: return False  
+    if frame_type in (9,10,11): # Amats, Darba sākums, Darba Beigas
+        if u'Darbinieks' not in roles: return False
+    if frame_type == 12: # Dalība
+        if u'Biedrs' not in roles: return False  
+        if u'Organizācija' not in roles: return False  
+    if frame_type == 13: # Vēlēšanas
+        if u'Dalībnieks' not in roles: return False  
+    if frame_type == 14: # Atbalsts
+        if u'Atbalstītājs' not in roles: return False  
+        if u'Saņēmējs' not in roles: return False  
+    if frame_type == 15: # Dibināšana
+        if u'Organizācija' not in roles: return False  
+    if frame_type == 16: # Piedalīšanās
+        if u'Notikums' not in roles: return False  
+    if frame_type == 17: # Finanses
+        if u'Organizācija' not in roles: return False  
+    if frame_type == 18: # Īpašums
+        if u'Īpašums' not in roles: return False  
+        if u'Īpašnieks' not in roles: return False  
+    if frame_type == 19: # Parāds
+        if u'Parādnieks' not in roles and u'Aizdevējs' not in roles: return False  
+    if frame_type == 22: # Sasniegums
+        if u'Sasniegums' not in roles: return False  
+    if frame_type == 23: # Ziņošana
+        if u'Ziņa' not in roles: return False  
+
+    return True 
 
 def save_entity_frames_to_api(api, entity_list):    
     for entity in entity_list:
@@ -108,10 +177,10 @@ def save_entity_frames_to_api(api, entity_list):
         log.info("")
 
         log.info("Save_entity_frames_to_api - completed.")
-        print "\nSave_entity_frames_to_api - completed."
+        # print "\nSave_entity_frames_to_api - completed."
 
         log.info(" - list of frame IDs (for %s frames saved):\n%s", len(summary_frame_ids), repr(summary_frame_ids))
-        print " - list of frame IDs (for %s frames saved):\n\n%s" % (len(summary_frame_ids), repr(summary_frame_ids))
+        # print " - list of frame IDs (for %s frames saved):\n\n%s" % (len(summary_frame_ids), repr(summary_frame_ids))
 
         if len(error_frames)>0:
             log.info(" - %s frames could not be saved, returned errors.", len(error_frames))
@@ -123,8 +192,6 @@ def save_entity_frames_to_api(api, entity_list):
             for fr in error_frames:
                 log.debug("%s", repr(fr))
                 print repr(fr)
-
-        print
 
 
 def save_entity_frames(out_dir, entity_list):
@@ -172,7 +239,7 @@ def save_entity_frames(out_dir, entity_list):
 
             out.writerow(("-"*80,))
 
-        print "Frames for e_id = [%s] written to: %s" % (entity.entity_id, fname)
+        # print "Frames for e_id = [%s] written to: %s" % (entity.entity_id, fname)
 
 def format_header_for_output():
     return (
@@ -203,30 +270,19 @@ def print_entity_frames(entity_list):
 
         print "-"*80
         pprint((entity.entity["Name"], entity.entity["EntityId"]))
-        print
 
-        print "Total frames:", len(entity.frames)
-        print "Consolidated frames:", len(entity.cons_frames)
-        print
-
-        print "> Consolidated frames: <"
+        print "Frames (Total/Consolidated):", len(entity.frames), " / ", len(entity.cons_frames)
         print
 
         for frame in entity.cons_frames:
             frametext = frame.get("FrameText")
             frame_type = frame["FrameType"]
 
-            if not frametext is None:
-                print frametext.encode("utf8")
-            else: 
-                print f_info.type_name_from_id(frame_type).encode("utf8")
-            # for element in frame["FrameData"]:
-            #     role = f_info.elem_name_from_id(frame_type,element["Key"]-1)
-            #     entity = mentioned_entities[element["Value"]["Entity"]]
-            #     print role, ': ', entity["NameInflections"]
-                
-            print
-
+            # if not frametext is None:
+            #     print frametext.encode("utf8")
+            #     None
+            # else: 
+            #     print "None - ", f_info.type_name_from_id(frame_type).encode("utf8"), frame                
 
 #        print "> Original frames: <"
 #        print
@@ -244,7 +300,8 @@ def main():
     #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
     #entity_list = [ENT_Ziedonis]
     #entity_list = [10,42,120272]
-    entity_list = range(131427,131475)
+    entity_list = range(131426,131475)
+    # entity_list = [131426]
     # entity_list = [75362]
     # ENT_Bondars]
     #entity_list = [ENT_Lembergs]
