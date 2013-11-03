@@ -36,6 +36,12 @@ def get_mentioned_entities(entity_list):
 
 # Izveidot smuku aprakstu freimam
 def get_frame_text(mentioned_entities, frame):
+
+    def elem(role, case=u'Nominatīvs'):
+        if not role in roles or roles[role] is None:
+            return None
+        return roles[role][case]
+
     frame_type = frame["FrameType"]
     roles = {}
     for element in frame["FrameData"]:
@@ -50,7 +56,20 @@ def get_frame_text(mentioned_entities, frame):
             print "\nERROR: Entity ID %s (in frame element) not found! Can not generate frame text. Data:\n%r\n" % (element["Value"]["Entity"], frame)
             continue
         
-        if entity["NameInflections"] == u'' or entity["NameInflections"] == u'null':
+        # try to load NameInflections
+        fallback = False
+        if not (entity["NameInflections"] == u'' or entity["NameInflections"] == u'null'):
+            try:
+                roles[role] = json.loads(entity["NameInflections"])
+            except ValueError:
+                log.exception("Problem parsing JSON in NameInflections for entity:\n%s", entity)
+                print "\nProblem w. NameInflections for entity:\n%s\n" % (entity,)
+
+                fallback = True
+                raise
+
+        # fallback: no inflection info available
+        if entity["NameInflections"] == u'' or entity["NameInflections"] == u'null' or fallback:
             print 'Entītija bez locījumiem', entity
             roles[role] = { # Fallback, lai ir vismaz kautkādi apraksti
                 u'Nominatīvs': entity[u'Name'],

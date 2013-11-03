@@ -65,7 +65,13 @@ def consolidate_frames(entity_list):
 
                 # Building frame descriptions
                 for frame in frames:
-                    frametext = get_frame_text(mentioned_entities, frame)
+
+                    try:
+                        frametext = get_frame_text(mentioned_entities, frame)
+                    except KeyError, e:
+                        log.exception("Key error in get_frame_text:\n%s", e)
+                        frametext = None
+
                     if frametext is not None:
                         frametext = frametext.strip()
                     frame["FrameText"] = frametext
@@ -87,9 +93,15 @@ def valid_frame(frame):
         return False  # Ja tikai 1 elements, tad fakta reāli nav
 
     frame_type = frame["FrameType"]
+
     roles = set()
     for element in frame["FrameData"]:
-        roles.add(f_info.elem_name_from_id(frame_type,element["Key"]-1))
+        try:
+            roles.add(f_info.elem_name_from_id(frame_type,element["Key"]-1))
+        except KeyError, e:
+            log.error("Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n", element["Value"]["Entity"], frame)
+            print "Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n" % (element["Value"]["Entity"], frame)
+            continue
 
     if frame_type == 0: # Dzimšana
         if u'Bērns' not in roles: return False
