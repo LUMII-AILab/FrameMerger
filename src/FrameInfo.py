@@ -104,7 +104,7 @@ class FrameMatrix(object):
       
         # add a check for empty rows in the XLS file (!)
 
-        frame_cnt = 24      # 0..24 = (total of 25 frames)
+        frame_cnt = 25      # 0..25 = (total of 26 frames)
 
         rows = sheet.range("B%i:L%i" % (2, 2+frame_cnt))
         for row in rows:
@@ -112,7 +112,7 @@ class FrameMatrix(object):
             self.frame_elements.append([cell.value for cell in row[1:]])
 
         # check that prev. row is empty
-        matrix2_pos = 28
+        matrix2_pos = 29
 
         empty_line2 = sheet.range("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1))[0]
         if not all(cell.value is None for cell in empty_line2):

@@ -139,6 +139,8 @@ def valid_frame(frame):
         if u'Sasniegums' not in roles: return False  
     if frame_type == 23: # Ziņošana
         if u'Ziņa' not in roles: return False  
+    if frame_type == 25: # Zīmols
+        if u'Organizācija' not in roles: return False  
 
     return True 
 
@@ -300,9 +302,9 @@ def main():
     #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
     #entity_list = [ENT_Ziedonis]
     #entity_list = [10,42,120272]
-    entity_list = range(131426,131475)
-    # entity_list = [131426]
-    # entity_list = [75362]
+    # entity_list = range(131426,131475)
+    entity_list = range(131426,131476) + [1002911, 1002884] + range(1003759, 1003787)
+     # entity_list = [75362]
     # ENT_Bondars]
     #entity_list = [ENT_Lembergs]
 

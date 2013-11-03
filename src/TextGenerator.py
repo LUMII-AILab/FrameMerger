@@ -59,7 +59,10 @@ def get_frame_text(mentioned_entities, frame):
                 u'Akuzatīvs': entity[u'Name'],
                 u'Lokatīvs': entity[u'Name']}
         else:
-            roles[role] = json.loads(entity["NameInflections"])        
+            try:
+                roles[role] = json.loads(entity["NameInflections"])        
+            except ValueError:
+                print 'Slikti inflectioni: ', entity["NameInflections"]
 
     def elem(role, case=u'Nominatīvs'):
         if not role in roles or roles[role] is None:
@@ -435,14 +438,21 @@ def get_frame_text(mentioned_entities, frame):
     # 24 - Publiskais iepirkums ... TODO, pagaidām nav sampļu pietiekami
 
     if frame_type == 25: # Zīmols
-        if elem(u'Organizācija') is None or elem(u'Zīmols') is None:
+        if elem(u'Organizācija') is None or (elem(u'Zīmols') is None and elem(u'Produkts') is None):
             print "Zīmols bez īpašnieka vai paša zīmola :( ", frame
             return None 
 
+        produkts = u''
         if elem(u'Produkts') is not None:
-            return elem(u'Organizācija') + u' piedāvā: ' + elem(u'Produkts') + u' ' + elem(u'Zīmols')
+            produkts = u' ' + elem(u'Produkts')
+        ziimols = u''
+        if elem(u'Zīmols') is not None:
+            ziimols = u' ' + elem(u'Zīmols')
+
+        if elem(u'Produkts') is not None:
+            return elem(u'Organizācija') + u' piedāvā:' + produkts + ziimols
         else:
-            return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols: ' + elem(u'Zīmols')
+            return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols:' + ziimols
 
     # ja nekas nav atrasts
     print "Nemācējām apstrādāt ", frame
