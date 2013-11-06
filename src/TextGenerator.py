@@ -66,7 +66,7 @@ def get_frame_text(mentioned_entities, frame):
                 print "\nProblem w. NameInflections for entity:\n%s\n" % (entity,)
 
                 fallback = True
-                raise
+                #raise
 
         # fallback: no inflection info available
         if entity["NameInflections"] == u'' or entity["NameInflections"] == u'null' or fallback:

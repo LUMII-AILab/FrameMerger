@@ -103,7 +103,7 @@ class SemanticApi(object):
 
         try:
             # make POST req
-            r = requests.post(req_uri, data_out, headers=headers, timeout = 5)
+            r = requests.post(req_uri, data_out, headers=headers, timeout = 60)
             log.debug("API call: %s\n%s", req_uri, data_out) 
             #print r.text
         except requests.exceptions.Timeout, e:

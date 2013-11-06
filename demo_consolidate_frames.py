@@ -302,24 +302,8 @@ def print_entity_frames(entity_list):
 #        print
 #        pprint(entity.frames)
         
-    
 
-def main():
-    start_logging(log.DEBUG) #log.INFO)
-    log.info("Starting %s" % (sys.argv[0]))
-
-    out_dir = "./output"
-    log.info("Output directory: %s\n", out_dir)
-
-    #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
-    #entity_list = [ENT_Ziedonis]
-    #entity_list = [10,42,120272]
-    # entity_list = range(131426,131475)
-    entity_list = range(131426,131476) + [1002911, 1002884] + range(1003759, 1003787)
-     # entity_list = [75362]
-    # ENT_Bondars]
-    #entity_list = [ENT_Lembergs]
-
+def process_entities(entity_list, out_dir):
     data = list(get_entity_frames(entity_list))
     gen_frames = consolidate_frames(data)
 
@@ -353,6 +337,36 @@ def main():
 
     api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
     save_entity_frames_to_api(api, frames)
+
+def chunks(l, n):
+    return [l[i:i+n] for i in range(0, len(l), n)]    
+
+def main():
+    start_logging(log.DEBUG) #log.INFO)
+    log.info("Starting %s" % (sys.argv[0]))
+
+    out_dir = "./output"
+    log.info("Output directory: %s\n", out_dir)
+
+    #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
+    #entity_list = [ENT_Ziedonis]
+    #entity_list = [10,42,120272]
+    # entity_list = range(131426,131475)
+    #entity_list = range(131426,131476) + [1002911, 1002884] + range(1003759, 1003787)
+
+    #entity_list = range(1382841,1399993) #   1400463)    #
+    #entity_list = range(1382841,1382851)
+    entity_list = range(1398993,1399993)
+
+    entity_chunks = chunks(entity_list, 30)
+    for chunk in entity_chunks:
+        process_entities(chunk, out_dir)
+
+
+     # entity_list = [75362]
+    # ENT_Bondars]
+    #entity_list = [ENT_Lembergs]
+
 
 def start_logging(log_level = log.ERROR):
     log_dir = "log"
