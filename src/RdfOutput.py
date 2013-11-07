@@ -19,18 +19,18 @@ frame_uri = "http://frame_db.lumii.lv/frame/"
 #  - kas (no esošām klasēm) ir piemērots Frame reprezentēšanai RDFā?
 
 frame_tmpl = """
-<%s>
+<%(uri)s>
     a   frame_ont:Frame ;
-    frame_ont:frame_id "%s" ;
-    frame_ont:time <%s> .
+    frame_ont:frame_id "%(id)s" ;
+    frame_ont:time <%(time_entity_uri)s> .
 """
 
 entity_tmpl = """
-<%s>
+<%(uri)s>
     a   frame_ont:Entity;
-    frame_ont:entity_id "%s" ;
-    frame_ont:entity_type "%s";
-    frame_ont:name "%s" .
+    frame_ont:entity_id "%(id)s" ;
+    frame_ont:entity_type "%(category)s";
+    frame_ont:name "%(primary_name)s" .
 """
 
 class RdfOutput(object):
@@ -41,19 +41,19 @@ class RdfOutput(object):
         return namespaces
 
     def frame_to_RDF(self, f):
-        return frame_tmpl % (
-            frame_uri + str(f["FrameId"]),
-            f["FrameId"],
-            entity_uri + "1111"           # fictional entity ID for the "Time" slot
-        )
+        return frame_tmpl % {
+            "uri":  frame_uri + str(f["FrameId"]),
+            "id":   f["FrameId"],
+            "time_entity_uri":  entity_uri + "1111"           # fictional entity ID for the "Time" slot
+        }
 
     def entity_to_RDF(self, e):
-        return entity_tmpl % (
-            entity_uri + str(e["EntityId"]),
-            e["EntityId"],
-            e["Category"],   # entity tipiem ar' vajag savu ontoloģiju / URIs
-            e["Name"]
-        )
+        return entity_tmpl % {
+            "uri":  entity_uri + str(e["EntityId"]),
+            "id":   e["EntityId"],
+            "category": e["Category"],   # entity tipiem ar' vajag savu ontoloģiju / URIs
+            "primary_name": e["Name"]
+        }
 
     def footer(self):
         return ""
