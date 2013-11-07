@@ -87,8 +87,8 @@ class SemanticApi(object):
     ServiceURI = "http://sps.inside.lv:789/Rest/Semantic/"
     UserID = "UldisB"
 
-    def __init__(self):
-        pass
+    def __init__(self, timeout = 60):
+        self.timeout = timeout
 
     def api_call(self, method, data, debug=False):
 
@@ -103,7 +103,7 @@ class SemanticApi(object):
 
         try:
             # make POST req
-            r = requests.post(req_uri, data_out, headers=headers, timeout = 60)
+            r = requests.post(req_uri, data_out, headers=headers, timeout = self.timeout)
             log.debug("API call: %s\n%s", req_uri, data_out) 
             #print r.text
         except requests.exceptions.Timeout, e:
