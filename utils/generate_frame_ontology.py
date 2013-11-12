@@ -12,6 +12,25 @@ from FrameTypeInfo import FrameTypeInfo
 DEFAULT_PREFIX = "http://lumii.lv/ontologies/LETA_Frames"
 ONTOLOGY_VERSION = '0.1'
 
+def get_roles(frame_type_info):
+    roles = {}
+    for frame in frame_type_info.frames:
+        for role in frame['roles']:
+            role_en_name = role['name_en']
+            role_data = roles.get(role_en_name, {'name_en':role_en_name, 'name_lv':set(), 'domains':set(), 'ranges':set()})
+            
+            role_data['name_lv'].add(role['name_lv'])
+            role_data['domains'].add(frame['name_en'])
+            if role['class_restriction']:
+                role_data['ranges'].add(role['class_restriction'])
+            
+            # TODO collect domain and range for restrictions
+            roles[role_en_name] = role_data
+
+    return roles
+
+
+
 def frame_role_target_restrictions(frame_name, role_data):
     return """
         SubClassOf(Annotation(rdfs:comment "%(frame_name)s -- %(role_name_en)s --> %(role_target_class_restrictien_name)s") ObjectSomeValuesFrom(ObjectInverseOf(:%(role_name_en)s) :%(frame_name)s) :%(role_target_class_restrictien_name)s)
@@ -39,6 +58,31 @@ def entity_to_class(entity_name):
         SubClassOf(:%(entity_name)s :Entity)
 """ % {'entity_name' : entity_name}
 
+
+def union_or_self(set_of_classes):
+    if len(set_of_classes) == 0:
+        return "owl:Thing"
+    elif len(set_of_classes) == 1:
+        return ":" + list(set_of_classes)[0]
+    else:
+        return "ObjectUnionOf(" + " ".join([":" + class_name for class_name in set_of_classes]) + ")"
+
+def role_declaration(role_data):
+    return """
+    Declaration(ObjectProperty(:%(role_name)s))
+        AnnotationAssertion(rdfs:label :%(role_name)s "%(name_en)s"@en)
+        %(lv_labels)s
+        SubObjectPropertyOf(:%(role_name)s :FrameRole)
+        ObjectPropertyDomain( :%(role_name)s %(domains)s )
+        %(ranges)s
+
+
+""" % {
+    'role_name' : role_data['name_en'],
+    'name_en' : role_data['name_en'],
+    'lv_labels' : "\n\t\t".join(['AnnotationAssertion(rdfs:label :%(role_name)s "%(name_lv)s"@lv)'%{'name_lv':name_lv, 'role_name':role_data['name_en']} for name_lv in role_data['name_lv']]),
+    'domains' : union_or_self(role_data['domains']),
+    'ranges' : "ObjectPropertyRange(:" + role_data['name_en'] + " " + union_or_self(role_data['ranges']) + ")" if len(role_data['ranges'])>0 else ""}
 
 def owl_functional_form(frame_type_info):
     return """
@@ -79,6 +123,12 @@ Ontology(<%(ontology_uri)s>
     // roles
     //
 
+    Declaration(ObjectProperty(:FrameRole))
+        ObjectPropertyDomain( :FrameRole :Frame )
+        ObjectPropertyRange( :FrameRole :Entity )
+
+    %(roles)s
+
 )
 
 """ % {
@@ -87,7 +137,8 @@ Ontology(<%(ontology_uri)s>
     'current_time': str(datetime.datetime.now()),
     'frames': "\n".join([frame_to_class(f) for f in frame_type_info.frames]),
     'frame_names': " ".join([":" + f['name_en'] for f in frame_type_info.frames]),
-    'entities': "\n ".join([entity_to_class(entity) for entity in frame_type_info.get_entities()])
+    'entities': "\n ".join([entity_to_class(entity) for entity in frame_type_info.get_entities()]),
+    'roles': "\n ".join([role_declaration(role_data) for (name_en, role_data) in get_roles(frame_type_info).items()])
     }
 
 
