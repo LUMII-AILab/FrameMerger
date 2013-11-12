@@ -99,8 +99,8 @@ def main():
     ONTOLOGY_FUNCTIONAL_TEXT = "./output/frames.owl"
 
     print "Saving frame ontology in functional syntax to [%s]" % (ONTOLOGY_FUNCTIONAL_TEXT,)
-    with open(ONTOLOGY_FUNCTIONAL_TEXT, "wb") as outf:
-        pprint(ontology_functional_str, stream=outf)
+    with open(ONTOLOGY_FUNCTIONAL_TEXT, "w") as outf:
+        outf.write(ontology_functional_str.encode('utf8'))
 
 if __name__ == "__main__":
     main()
