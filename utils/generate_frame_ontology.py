@@ -33,10 +33,10 @@ def get_roles(frame_type_info):
 
 def frame_role_target_restrictions(frame_name, role_data):
     return """
-        SubClassOf(Annotation(rdfs:comment "%(frame_name)s -- %(role_name_en)s --> %(role_target_class_restrictien_name)s") ObjectSomeValuesFrom(ObjectInverseOf(:%(role_name_en)s) :%(frame_name)s) :%(role_target_class_restrictien_name)s)
+        SubClassOf(Annotation(rdfs:comment "%(frame_name)s -- %(role_name_en)s --> %(role_target_class_restrictien_name)s") :%(frame_name)s ObjectAllValuesFrom(:%(role_name_en)s :%(role_target_class_restrictien_name)s)) 
 """ % {'role_name_en' : role_data['name_en'],
        'frame_name' : frame_name,
-       'role_target_class_restrictien_name' : role_data['class_restriction']}
+       'role_target_class_restrictien_name' : role_data['class_restriction'] or "Entity"}
 
 
 def frame_to_class(frame):
@@ -49,7 +49,7 @@ def frame_to_class(frame):
         // role target class restrictions
         %(role_target_restrictions)s
 
-""" % dict(frame.items() + ({'role_target_restrictions' : "".join([frame_role_target_restrictions(frame['name_en'], role) for role in frame['roles'] if role['class_restriction']])}).items())
+""" % dict(frame.items() + ({'role_target_restrictions' : "".join([frame_role_target_restrictions(frame['name_en'], role) for role in frame['roles']])}).items())
 
 # FIXME handle latvian entity name "Attiecību veids"
 def entity_to_class(entity_name):
