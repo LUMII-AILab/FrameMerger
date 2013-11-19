@@ -23,13 +23,6 @@ from FrameInfo import FrameInfo
 
 from TextGenerator import get_mentioned_entities, get_frame_text
 
-ENT_Bondars = 10 #274319
-ENT_Ziedonis = 274418
-ENT_Ziedonis2 = 250423
-ENT_Lembergs = 260970
-
-Test50 = [131426,131427,131428,131429,131430,131431,131432,131433,131434,131435,131436,131437,131438,131439,131440,131441,131442,131443,131444,131445,131446,131447,131448,131449,131450,131451,131452,131453,131454,131455,131456,131457,131458,131459,131460,131461,131462,131463,131464,131465,131466,131467,131468,131469,131470,131471,131472,131473,131474,131475]
-
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 def get_entity_frames(e_id_list):
@@ -348,24 +341,18 @@ def main():
     out_dir = "./output"
     log.info("Output directory: %s\n", out_dir)
 
-    #entity_list = [ENT_Bondars, ENT_Lembergs, ENT_Ziedonis2] #, ENT_Ziedonis]
-    #entity_list = [ENT_Ziedonis]
-    #entity_list = [10,42,120272]
-    # entity_list = range(131426,131475)
-    #entity_list = range(131426,131476) + [1002911, 1002884] + range(1003759, 1003787)
 
-    #entity_list = range(1382841,1399993) #   1400463)    #
-    #entity_list = range(1382841,1382851)
-    entity_list = range(1398993,1399993)
+    #entity_list = range(1585428,1587072) # 17.nov ieimportēto LETA organizāciju profilu pamatentītijas - dataset=3 category=2
+    #entity_list = range(1559649,1581329) # 17.nov ieimportēto LETA personu profilu pamatentītijas - dataset=3 category=3
+    #entity_list = [1560495] # Dzintars Zaķis
 
-    entity_chunks = chunks(entity_list, 30)
+    # Test50 personas + Test30 organizācijas
+    entity_list = [1559976, 1560091, 1560102, 1560478, 1560495, 1560585, 1561151, 1561201, 1561241, 1561343, 1561468, 1561533, 1561619, 1561704, 1561920, 1561970, 1562094, 1562112, 1562226, 1562325, 1562343, 1562348, 1562462, 1562674, 1562958, 1563176, 1563381, 1565010, 1565782, 1567846, 1568840, 1569456, 1572029, 1574126, 1574828, 1574829, 1575614, 1575627, 1575673, 1575689, 1575990, 1576028, 1576160, 1576165, 1576529, 1576537, 1577582, 1578000, 1581090, 1581094, 1586718, 1586596, 1586761, 1586843, 1586639, 1586845, 1586560, 1586562, 1587054, 1586686, 1586687, 1586769, 1586606, 1586811, 1586730, 1587063, 1586613, 1586861, 1586577, 1586537, 1586824, 1586662, 1586949, 1587034, 1586625, 1587039, 1586794, 1586673, 1586592, 1586839]
+
+    entity_chunks = chunks(entity_list, 1)
     for chunk in entity_chunks:
         process_entities(chunk, out_dir)
-
-
-     # entity_list = [75362]
-    # ENT_Bondars]
-    #entity_list = [ENT_Lembergs]
+        print 'Noprocesēts līdz ', chunk[-1]
 
 
 def start_logging(log_level = log.ERROR):

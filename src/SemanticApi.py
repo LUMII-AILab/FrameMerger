@@ -285,6 +285,9 @@ class SemanticApi(object):
             if frame["MergeType"] in merge_type_map:
                 frame["MergeType"] = merge_type_map[frame["MergeType"]]
 
+            if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
+                frame["IsHidden"] = True
+
             # frame.pop("IsDeleted", False)
 
             return frame

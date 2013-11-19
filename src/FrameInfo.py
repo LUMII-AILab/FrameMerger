@@ -49,7 +49,11 @@ class FrameInfo(object):
         return self.frame_types[fr_type_id]
 
     def elem_name_from_id(self, fr_type_id, el_type_id):
-        return self.elem_types[fr_type_id][el_type_id]
+        try:
+            return self.elem_types[fr_type_id][el_type_id]
+        except IndexError:
+            print 'elem_name_from_id bad indexes',fr_type_id, el_type_id
+            return ""
 
     def get_core_elements(self, fr_type_id):
         return self.elem_core[fr_type_id]
@@ -104,15 +108,17 @@ class FrameMatrix(object):
       
         # add a check for empty rows in the XLS file (!)
 
-        frame_cnt = 25      # 0..25 = (total of 26 frames)
+        # FIXME - šo vajag ņemt no eksceļa pa tiešo kautkā
+        frame_cnt = 26      # 0..26 = (total of 27 frames)
 
         rows = sheet.range("B%i:L%i" % (2, 2+frame_cnt))
         for row in rows:
             self.frame_types.append(row[0].value)
             self.frame_elements.append([cell.value for cell in row[1:]])
 
+
         # check that prev. row is empty
-        matrix2_pos = 29
+        matrix2_pos = 30 # FIXME - šo arī jāņemo no exceļa, savādāk salūzt ar citu datukopu
 
         empty_line2 = sheet.range("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1))[0]
         if not all(cell.value is None for cell in empty_line2):

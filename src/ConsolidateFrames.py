@@ -102,16 +102,16 @@ class BaseConsolidator(object):
                 item["MergeType"] = "M"
 
                 # TODO: remove elements that do not make sense in a summary
-                
-                item["SentenceId"] = ""
 
                 all_docs = set(f["DocumentId"] for f in res_buf[key])
-                if len(all_docs) > 1:
-                    item["DocumentId"] = ""
+                # PP - vajag lai ir vismaz kautkāds links tur ir uz pirmavotu, tas ļoti palīdz freimera debugam
+                # if len(all_docs) > 1:
+                #     item["DocumentId"] = ""
+                #item["SentenceId"] = ""
 
                 all_docs = set(f["SourceId"] for f in res_buf[key])
-                if len(all_docs) > 1:
-                    item["SourceId"] = ""
+                # if len(all_docs) > 1:
+                #     item["SourceId"] = ""
                 pass
 
             else:
