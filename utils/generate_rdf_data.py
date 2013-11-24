@@ -13,7 +13,7 @@ sys.path.append("./src")
 from FrameTypeInfo import FrameTypeInfo 
 
 from rdflib import Graph, Namespace, URIRef, Literal, BNode, RDF, term
-from rdflib.namespace import RDFS
+from rdflib.namespace import RDFS, OWL
 
 import cPickle as pickle
 
@@ -46,7 +46,7 @@ def add_entity_to_rdf_store(entity, rdf_store):
 	rdf_store.add((entity_node, RDF.type, entity_type))
 
 	# add name assertion
-	rdf_store.add((entity_node, URIRef("http://lumii.lv/ontologies/LETA_Frames#Name"), Literal(entity[u'Name'], lang="lv")))
+	rdf_store.add((entity_node, URIRef("http://lumii.lv/ontologies/LETA_Frames#NameD"), Literal(entity[u'Name'], lang="lv")))
 
 	rdf_store.add((entity_node, RDFS.label, Literal(entity[u'Name'])))
 
@@ -102,6 +102,8 @@ def main():
 	print("create rdf_store")
 	rdf_store = Graph()
 
+	rdf_store.add((URIRef("http://lumii.lv/rdf_data/LETA_Frames/"), RDF.type, OWL.Ontology))
+
 	print("load frame info data")
 	frame_type_info = FrameTypeInfo()
 
@@ -145,7 +147,7 @@ def main():
 		traceback.print_exc()
 
 
-	print("save rdf file (note that it may take some time)")
+	print("save rdf file (may take some minutes)")
 	# Serialize the store as RDF/XML to the file frame_data.rdf.
 	rdf_store.serialize("./output/frame_and_entity_data.rdf", format="pretty-xml")
 
