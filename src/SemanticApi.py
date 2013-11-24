@@ -2,6 +2,7 @@
 # -*- coding: utf8 -*-
 
 import json
+import operator
 import requests     # http://docs.python-requests.org/en/latest/index.html
 
 # enable logging, but default to null logger (no output)
@@ -161,6 +162,25 @@ class SemanticApi(object):
 
         return frames
 
+    def entity_summary_frames_by_id(self, e_id):
+        data = self.get_summary_frames([e_id])["Answers"]
+
+        try:
+            eq_(len(data), 1)
+        except AssertionError:
+            log_data = "\n".join([pformat(log_item) for log_item in data])
+            log.exception("Data does not meet asserted assumptions:\n%s", log_data)
+            log.warning("API data assertion error. Continuing processing, but be warned - data might not be OK!")
+
+        if data[0]["Answer"] == 0:
+            frames = data[0]["FrameData"]
+
+        else:
+            log.warning("No summary frames found for entity %s. Error code [%s], message: %s" % (e_id, data[0]["Answer"], data[0]["AnswerTypeString"]))
+            frames = []
+
+        return frames
+
     def entities_by_id(self, e_id_list):
         method = "GetEntityDataByIdPg"
 
@@ -196,6 +216,21 @@ class SemanticApi(object):
 
         return res
 
+    def delete_entity_summary_frames(self, e_id):
+        """
+        Delete all summary frames referring to a given entity ID.
+
+        Parameters:
+         - e_id (int) = entity ID
+        """
+
+        # FIXME: we only need frame_ids here, but are retrieving whole frame info packets
+        entity_frames = self.entity_summary_frames_by_id(e_id)
+
+        frame_ids = map(operator.itemgetter("FrameId"), entity_frames)
+
+        return self.delete_summary_frames(frame_ids)
+
     def delete_summary_frames(self, fr_id_list):
         method = "DeleteSummaryFramePg"
 
@@ -203,7 +238,7 @@ class SemanticApi(object):
         {
             "parameterList": 
             {
-                "FrameIdList": [fr_id_list],
+                "FrameIdList": fr_id_list,
                 "DataSet": ["AllData" ]
             }
         }

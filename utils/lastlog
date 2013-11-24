@@ -1,0 +1,1 @@
+ls -t log | head -n 1 | xargs -I {} less log/{}

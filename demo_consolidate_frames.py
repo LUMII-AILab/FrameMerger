@@ -152,6 +152,13 @@ def valid_frame(frame):
 def save_entity_frames_to_api(api, entity_list):    
     for entity in entity_list:
 
+        # delete previous summary frames
+        api.delete_entity_summary_frames(entity.entity_id)
+
+        # XXX, FIXME:
+        #  - the deletion logic must be changed to preserve blessed frames
+        #    (if blessed frames are saved as summary frames)
+
         # insert all entity frames [as summary frames]
 
         summary_frame_ids = []
