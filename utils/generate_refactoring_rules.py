@@ -1,30 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 
-
-# def relationship_role_to_property_assertion(relationship_role_name, property_name):
-#     return '''
-# [] a rule:SPARQLRule ;
-#    rule:content """
-#         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-#         PREFIX meta: <http://lumii.lv/ontologies/LETA_Frames#>
-#         PREFIX extended: <http://lumii.lv/ontologies/LETA_Frames_Extended#>
-#         PREFIX data: <http://lumii.lv/rdf_data/LETA_Frames/>
-#      IF {
-#         ?frame rdf:type meta:Personal_relationship .
-#         ?frame meta:Relationship ?relationship .
-
-#         ?relationship rdfs:label "%(relationship_role_name)s" .
-
-#         ?frame meta:Partner_1 ?partner1 .
-#         ?frame meta:Partner_2 ?partner2 .
-#      }
-#      THEN {
-#         ?partner2 meta:%(property_name)s ?partner1 .
-#      }
-#    """.
-# ''' % {"relationship_role_name":relationship_role_name, "property_name":property_name}
-
 def relationship_role_to_property_assertion_stardog(relationship_role_name, property_name):
     return '''
 [] a rule:SPARQLRule ;
@@ -111,6 +87,9 @@ Ontology(<http://lumii.lv/ontologies/LETA_Frames_Rules#>
 
 
 def main():
+    # rules = gen_rules_in_stardog_syntax()
+    # output_file_name = "./output/refactoring_rules.ttl"
+
     rules = gen_rules_in_owl_functional_syntax()
     output_file_name = "./output/refactoring_rules.owl"
 
