@@ -1,0 +1,62 @@
+# RDF and OWL data generation
+## generating rdf data
+- first get all data from the web server:
+	* run "./utils/get_all_data.py" from the project root
+		it will collect and save data in pickle format
+		(all_frames.pickle, )
+		so that we can generate rdf data multiple times
+		without waiting for the webserver
+- serialize collected data to rdf
+	* run "./utils/generate_rdf_data.py"
+		it will load the entities and frames from the pickled files
+		and produce an rdf version
+		the rdf data will be in the ./output/frame_and_entity_data.rdf
+
+## generate ontology from the frames.xsl file
+run "./utils/generate_frame_ontology.py"
+	the script will read "./input/frames.xlsx" and generate the corresponding ontology
+	the generated ontlogy will be saved in "./output/frames.owl"
+
+## generate refactoring rules used by stardog or pellet to get World releations from the frames
+- to get rules in owl functional syntax:
+	* run "./utils/generate_refactoring_rules.py"
+		the generated rules will be in "./output/refactoring_rules.owl"
+
+- to get a stardog version of the rules
+	* uncomment the following lines in the ./utils/generate_refactoring_rules.py
+		# rules = gen_rules_in_stardog_syntax()
+    	# output_file_name = "./output/refactoring_rules.ttl"
+
+    	and comment out the following lines:
+
+    	# rules = gen_rules_in_owl_functional_syntax()
+    	# output_file_name = "./output/refactoring_rules.owl"
+
+    * then run ./utils/generate_refactoring_rules.py
+    	the generated rules will be in "./output/refactoring_rules.ttl"
+
+
+# The usage of the generated RDF and OWL data
+## in pellet reasoner
+- to check consistency
+	* download pellet from http://clarkparsia.com/pellet/download
+	* ensure that pellet has sufficient amount of memory
+		- in pellet/pellet.sh change pellet_java_args to
+			"pellet_java_args="-Xmx4096m"
+	* run pellet/pellet.sh consistency -v frames.owl Handcrafter_LETA_Frames_Extended.owl  refactoring_rules.owl frame_and_entity_data.rdf
+
+## in stardog
+- load data for querying
+	* download stardog comunity edition from http://stardog.com
+	* start stardog sever
+		- run "stardog/bin/stardog-admin server start"
+	* create a database with the frame ontology
+		- run "stardog/bin/stardog-admin db create -n myDB ../LUMII-AILab/FrameMerger/output/frames.owl"
+	* load extended ontology, refactoring rules and data
+		- run "stardog/bin/stardog data add myDB ../LUMII-AILab/FrameMerger/output/Handcrafter_LETA_Frames_Extended.owl"
+		- run "stardog/bin/stardog data add myDB ../LUMII-AILab/FrameMerger/output/frame_and_entity_data.rdf"
+		- run "stardog/bin/stardog data add myDB ../LUMII-AILab/FrameMerger/output/refactoring_rules.ttl"
+	* to use web interface for queries open "http://localhost:5820/myDB#!/query" in a web browser
+
+
+
