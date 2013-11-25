@@ -1,0 +1,299 @@
+<?xml version="1.0"?>
+
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+]>
+
+
+<rdf:RDF xmlns="http://lumii.lv/ontologies/LETA_Frames_Extended#"
+     xml:base="http://lumii.lv/ontologies/LETA_Frames_Extended"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <owl:Ontology rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended">
+        <rdfs:comment>Virzbūve virs LETA_Frames ontoloģijas. No avīžu apgalvojumiem, uz pasaules modeli.
+
+Avīzē teikts ka A ir dzimis gadā X. -&gt; A dzimšanas gads ir X. </rdfs:comment>
+        <owl:versionIRI rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended/0.1"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#brother -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#brother">
+        <rdfs:label xml:lang="en">brother</rdfs:label>
+        <rdfs:label xml:lang="lv">brālis</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Male"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#sibling"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#sister"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#child -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#child">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en">child</rdfs:label>
+        <rdfs:label xml:lang="lv">bērns</rdfs:label>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#parent"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#relative"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#sibling"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#daughter -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#daughter">
+        <rdfs:label xml:lang="en">daughter</rdfs:label>
+        <rdfs:label xml:lang="lv">meita</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Female"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#child"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#son"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#father -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#father">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:label xml:lang="en">father</rdfs:label>
+        <rdfs:label xml:lang="lv">tēvs</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Male"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#mother"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#parent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#human_relationship -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#human_relationship">
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#husband -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#husband">
+        <rdfs:label xml:lang="en">husband</rdfs:label>
+        <rdfs:label xml:lang="lv">vīrs</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Male"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#wife"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#mother -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#mother">
+        <rdf:type rdf:resource="&owl;FunctionalProperty"/>
+        <rdfs:label xml:lang="en">mother</rdfs:label>
+        <rdfs:label xml:lang="lv">māte</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Female"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#parent"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#parent -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#parent">
+        <rdf:type rdf:resource="&owl;AsymmetricProperty"/>
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdfs:label xml:lang="en">parent</rdfs:label>
+        <rdfs:label xml:lang="lv">vecāks</rdfs:label>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <owl:inverseOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#child"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#relative"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#sibling"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#relative -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#relative">
+        <rdf:type rdf:resource="&owl;TransitiveProperty"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#human_relationship"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#sibling -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#sibling">
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+        <rdfs:label xml:lang="en">sibling</rdfs:label>
+        <rdfs:label xml:lang="lv">brālis vai māsa</rdfs:label>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#relative"/>
+        <owl:propertyDisjointWith rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#sister -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#sister">
+        <rdfs:label xml:lang="en">sister</rdfs:label>
+        <rdfs:label xml:lang="lv">māsa</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Female"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#sibling"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#son -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#son">
+        <rdfs:label xml:lang="en">son</rdfs:label>
+        <rdfs:label xml:lang="lv">dēls</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Male"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#child"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#spouse -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse">
+        <rdf:type rdf:resource="&owl;IrreflexiveProperty"/>
+        <rdf:type rdf:resource="&owl;SymmetricProperty"/>
+        <rdfs:label xml:lang="en">spouse</rdfs:label>
+        <rdfs:label xml:lang="lv">vīrs vai sieva</rdfs:label>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#relative"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#wife -->
+
+    <owl:ObjectProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#wife">
+        <rdfs:label xml:lang="en">wife</rdfs:label>
+        <rdfs:label xml:lang="lv">sieva</rdfs:label>
+        <rdfs:domain rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+        <rdfs:range rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#Female"/>
+        <rdfs:subPropertyOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames_Extended#spouse"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames#NameD -->
+
+    <owl:DatatypeProperty rdf:about="http://lumii.lv/ontologies/LETA_Frames#NameD"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames#Entity -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames#Entity">
+        <owl:hasKey rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://lumii.lv/ontologies/LETA_Frames#NameD"/>
+        </owl:hasKey>
+    </owl:Class>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames#Organization -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames#Organization">
+        <rdfs:subClassOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames#PersonOrOrganization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames#Person -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames#Person">
+        <rdfs:subClassOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames#PersonOrOrganization"/>
+    </owl:Class>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames#PersonOrOrganization -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames#PersonOrOrganization"/>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#Female -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#Female">
+        <rdfs:subClassOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+    </owl:Class>
+    
+
+
+    <!-- http://lumii.lv/ontologies/LETA_Frames_Extended#Male -->
+
+    <owl:Class rdf:about="http://lumii.lv/ontologies/LETA_Frames_Extended#Male">
+        <rdfs:subClassOf rdf:resource="http://lumii.lv/ontologies/LETA_Frames#Person"/>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net -->
+
