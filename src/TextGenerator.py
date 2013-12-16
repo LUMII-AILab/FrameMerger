@@ -43,7 +43,8 @@ def get_frame_text(mentioned_entities, frame):
         return roles[role][case]
 
     # Fallback, kas uzskaita freima saturu ne teikuma veidā, bet tīri 'loma: entīte'
-    def simpleVerbalization:
+    def simpleVerbalization():
+        # FIXME - te trūkst parametri - pieliec, ko vajag
         text = f_info.type_name_from_id( frame["FrameType"])
         for role in roles:
             text = text + ' ' + role + ':' + elem(role)
