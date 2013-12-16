@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+
+# Semantic DB savienojuma konfigurācija
+
+## lai konfigurētu DB savienojumu:
+##  1) pārkopēt šo failu ar nosaukumu db_config.py
+##  2) ievietot api_conn_info laukos atbilstošo savienojuma informāciju (hostname, ...)
+
+api_conn_info = {
+    "host":     "", 
+    "dbname":   "", 
+    "port":     5555, 
+    
+    "user":     "", 
+    "password": "",
+}
+
