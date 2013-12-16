@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import psycopg2, psycopg2.extensions, psycopg2.extras
+import psycopg2, psycopg2.extensions
+from psycopg2.extras import Json
 import atexit
 
 from pprint import pprint
@@ -89,7 +90,6 @@ class SemanticApiPostgres(object):
     def frame_ids_by_entity(self, e_id):
         sql = "select frameid from framedata where entityid = %s"
         res = self.api.query(sql, (e_id,) )
-        #self.cSearchByName += 1
 
         frame_ids = first_col(res)
         return frame_ids
@@ -121,7 +121,6 @@ class SemanticApiPostgres(object):
         sql = "select * from frames where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
         frame = res[0]
-        #self.cSearchByName += 1
 
         frame_info = {
              u'DocumentId': frame.documentid,   
@@ -151,7 +150,6 @@ class SemanticApiPostgres(object):
 """
         sql = "select * from framedata where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
-        #self.cSearchByName += 1
 
         elem_list = []
 
@@ -247,7 +245,7 @@ class SemanticApiPostgres(object):
     def insertEntity(self, name, othernames, category, outerids=[], inflections = None):
         main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections) VALUES (%s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
-        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, dataset, inflections),
+        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections),
                 returning = True,
                 commit = False)
         entityid = res # insertotās rindas id
@@ -276,7 +274,7 @@ class SemanticApiPostgres(object):
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
         res = self.api.insert(main_sql,
-                (frametype, source, sentenceId, document, targetword, 0, dataset, None, False, date),
+                (frametype, source, sentenceId, document, targetword, 0, self.api.dataset, None, False, date),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
@@ -290,12 +288,45 @@ class SemanticApiPostgres(object):
 
         return frameid
 
+    # Inserto jaunu apvienoto freimu datubāzē
+    # frametype - freima tipa kods kā int
+    # elements - dict no freima-elementa koda uz entityID
+    # document - dokumenta guid kā unicode string
+    # mergedframes - list ar apvienoto rawframe id'iem
+    # frametext - freima verbalizācija
+    # summarytypeid - summarizācijas veida kods
+    # sentenceId - teikuma id
+    # targetword - unicode string
+    # date - freima datums - string ISO datumformātā 
+    def insertSummaryFrame(self, frametype, elements, document, mergedframes, frametext, summarytypeid = 2, source=None, sentenceId=None, targetword = None, date=None):
+        main_sql = "INSERT INTO summaryframes(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, DataSet, Blessed, Hidden, framecnt, frametext)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+
+        res = self.api.insert(main_sql,
+                (frametype, source, sentenceId, document, targetword, self.api.dataset, None, False, len(mergedframes), frametext),
+                returning = True,
+                commit = False)
+        frameid = res # insertotā freima id
+
+        element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
+        for element, entityid in elements.iteritems():
+            self.api.insert(element_sql, (frameid, entityid, element) )       
+            # NB! Te nav validācijas; te arī neuzstāda wordindex lauku
+
+        frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
+        for rawframeid in mergedframes:
+            self.api.insert(frame_sql, (frameid, rawframeid) )
+
+        self.api.commit()
+
+        return frameid
+
     def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False):
         cursor = self.api.new_cursor()
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
         cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear) )
         # TODO - validācija rezultātiem
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # kādas ir apstiprinātās entītijas attiecīgajam dokumentam
@@ -324,7 +355,7 @@ class SemanticApiPostgres(object):
         cursor.execute("delete from cdc_wordbags where entityid = %s", (entityid,) )
         cursor.execute("insert into cdc_wordbags values (%s, %s)", (entityid, Json(wordbags)) )
         # TODO - validācija rezultātiem
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # Iztīra rawfreimus no DB, kas atbilst šim dokumenta ID - lai atkārtoti laižot nekrājas dublicēti freimi; un lai laižot pēc uzlabojumiem iztīrās iepriekšējās versijas kļūdas
@@ -333,7 +364,7 @@ class SemanticApiPostgres(object):
         cursor.execute("delete from framedata where frameid in \
                             (select A.frameid from frames as A where A.documentid = %s)", (documentID, ))
         cursor.execute("delete from frames where documentid = %s;", (documentID, ))
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
@@ -346,7 +377,7 @@ class SemanticApiPostgres(object):
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
             cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
 # ------------------------------------------------------------  
