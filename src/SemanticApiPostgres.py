@@ -75,8 +75,6 @@ class PostgresConnection(object):
             self.commit()
         cursor.close()
 
-        #self.cInsertEntity += 1
-
         return result
 
 
@@ -213,6 +211,31 @@ class SemanticApiPostgres(object):
         return entity_info 
 
 
+    # Pēc entītijas ID atgriež tās datus
+    # alldata - vai ņemt tikai pamatinfo (primārais vārds, kategorija), vai arī pievilkt klāt visus aliasus un outerid
+    def entityByID(self, entityID, alldata = False):
+        cursor = self.api.new_cursor()
+        if not alldata:
+            query = "select entityid, name, category from entities where deleted is false and entityid = %s"
+        else:
+            query = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
+                        left outer join entityothernames n on e.entityid = n.entityid \
+                        left outer join entityouterids i on e.entityid = i.entityid \
+                        where e.entityid = %s and e.deleted is false \
+                        group by e.entityid, e.name, e.category, e.nameinflections"
+
+        cursor.execute(query, (entityID,) )
+        r = cursor.fetchone()
+        cursor.close()
+
+        if r is None: # Ja ir rezultāts, izņemam no tuples, ja ieraksts nav atrasts, atgriežam None
+            return None
+        else:
+            if not alldata:
+                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2]}
+            else:
+                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2], 'NameInflections':r[3], 'OtherName':r[4], 'OuterId':r[5]}
+
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
     def entity_ids_by_name_list(self, name):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
@@ -221,7 +244,6 @@ class SemanticApiPostgres(object):
 
         sql = "select entityid from entityothernames where name = %s"
         res = self.api.query(sql, (name,) )
-        #self.cSearchByName += 1
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
@@ -249,8 +271,6 @@ class SemanticApiPostgres(object):
 
         self.api.commit()
 
-        #self.cInsertEntity += 1
-
         return entityid
 
 	# Inserto jaunu freimu datubāzē
@@ -277,10 +297,66 @@ class SemanticApiPostgres(object):
 
         self.api.commit()
 
-        #self.cInsertFrame += 1    
-
         return frameid
 
+    def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False):
+        cursor = self.api.new_cursor()
+        cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
+        cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear) )
+        # TODO - validācija rezultātiem
+        self.conn.commit()
+        cursor.close()
+
+    # kādas ir apstiprinātās entītijas attiecīgajam dokumentam
+    def getBlessedEntityMentions(self, documentID):
+        cursor = self.api.new_cursor()
+        cursor.execute("select entityid from entitymentions where blessed is true and documentid = %s", (documentID, ) )
+        r = cursor.fetchall()
+        cursor.close()        
+        return map(lambda x: x[0], r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
+    # Atgriež entītijas crossdocumentcoreference wordbagus pēc padotā entītijas ID
+    def getCDCWordBags(self, entityid):
+        cursor = self.api.new_cursor()
+        cursor.execute("select wordbags from cdc_wordbags where entityid = %s", (entityid,) )
+        r = cursor.fetchone()
+        cursor.close()
+
+        if r is None: # Ja ir rezultāts, izņemam no tuples, ja ieraksts nav atrasts, atgriežam None
+            return None
+        else:
+            return r[0] 
+
+    # Saglabā cross document coreference wordbagus attiecīgajai entītijai
+    def putCDCWordBags(self, entityid, wordbags):
+        cursor = self.api.new_cursor()
+        cursor.execute("delete from cdc_wordbags where entityid = %s", (entityid,) )
+        cursor.execute("insert into cdc_wordbags values (%s, %s)", (entityid, Json(wordbags)) )
+        # TODO - validācija rezultātiem
+        self.conn.commit()
+        cursor.close()
+
+    # Iztīra rawfreimus no DB, kas atbilst šim dokumenta ID - lai atkārtoti laižot nekrājas dublicēti freimi; un lai laižot pēc uzlabojumiem iztīrās iepriekšējās versijas kļūdas
+    def cleanupDB(self, documentID):
+        cursor = self.api.new_cursor()
+        cursor.execute("delete from framedata where frameid in \
+                            (select A.frameid from frames as A where A.documentid = %s)", (documentID, ))
+        cursor.execute("delete from frames where documentid = %s;", (documentID, ))
+        self.conn.commit()
+        cursor.close()
+
+    # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
+    def dirtyEntity(self, entityID):
+        if entityID == 0: return
+        
+        cursor = self.api.new_cursor()
+        # Paskatamies, vai entītija jau nav rindā (kas būtu ļoti iespējams)
+        cursor.execute("select entityid from dirtyentities where status = 1 and entityid = %s;", (entityID, ))
+        r = cursor.fetchone()
+        if not r: # ja nav tāds atrasts
+            cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
+        self.conn.commit()
+        cursor.close()
 
 # ------------------------------------------------------------  
 
