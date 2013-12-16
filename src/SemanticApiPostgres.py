@@ -103,8 +103,8 @@ class SemanticApiPostgres(object):
 
     def frame_by_id(self, fr_id):
         """
- * frameid          integer DEFAULT nextval ('frames_frameid_seq'::regclass),
- * frametypeid      integer DEFAULT 0,
+   frameid          integer DEFAULT nextval ('frames_frameid_seq'::regclass),
+   frametypeid      integer DEFAULT 0,
    sourceid         text,
    documentid       text,
    sentenceid       text,
@@ -115,7 +115,7 @@ class SemanticApiPostgres(object):
    blessed          boolean,
    hidden           boolean DEFAULT FALSE,
    targetword       text,
- * fdatetime        timestamp (6) WITHOUT TIME ZONE
+   fdatetime        timestamp (6) WITHOUT TIME ZONE
 """
         sql = "select * from frames where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
@@ -161,6 +161,53 @@ class SemanticApiPostgres(object):
             })
 
         return elem_list
+
+    def entity_data_by_id(self, e_id):
+        """
+   entityid          integer DEFAULT nextval ('entities_entityid_seq'::regclass),
+   "name"            text,
+   othernames        boolean DEFAULT FALSE,
+   outerid           boolean DEFAULT FALSE,
+   category          integer,
+   deleted           boolean DEFAULT FALSE,
+   blessed           boolean DEFAULT FALSE,
+   dataset           integer DEFAULT 0,
+   framecount        integer DEFAULT 0,
+   hidden            boolean DEFAULT FALSE,
+   nameinflections   text
+"""
+        sql = "select * from entities where entityid = %s"
+        res = self.api.query(sql, (e_id,) )
+        res = res[0]
+        #self.cSearchByName += 1
+
+        entity_info = {
+            u'Category': res.category,
+            u'EntityId': res.entityid,
+            u'Name': res.name,
+            u'NameInflections': res.nameinflections,
+            u'OtherName': res.othernames,
+            u'OuterId': res.outerid,
+        }
+
+        if res.othernames:
+            entity_info["OtherName"] = \
+                [item[0] for item in 
+                    self.api.query("select name from entityothernames where entityid = %s", (e_id,))
+                    if item[0] != res.name
+                ]
+        else:
+            entity_info["OtherName"] = None
+
+        if res.outerid:
+            entity_info["OuterId"] = \
+                [item[0] for item in 
+                    self.api.query("select outerid from entityouterids where entityid = %s", (e_id,))
+                ]
+        else:
+            entity_info["OuterId"] = None
+
+        return entity_info 
 
 
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst

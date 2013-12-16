@@ -95,6 +95,26 @@ def test_frame_elements_equal():
     # not comparing frame element data
     eq_(frame_data_old, frame_data_new)
 
+def test_entity_info_equal():
+    # setup
+    api = SemanticApi()
+    conn = PostgresConnection(default_conn_info)
+    pg_api = SemanticApiPostgres(conn)
+
+    # data example to test
+    e_id = 1560092
+
+    # action
+    old_info = api.entity_data_by_id(e_id)
+    new_info = pg_api.entity_data_by_id(e_id)
+
+    pprint(old_info)
+    print
+    pprint(new_info)
+
+    # not comparing frame element data
+    eq_(old_info, new_info)
+
 # ---------------------------------------- 
 
 def main():
