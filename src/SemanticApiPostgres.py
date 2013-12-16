@@ -10,17 +10,12 @@ from pprint import pprint
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
 
-# FIXME - hardcodēta konekcijas info
-default_conn_info = {
-        "host":"alnis.ailab.lv", "port": 5555, "dbname":"semantica", "user":"martins", "password":"parole",
-    }
-
 class PostgresConnection(object):
 
     def __init__(self, conn_info=None, dataset=None):
-        # FIXME
-        if conn_info is None:
-            conn_info = default_conn_info
+        if conn_info is None or conn_info["host"] is None or len(conn_info["host"])==0:
+            print "Postgres connection error: connection information must be supplied in <conn_info>"
+            raise Exception("Postgres connection error: connection information must be supplied in <conn_info>")
 
         if dataset is None:
             dataset = 0 # FIXME - te vajadzētu norādīt info par datu avotu, web-API ņēma lietotāja vārdu kā parametru
@@ -289,15 +284,21 @@ class SemanticApiPostgres(object):
 
 # ------------------------------------------------------------  
 
-def test_entity_select():
-    conn = PostgresConnection(default_conn_info)
+def test_entity_select(conn_info):
+
+    conn = PostgresConnection(conn_info)
     api = SemanticApiPostgres(conn)
 
-    id_list = api.searchByName("Imants Ziedonis")
+    id_list = api.entity_ids_by_name_list("Imants Ziedonis")
     pprint(id_list)
 
 def main():
-    test_entity_select()
+    import sys
+    sys.path.append("..")
+
+    from db_config import api_conn_info
+
+    test_entity_select(api_conn_info)
 
 if __name__ == "__main__":
     main()

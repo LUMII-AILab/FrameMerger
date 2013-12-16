@@ -22,7 +22,10 @@ import EntityFrames as EF
 
 # ---------------------------------------- 
 
-from SemanticApiPostgres import PostgresConnection, SemanticApiPostgres, default_conn_info
+# get DB connection config
+from db_config import api_conn_info
+
+from SemanticApiPostgres import PostgresConnection, SemanticApiPostgres
 from SemanticApi import SemanticApi
 
 # ---------------------------------------- 
@@ -30,7 +33,7 @@ from SemanticApi import SemanticApi
 def test_entity_frameids_equal():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -55,7 +58,7 @@ def test_entity_frames_by_id():
 
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -81,7 +84,7 @@ def test_entity_frames_by_id():
 def test_frame_info_equal():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -106,7 +109,7 @@ def test_frame_info_equal():
 def test_frame_elements_equal():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -131,7 +134,7 @@ def test_frame_elements_equal():
 def test_entity_info_equal():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -151,7 +154,7 @@ def test_entity_info_equal():
 def test_entity_ids_by_name():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # data example to test
@@ -173,7 +176,7 @@ def test_entity_ids_by_name():
 def test_api_methods_equal():
     # setup
     api = SemanticApi()
-    conn = PostgresConnection(default_conn_info)
+    conn = PostgresConnection(api_conn_info)
     pg_api = SemanticApiPostgres(conn)
 
     # gather data
