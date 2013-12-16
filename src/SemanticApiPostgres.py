@@ -40,10 +40,10 @@ class PostgresConnection(object):
 
     # Statistika par DB requestiem to profilēšanai
     def finalize(self):
-        print 'Kopā Postgres DB darbības:'
-        print self.cSearchByName, 'searchByName'
-        print self.cInsertEntity, 'insertEntity'
-        print self.cInsertFrame, 'insertFrame'
+        #print 'Kopā Postgres DB darbības:'
+        #print self.cSearchByName, 'searchByName'
+        #print self.cInsertEntity, 'insertEntity'
+        #print self.cInsertFrame, 'insertFrame'
         self.conn.commit()
         self.conn.close()
 
@@ -163,7 +163,7 @@ class SemanticApiPostgres(object):
 
         return elem_list
 
-    def entity_data_by_id(self, e_id):
+    def entity_data_by_id(self, e_id, alldata = True):
         """
    entityid          integer DEFAULT nextval ('entities_entityid_seq'::regclass),
    "name"            text,
@@ -177,36 +177,27 @@ class SemanticApiPostgres(object):
    hidden            boolean DEFAULT FALSE,
    nameinflections   text
 """
-        sql = "select * from entities where entityid = %s"
-        res = self.api.query(sql, (e_id,) )
-        res = res[0]
-        #self.cSearchByName += 1
+        if not alldata:
+            sql = "select entityid, name, category from entities where deleted is false and entityid = %s"
+        else:
+            sql = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
+                        left outer join entityothernames n on e.entityid = n.entityid \
+                        left outer join entityouterids i on e.entityid = i.entityid \
+                        where e.entityid = %s and e.deleted is false \
+                        group by e.entityid, e.name, e.category, e.nameinflections"
+
+        res = self.api.query(sql, (e_id,) )[0]
 
         entity_info = {
             u'Category': res.category,
             u'EntityId': res.entityid,
             u'Name': res.name,
-            u'NameInflections': res.nameinflections,
-            u'OtherName': res.othernames,
-            u'OuterId': res.outerid,
         }
 
-        if res.othernames:
-            entity_info["OtherName"] = \
-                [item[0] for item in 
-                    self.api.query("select name from entityothernames where entityid = %s", (e_id,))
-                    if item[0] != res.name
-                ]
-        else:
-            entity_info["OtherName"] = None
-
-        if res.outerid:
-            entity_info["OuterId"] = \
-                [item[0] for item in 
-                    self.api.query("select outerid from entityouterids where entityid = %s", (e_id,))
-                ]
-        else:
-            entity_info["OuterId"] = None
+        if alldata:
+            entity_info[u'NameInflections'] = res.nameinflections
+            entity_info[u'OtherName'] = [item for item in res.aliases if item != res.name]
+            entity_info[u'OuterId'] = [res.ids,]    # FIXME: vai entītei var būt vairāki ["OuterId"] ? ja jā, change the query
 
         return entity_info 
 
