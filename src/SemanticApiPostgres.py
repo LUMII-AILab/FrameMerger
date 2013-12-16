@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 #coding=utf-8
 
+# enable logging, but default to null logger (no output)
+import logging
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
+
 import psycopg2, psycopg2.extensions, psycopg2.extras
 import atexit
 
@@ -295,7 +300,7 @@ class SemanticApiPostgres(object):
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
         cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear) )
         # TODO - validācija rezultātiem
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # kādas ir apstiprinātās entītijas attiecīgajam dokumentam
@@ -324,7 +329,7 @@ class SemanticApiPostgres(object):
         cursor.execute("delete from cdc_wordbags where entityid = %s", (entityid,) )
         cursor.execute("insert into cdc_wordbags values (%s, %s)", (entityid, Json(wordbags)) )
         # TODO - validācija rezultātiem
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # Iztīra rawfreimus no DB, kas atbilst šim dokumenta ID - lai atkārtoti laižot nekrājas dublicēti freimi; un lai laižot pēc uzlabojumiem iztīrās iepriekšējās versijas kļūdas
@@ -333,7 +338,7 @@ class SemanticApiPostgres(object):
         cursor.execute("delete from framedata where frameid in \
                             (select A.frameid from frames as A where A.documentid = %s)", (documentID, ))
         cursor.execute("delete from frames where documentid = %s;", (documentID, ))
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
 
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
