@@ -18,6 +18,10 @@ import requests
 import EntityFrames as EF
 
 from SemanticApi import SemanticApi
+
+from db_config import api_conn_info
+from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
+
 from ConsolidateFrames import Consolidator, BaseConsolidator
 from FrameInfo import FrameInfo
 
@@ -26,11 +30,14 @@ from TextGenerator import get_mentioned_entities, get_frame_text
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 def get_entity_frames(e_id_list):
-    
-    api = SemanticApi()
 
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn)
+     
     try:
         for e_id in e_id_list:
+            # FIXME - replace w. EntityFrames for Postgres API
+            #  - remove the need for self.api in EntityFrames (at least when pickling)
             yield EF.EntityFrames(api, e_id)
 
     except Exception:
@@ -311,7 +318,20 @@ def process_entities(entity_list, out_dir):
 
     print_entity_frames(frames)
 
-    if len(entity_list) == 1:       
+    if False:       # skip saving to pickle file (connection info can't be pickled) - FIXME
+        """
+Traceback (most recent call last):
+  File "./demo_consolidate_frames.py", line 393, in <module>
+    main()
+  File "./demo_consolidate_frames.py", line 368, in main
+    process_entities(chunk, out_dir)
+  File "./demo_consolidate_frames.py", line 328, in process_entities
+    pickle.dump(frames, outf)   # consolidated frames
+  File "/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/copy_reg.py", line 70, in _reduce_ex
+    raise TypeError, "can't pickle %s objects" % base.__name__
+TypeError: can't pickle connection objects
+"""
+        #if len(entity_list) == 1:       
         # in case of 1 entity in the list
         # name the dump file according to the entity ID
 
@@ -335,7 +355,11 @@ def process_entities(entity_list, out_dir):
 
     save_entity_frames(out_dir, frames)
 
-    api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
+
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn)
+     
+    # api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
     save_entity_frames_to_api(api, frames)
 
 def chunks(l, n):
