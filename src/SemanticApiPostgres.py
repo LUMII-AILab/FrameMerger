@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #coding=utf-8
 
-import psycopg2, psycopg2.extensions
+import psycopg2, psycopg2.extensions, psycopg2.extras
 import atexit
 
 from pprint import pprint
@@ -55,8 +55,12 @@ class PostgresConnection(object):
     def commit(self):
         self.conn.commit()
 
+    def new_cursor(self):
+        # using DictCursor factory
+        return self.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) #DictCursor)
+
     def query(self, sql, parameters):
-        cursor = self.conn.cursor()
+        cursor = self.new_cursor()
         cursor.execute(sql, parameters)
         r = cursor.fetchall()
         cursor.close()
@@ -64,7 +68,7 @@ class PostgresConnection(object):
         return r
 
     def insert(self, sql, parameters, returning=False, commit=False):
-        cursor = self.conn.cursor()
+        cursor = self.new_cursor()
 
         cursor.execute(sql, parameters)
         if returning:
@@ -81,9 +85,83 @@ class PostgresConnection(object):
         return result
 
 
+def first_col(seq):
+    # FIXME change to generators if needed
+    return [x[0] for x in seq]
+
 class SemanticApiPostgres(object):
     def __init__(self, api):
         self.api = api
+
+    def frame_ids_by_entity(self, e_id):
+        sql = "select frameid from framedata where entityid = %s"
+        res = self.api.query(sql, (e_id,) )
+        #self.cSearchByName += 1
+
+        frame_ids = first_col(res)
+        return frame_ids
+
+    def frame_by_id(self, fr_id):
+        """
+ * frameid          integer DEFAULT nextval ('frames_frameid_seq'::regclass),
+ * frametypeid      integer DEFAULT 0,
+   sourceid         text,
+   documentid       text,
+   sentenceid       text,
+   approwedtypeid   integer,
+   weight           integer,
+   deleted          boolean DEFAULT FALSE,
+   dataset          integer DEFAULT 0,
+   blessed          boolean,
+   hidden           boolean DEFAULT FALSE,
+   targetword       text,
+ * fdatetime        timestamp (6) WITHOUT TIME ZONE
+"""
+        sql = "select * from frames where frameid = %s"
+        res = self.api.query(sql, (fr_id,) )
+        frame = res[0]
+        #self.cSearchByName += 1
+
+        frame_info = {
+             u'DocumentId': frame.documentid,   
+             u'FrameData':  None,        # no frame element info queried yet
+             u'FrameId':    frame.frameid,
+             u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': frame.fdatetime}],
+             u'FrameType':  frame.frametypeid,
+             u'IsBlessed':  frame.blessed,
+             u'IsDeleted':  frame.deleted,
+             u'IsHidden':   frame.hidden,
+             u'SentenceId': frame.sentenceid,
+             u'SourceId':   frame.sourceid,
+             u'TargetWord': frame.targetword,
+        }
+
+        frame_info[u"FrameData"] = self.frame_elements_by_id(fr_id)
+
+        return frame_info
+
+    def frame_elements_by_id(self, fr_id):
+        """
+   frameid      integer,
+   entityid     integer,
+   roleid       integer,
+   roletypeid   integer DEFAULT 0,
+   wordindex    integer
+"""
+        sql = "select * from framedata where frameid = %s"
+        res = self.api.query(sql, (fr_id,) )
+        #self.cSearchByName += 1
+
+        elem_list = []
+
+        for item in res:
+            elem_list.append({
+                u'Key': item.roleid, 
+                u'Value': {u'Entity': item.entityid, u'PlaceInSentence': item.wordindex}
+            })
+
+        return elem_list
+
 
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
     def searchByName(self, name):
