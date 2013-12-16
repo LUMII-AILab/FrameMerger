@@ -52,7 +52,7 @@ def test_entity_frameids_equal():
 
     eq_(frameids_old, frameids_new)
 
-@nottest
+#@nottest
 def test_entity_frames_by_id():
 
     def find_frame_by_id(frames, fr_id):
@@ -80,7 +80,7 @@ def test_entity_frames_by_id():
     # check results
     frameids_old = set(item["FrameId"] for item in frames_old)
 
-    ok_(False, "Mismatch in date formats in [FrameMetadata] timestamp - change to match API behaviour?") 
+#    ok_(False, "Mismatch in date formats in [FrameMetadata] timestamp - change to match API behaviour?") 
     
     for fr_id in frameids_old:
         eq_(find_frame_by_id(frames_old, fr_id), find_frame_by_id(frames_new, fr_id))

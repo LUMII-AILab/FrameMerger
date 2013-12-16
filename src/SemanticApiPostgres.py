@@ -99,6 +99,14 @@ class SemanticApiPostgres(object):
         frame_ids = first_col(res)
         return frame_ids
 
+    def summary_frame_ids_by_entity(self, e_id):
+        sql = "select frameid from SummaryFrameRoleData where entityid = %s"
+        res = self.api.query(sql, (e_id,) )
+        #self.cSearchByName += 1
+
+        frame_ids = first_col(res)
+        return frame_ids
+
     def entity_frames_by_id(self, e_id):
         res = []
 
@@ -128,11 +136,15 @@ class SemanticApiPostgres(object):
         frame = res[0]
         #self.cSearchByName += 1
 
+        fdatetime = frame.fdatetime
+        if fdatetime is not None:
+            fdatetime = fdatetime.isoformat(" ") + "Z"      # fix date format to match JSON API
+
         frame_info = {
              u'DocumentId': frame.documentid,   
              u'FrameData':  None,        # no frame element info queried yet
              u'FrameId':    frame.frameid,
-             u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': frame.fdatetime}],
+             u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
              u'FrameType':  frame.frametypeid,
              u'IsBlessed':  frame.blessed,
              u'IsDeleted':  frame.deleted,
@@ -207,31 +219,6 @@ class SemanticApiPostgres(object):
         return entity_info 
 
 
-    # Pēc entītijas ID atgriež tās datus
-    # alldata - vai ņemt tikai pamatinfo (primārais vārds, kategorija), vai arī pievilkt klāt visus aliasus un outerid
-    def entityByID(self, entityID, alldata = False):
-        cursor = self.api.new_cursor()
-        if not alldata:
-            query = "select entityid, name, category from entities where deleted is false and entityid = %s"
-        else:
-            query = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
-                        left outer join entityothernames n on e.entityid = n.entityid \
-                        left outer join entityouterids i on e.entityid = i.entityid \
-                        where e.entityid = %s and e.deleted is false \
-                        group by e.entityid, e.name, e.category, e.nameinflections"
-
-        cursor.execute(query, (entityID,) )
-        r = cursor.fetchone()
-        cursor.close()
-
-        if r is None: # Ja ir rezultāts, izņemam no tuples, ja ieraksts nav atrasts, atgriežam None
-            return None
-        else:
-            if not alldata:
-                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2]}
-            else:
-                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2], 'NameInflections':r[3], 'OtherName':r[4], 'OuterId':r[5]}
-
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
     def entity_ids_by_name_list(self, name):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
@@ -295,6 +282,104 @@ class SemanticApiPostgres(object):
 
         return frameid
 
+    def delete_entity_summary_frames(self, e_id):
+        """
+        Delete all summary frames referring to a given entity ID.
+
+        Parameters:
+         - e_id (int) = entity ID
+        """
+        frame_ids = self.summary_frame_ids_by_entity(e_id)
+
+        return self.delete_summary_frames(frame_ids)
+
+    def delete_summary_frames(self, fr_id_list):
+    # Iztīra summary freimus no DB
+        cursor = self.api.new_cursor()
+
+        log.debug("Deleting summary frames with IDs %r.", fr_id_list)
+
+        for fr_id in fr_id_list:
+            cursor.execute("delete from SummaryFrameData where summaryframeid = %s", (fr_id,))
+            cursor.execute("delete from SummaryFrameRoleData where frameid = %s", (fr_id,))
+            cursor.execute("delete from SummaryFrames where frameid = %s", (fr_id,))
+
+        self.api.commit()
+        cursor.close()
+
+    def entities_by_id(self):
+        raise NotImplementedError("method not implemented")
+
+    def entity_ids_by_name(self):
+        # replaced by entity_ids_by_name_list()
+        raise NotImplementedError("method not implemented")
+
+    def entity_summary_frames_by_id(self):
+        raise NotImplementedError("method not implemented")
+
+    def get_frames(self):
+        raise NotImplementedError("method not implemented")
+
+    def get_summary_frames(self):
+        raise NotImplementedError("method not implemented")
+
+	# Inserto jaunu summary freimu datubāzē
+	# frametype - freima tipa kods kā int
+	# elements - dict no freima-elementa koda uz entityID
+	# document - dokumenta guid kā unicode string
+	# sentenceId - teikuma id
+	# targetword - unicode string
+	# date - freima datums - string ISO datumformātā 
+    def insert_summary_frame(self, frame):
+        main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+
+        #metadata = {  for k,v in frame["FrameMetadata"]}
+        # XXX
+        fdatetime = None
+
+        res = self.api.insert(main_sql,
+                (frame["FrameType"], frame["SourceId"], frame["SentenceId"], frame["DocumentId"], frame["TargetWord"], 
+                    0, self.api.dataset, frame["IsBlessed"], frame["IsHidden"], fdatetime),
+                returning = True,
+                commit = False)
+        frameid = res # insertotā freima id
+
+        elements = frame["FrameData"]
+        pprint(elements.items())
+
+        element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
+        for element, entityid in elements.iteritems():
+            self.api.insert(element_sql, (frameid, entityid, element) )       
+            # NB! Te nav validācijas; te arī neuzstāda wordindex lauku
+
+        self.api.commit()
+
+        return frameid
+
+        """
+ 'FrameCnt': 1,
+ u'FrameData': [{u'Key': 1,
+                 u'Value': {u'Entity': 1560102, u'PlaceInSentence': 0}},
+                {u'Key': 3,
+                 u'Value': {u'Entity': 1617797, u'PlaceInSentence': 0}},
+                {u'Key': 2,
+                 u'Value': {u'Entity': 1617796, u'PlaceInSentence': 0}},
+                {u'Key': 6,
+                 u'Value': {u'Entity': 1617795, u'PlaceInSentence': 0}}],
+ u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': None}],
+ 'FrameText': u'1983 - 1990 Egils Ziedi\u0146\u0161 bija redaktora amat\u0101 izdevniec\u012bb\u0101 " Zvaigzne "',
+ u'IsDeleted': False,
+ 'MergeType': 'O',
+ 'SummarizedFrames': [2208371],
+ 'SummaryInfo': 'captsolo | ConsolidateFrames:  BaseConsolidator | 2013_12_17 00:40:27',
+        """
+
+        raise NotImplementedError("method not implemented")
+
+    def summary_frame_data_by_id(self):
+        raise NotImplementedError("method not implemented")
+
     def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False):
         cursor = self.api.new_cursor()
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
@@ -351,8 +436,39 @@ class SemanticApiPostgres(object):
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
             cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
-        self.conn.commit()
+        self.api.commit()
         cursor.close()
+
+# ---- duplicate API calls (which have 2 implementations) ----  
+
+    # DUPLICATE OF: entity_data_by_id()
+
+    # Pēc entītijas ID atgriež tās datus
+    # alldata - vai ņemt tikai pamatinfo (primārais vārds, kategorija), vai arī pievilkt klāt visus aliasus un outerid
+    def entityByID(self, entityID, alldata = False):
+        cursor = self.api.new_cursor()
+        if not alldata:
+            query = "select entityid, name, category from entities where deleted is false and entityid = %s"
+        else:
+            query = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
+                        left outer join entityothernames n on e.entityid = n.entityid \
+                        left outer join entityouterids i on e.entityid = i.entityid \
+                        where e.entityid = %s and e.deleted is false \
+                        group by e.entityid, e.name, e.category, e.nameinflections"
+
+        cursor.execute(query, (entityID,) )
+        r = cursor.fetchone()
+        cursor.close()
+
+        if r is None: # Ja ir rezultāts, izņemam no tuples, ja ieraksts nav atrasts, atgriežam None
+            return None
+        else:
+            if not alldata:
+                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2]}
+            else:
+                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2], 'NameInflections':r[3], 'OtherName':r[4], 'OuterId':r[5]}
+
+
 
 # ------------------------------------------------------------  
 
