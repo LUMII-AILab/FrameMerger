@@ -101,6 +101,14 @@ class SemanticApiPostgres(object):
         frame_ids = first_col(res)
         return frame_ids
 
+    def entity_frames_by_id(self, e_id):
+        res = []
+
+        for fr_id in self.frame_ids_by_entity(e_id):
+            res.append(self.frame_by_id(fr_id))
+
+        return res
+
     def frame_by_id(self, fr_id):
         """
    frameid          integer DEFAULT nextval ('frames_frameid_seq'::regclass),
@@ -211,7 +219,11 @@ class SemanticApiPostgres(object):
 
 
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
-    def searchByName(self, name):
+    def entity_ids_by_name_list(self, name):
+        # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
+        # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
+        # kur ir "iepakots" ID saraksts)
+
         sql = "select entityid from entityothernames where name = %s"
         res = self.api.query(sql, (name,) )
         #self.cSearchByName += 1
