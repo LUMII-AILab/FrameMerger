@@ -62,7 +62,7 @@ try:
                 document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
                 upload2db(document)
-                print filename, '\tOK' # Feedback par veiksmīgi apstrādātajiem dokumentiem
+                sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
         except Exception as e:
             print filename, '\tFail:\t', e
 

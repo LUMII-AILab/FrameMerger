@@ -1,0 +1,3587 @@
+{
+    "date": "2009-02-12", 
+    "id": "2CC3CE6B-3548-413E-95CD-3F011DD856DD", 
+    "namedEntities": {
+        "56": {
+            "GlobalID": 1860975, 
+            "source": "framemarker", 
+            "representative": "att\u012bst\u012bbas padomnieks", 
+            "type": "profession", 
+            "id": 56, 
+            "aliases": [
+                "att\u012bst\u012bbas padomnieks"
+            ]
+        }, 
+        "54": {
+            "GlobalID": 0, 
+            "source": "framemarker", 
+            "representative": "policijas iecirknis", 
+            "type": "person", 
+            "id": 54, 
+            "aliases": [
+                "policijas iecirknis"
+            ]
+        }, 
+        "51": {
+            "representative": "R\u012bga", 
+            "aliases": [
+                "R\u012bga"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "R\u012bga", 
+                "Lokat\u012bvs": "R\u012bg\u0101", 
+                "Dat\u012bvs": "R\u012bgai", 
+                "\u0122enit\u012bvs": "R\u012bgas", 
+                "Akuzat\u012bvs": "R\u012bgu"
+            }, 
+            "type": "location", 
+            "id": 51, 
+            "isTitle": 1
+        }, 
+        "39": {
+            "representative": "Valts V\u012btums", 
+            "GlobalID": 1860975, 
+            "aliases": [
+                "att\u012bst\u012bbas padomnieks", 
+                "Valts V\u012btums"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Valts V\u012btums", 
+                "Lokat\u012bvs": "Valts V\u012btum\u0101", 
+                "Dat\u012bvs": "Valts V\u012btumam", 
+                "\u0122enit\u012bvs": "Valts V\u012btuma", 
+                "Akuzat\u012bvs": "Valts V\u012btumu"
+            }, 
+            "type": "person", 
+            "id": 39, 
+            "isTitle": 1
+        }, 
+        "43": {
+            "representative": "Farjabas galven\u0101 policija", 
+            "aliases": [
+                "Farjabas galven\u0101 policija"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Farjabas galven\u0101 policija", 
+                "Lokat\u012bvs": "Farjabas galvenaj\u0101 policij\u0101", 
+                "Dat\u012bvs": "Farjabas galvenajai policijai", 
+                "\u0122enit\u012bvs": "Farjabas galven\u0101s policijas", 
+                "Akuzat\u012bvs": "Farjabas galveno policiju"
+            }, 
+            "type": "organization", 
+            "id": 43, 
+            "isTitle": 1
+        }, 
+        "60": {
+            "GlobalID": 1848182, 
+            "source": "framemarker", 
+            "representative": ": ( 371 ) 67222_335", 
+            "type": "sum", 
+            "id": 60, 
+            "aliases": [
+                ": ( 371 ) 67222_335"
+            ]
+        }, 
+        "36": {
+            "representative": "J\u0101nis Gailis", 
+            "GlobalID": 1576028, 
+            "aliases": [
+                "J\u0101nis Gailis", 
+                "komandiera vietnieks"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "J\u0101nis Gailis", 
+                "Lokat\u012bvs": "J\u0101nis Gail\u012b", 
+                "Dat\u012bvs": "J\u0101nis Gailim", 
+                "\u0122enit\u012bvs": "J\u0101nis Gai\u013ca", 
+                "Akuzat\u012bvs": "J\u0101nis Gaili"
+            }, 
+            "type": "person", 
+            "id": 36, 
+            "isTitle": 1
+        }, 
+        "59": {
+            "GlobalID": 1860977, 
+            "source": "framemarker", 
+            "representative": "371 ) 67016_272", 
+            "type": "sum", 
+            "id": 59, 
+            "aliases": [
+                "371 ) 67016_272"
+            ]
+        }, 
+        "58": {
+            "GlobalID": 1819025, 
+            "source": "framemarker", 
+            "representative": "p\u0101rst\u0101vji", 
+            "type": "profession", 
+            "id": 58, 
+            "aliases": [
+                "p\u0101rst\u0101vji"
+            ]
+        }, 
+        "24": {
+            "representative": "Farjabas provinces Keisaras rajona \u010cilgazi policists", 
+            "aliases": [
+                "Farjabas provinces Keisaras rajona \u010cilgazi policists", 
+                "policists"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Farjabas provinces Keisaras rajona \u010cilgazi policists", 
+                "Lokat\u012bvs": "Farjabas provinces Keisaras rajona \u010cilgazi policist\u0101", 
+                "Dat\u012bvs": "Farjabas provinces Keisaras rajona \u010cilgazi policistam", 
+                "\u0122enit\u012bvs": "Farjabas provinces Keisaras rajona \u010cilgazi policista", 
+                "Akuzat\u012bvs": "Farjabas provinces Keisaras rajona \u010cilgazi policistu"
+            }, 
+            "type": "organization", 
+            "id": 24, 
+            "isTitle": 1
+        }, 
+        "26": {
+            "representative": "ASV", 
+            "aliases": [
+                "ASV"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "ASV", 
+                "Lokat\u012bvs": "ASV", 
+                "Dat\u012bvs": "ASV", 
+                "\u0122enit\u012bvs": "ASV", 
+                "Akuzat\u012bvs": "ASV"
+            }, 
+            "type": "location", 
+            "id": 26, 
+            "isTitle": 1
+        }, 
+        "20": {
+            "GlobalID": 1819063, 
+            "representative": "lats", 
+            "inflections": {
+                "Nominat\u012bvs": "lats", 
+                "Lokat\u012bvs": "lat\u0101", 
+                "Dat\u012bvs": "latam", 
+                "\u0122enit\u012bvs": "lata", 
+                "Akuzat\u012bvs": "latu"
+            }, 
+            "type": "sum", 
+            "id": 20, 
+            "aliases": [
+                "lats"
+            ]
+        }, 
+        "21": {
+            "representative": "Keisaras rajons", 
+            "aliases": [
+                "Keisaras rajons"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Keisaras rajons", 
+                "Lokat\u012bvs": "Keisaras rajon\u0101", 
+                "Dat\u012bvs": "Keisaras rajonam", 
+                "\u0122enit\u012bvs": "Keisaras rajona", 
+                "Akuzat\u012bvs": "Keisaras rajonu"
+            }, 
+            "type": "location", 
+            "id": 21, 
+            "isTitle": 1
+        }, 
+        "17": {
+            "representative": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cija", 
+            "aliases": [
+                "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cija"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cija", 
+                "Lokat\u012bvs": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cij\u0101", 
+                "Dat\u012bvs": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cijai", 
+                "\u0122enit\u012bvs": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101cijas", 
+                "Akuzat\u012bvs": "Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101ciju"
+            }, 
+            "type": "organization", 
+            "id": 17, 
+            "isTitle": 1
+        }, 
+        "49": {
+            "representative": "Kri\u0161j\u0101nis", 
+            "aliases": [
+                "Kri\u0161j\u0101nis"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Kri\u0161j\u0101nis", 
+                "Lokat\u012bvs": "Kri\u0161j\u0101n\u012b", 
+                "Dat\u012bvs": "Kri\u0161j\u0101nim", 
+                "\u0122enit\u012bvs": "Kri\u0161j\u0101\u0146a", 
+                "Akuzat\u012bvs": "Kri\u0161j\u0101ni"
+            }, 
+            "type": "location", 
+            "id": 49, 
+            "isTitle": 1
+        }, 
+        "55": {
+            "GlobalID": 1640155, 
+            "source": "framemarker", 
+            "representative": "komandiera vietnieks", 
+            "type": "profession", 
+            "id": 55, 
+            "aliases": [
+                "komandiera vietnieks"
+            ]
+        }, 
+        "18": {
+            "representative": "ERDO", 
+            "aliases": [
+                "ERDO"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "ERDO", 
+                "Lokat\u012bvs": "ERDO", 
+                "Dat\u012bvs": "ERDO", 
+                "\u0122enit\u012bvs": "ERDO", 
+                "Akuzat\u012bvs": "ERDO"
+            }, 
+            "type": "organization", 
+            "id": 18, 
+            "isTitle": 1
+        }, 
+        "44": {
+            "inflections": {
+                "Nominat\u012bvs": "rajona policijas vad\u012bba", 
+                "Lokat\u012bvs": "rajona policijas vad\u012bb\u0101", 
+                "Dat\u012bvs": "rajona policijas vad\u012bbai", 
+                "\u0122enit\u012bvs": "rajona policijas vad\u012bbas", 
+                "Akuzat\u012bvs": "rajona policijas vad\u012bbu"
+            }, 
+            "type": "organization", 
+            "id": 44, 
+            "representative": "rajona policijas vad\u012bba", 
+            "aliases": [
+                "rajona policijas vad\u012bba", 
+                "viet\u0113j\u0101 sabiedr\u012bba", 
+                "Farjabas galven\u0101 policijas p\u0101rvalde"
+            ]
+        }, 
+        "16": {
+            "inflections": {
+                "Nominat\u012bvs": "pag\u0101ju\u0161\u0101 gads", 
+                "Lokat\u012bvs": "pag\u0101ju\u0161\u0101 gad\u0101", 
+                "Dat\u012bvs": "pag\u0101ju\u0161\u0101 gadam", 
+                "\u0122enit\u012bvs": "pag\u0101ju\u0161\u0101 gada", 
+                "Akuzat\u012bvs": "pag\u0101ju\u0161\u0101 gadu"
+            }, 
+            "type": "time", 
+            "id": 16, 
+            "representative": "pag\u0101ju\u0161\u0101 gads", 
+            "aliases": [
+                "pag\u0101ju\u0161\u0101 gads"
+            ]
+        }, 
+        "28": {
+            "inflections": {
+                "Nominat\u012bvs": "Norv\u0113\u0123ija policija p\u0101rst\u0101vji", 
+                "Lokat\u012bvs": "Norv\u0113\u0123ij\u0101 policij\u0101 p\u0101rst\u0101vjos", 
+                "Dat\u012bvs": "Norv\u0113\u0123ijai policijai p\u0101rst\u0101vjiem", 
+                "\u0122enit\u012bvs": "Norv\u0113\u0123ijas policijas p\u0101rst\u0101vju", 
+                "Akuzat\u012bvs": "Norv\u0113\u0123iju policiju p\u0101rst\u0101vjus"
+            }, 
+            "type": "person", 
+            "id": 28, 
+            "representative": "Norv\u0113\u0123ija policija p\u0101rst\u0101vji", 
+            "aliases": [
+                "p\u0101rst\u0101vji", 
+                "Norv\u0113\u0123ija policija p\u0101rst\u0101vji"
+            ]
+        }, 
+        "50": {
+            "representative": "Valdem\u0101ra iela", 
+            "aliases": [
+                "Valdem\u0101ra iela"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Valdem\u0101ra iela", 
+                "Lokat\u012bvs": "Valdem\u0101ra iel\u0101", 
+                "Dat\u012bvs": "Valdem\u0101ra ielai", 
+                "\u0122enit\u012bvs": "Valdem\u0101ra ielas", 
+                "Akuzat\u012bvs": "Valdem\u0101ra ielu"
+            }, 
+            "type": "location", 
+            "id": 50, 
+            "isTitle": 1
+        }, 
+        "53": {
+            "GlobalID": 0, 
+            "source": "framemarker", 
+            "representative": "Atklts Latvijas", 
+            "type": "location", 
+            "id": 53, 
+            "aliases": [
+                "Atklts Latvijas"
+            ]
+        }, 
+        "52": {
+            "GlobalID": 0, 
+            "source": "framemarker", 
+            "representative": "Atklts", 
+            "type": "person", 
+            "id": 52, 
+            "aliases": [
+                "Atklts"
+            ]
+        }, 
+        "0": {
+            "representative": "Norv\u0113\u0123ijas policija", 
+            "aliases": [
+                "Policija", 
+                "Norv\u0113\u0123ijas policija", 
+                "\u010cilgazs policija", 
+                "policija"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Norv\u0113\u0123ijas policija", 
+                "Lokat\u012bvs": "Norv\u0113\u0123ijas policij\u0101", 
+                "Dat\u012bvs": "Norv\u0113\u0123ijas policijai", 
+                "\u0122enit\u012bvs": "Norv\u0113\u0123ijas policijas", 
+                "Akuzat\u012bvs": "Norv\u0113\u0123ijas policiju"
+            }, 
+            "type": "organization", 
+            "id": 0, 
+            "isTitle": 1
+        }, 
+        "3": {
+            "representative": "12 Feb 2009", 
+            "aliases": [
+                "12 Feb 2009"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "12 Feb 2009", 
+                "Lokat\u012bvs": "12 Feb 2009", 
+                "Dat\u012bvs": "12 Feb 2009", 
+                "\u0122enit\u012bvs": "12 Feb 2009", 
+                "Akuzat\u012bvs": "12 Feb 2009"
+            }, 
+            "type": "time", 
+            "id": 3, 
+            "isTitle": 1
+        }, 
+        "2": {
+            "representative": "Latvijas atbalst\u012btais policijas iecirknis Farjabas province", 
+            "aliases": [
+                "Afganist\u0101na", 
+                "Latvijas atbalst\u012btais policijas iecirknis Farjabas province", 
+                "Farjabas province"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Latvijas atbalst\u012btais policijas iecirknis Farjabas province", 
+                "Lokat\u012bvs": "Latvijas atbalst\u012btais policijas iecirknis Farjabas provinc\u0113", 
+                "Dat\u012bvs": "Latvijas atbalst\u012btais policijas iecirknis Farjabas provincei", 
+                "\u0122enit\u012bvs": "Latvijas atbalst\u012btais policijas iecirknis Farjabas provinces", 
+                "Akuzat\u012bvs": "Latvijas atbalst\u012btais policijas iecirknis Farjabas provinci"
+            }, 
+            "type": null, 
+            "id": 2, 
+            "isTitle": 1
+        }, 
+        "5": {
+            "representative": "Inform\u0101cija", 
+            "aliases": [
+                "Inform\u0101cija"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Inform\u0101cija", 
+                "Lokat\u012bvs": "Inform\u0101cij\u0101", 
+                "Dat\u012bvs": "Inform\u0101cijai", 
+                "\u0122enit\u012bvs": "Inform\u0101cijas", 
+                "Akuzat\u012bvs": "Inform\u0101ciju"
+            }, 
+            "type": null, 
+            "id": 5, 
+            "isTitle": 1
+        }, 
+        "4": {
+            "inflections": {
+                "Nominat\u012bvs": "2009. gada 12. febru\u0101ris", 
+                "Lokat\u012bvs": "2009. gada 12. febru\u0101r\u012b", 
+                "Dat\u012bvs": "2009. gada 12. febru\u0101rim", 
+                "\u0122enit\u012bvs": "2009. gada 12. febru\u0101ra", 
+                "Akuzat\u012bvs": "2009. gada 12. febru\u0101ri"
+            }, 
+            "type": "time", 
+            "id": 4, 
+            "representative": "2009. gada 12. febru\u0101ris", 
+            "aliases": [
+                "2009. gada 12. febru\u0101ris"
+            ]
+        }, 
+        "7": {
+            "representative": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013ca", 
+            "aliases": [
+                "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013ca", 
+                "Preses centra noda\u013ca"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013ca", 
+                "Lokat\u012bvs": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013c\u0101", 
+                "Dat\u012bvs": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013cai", 
+                "\u0122enit\u012bvs": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013cas", 
+                "Akuzat\u012bvs": "\u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013cu"
+            }, 
+            "type": "organization", 
+            "id": 7, 
+            "isTitle": 1
+        }, 
+        "6": {
+            "representative": "Prese centrs", 
+            "aliases": [
+                "Prese centrs"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Prese centrs", 
+                "Lokat\u012bvs": "Pres\u0113 centr\u0101", 
+                "Dat\u012bvs": "Presei centram", 
+                "\u0122enit\u012bvs": "Preses centra", 
+                "Akuzat\u012bvs": "Presi centru"
+            }, 
+            "type": "person", 
+            "id": 6, 
+            "isTitle": 1
+        }, 
+        "9": {
+            "representative": "Latvija", 
+            "GlobalID": 1545378, 
+            "aliases": [
+                "Latvija"
+            ], 
+            "inflections": {
+                "Nominat\u012bvs": "Latvija", 
+                "Lokat\u012bvs": "Latvij\u0101", 
+                "Dat\u012bvs": "Latvijai", 
+                "\u0122enit\u012bvs": "Latvijas", 
+                "Akuzat\u012bvs": "Latviju"
+            }, 
+            "type": "location", 
+            "id": 9, 
+            "isTitle": 1
+        }, 
+        "8": {
+            "inflections": {
+                "Nominat\u012bvs": "febru\u0101ris", 
+                "Lokat\u012bvs": "febru\u0101r\u012b", 
+                "Dat\u012bvs": "febru\u0101rim", 
+                "\u0122enit\u012bvs": "febru\u0101ra", 
+                "Akuzat\u012bvs": "febru\u0101ri"
+            }, 
+            "type": "time", 
+            "id": 8, 
+            "representative": "febru\u0101ris", 
+            "aliases": [
+                "febru\u0101ris"
+            ]
+        }, 
+        "57": {
+            "GlobalID": 1859816, 
+            "source": "framemarker", 
+            "representative": "Norv\u0113\u0123ijas", 
+            "type": "location", 
+            "id": 57, 
+            "aliases": [
+                "Norv\u0113\u0123ijas"
+            ]
+        }
+    }, 
+    "document": {}, 
+    "sentences": [
+        {
+            "tokens": [
+                {
+                    "namedEntityID": 52, 
+                    "namedEntityType": "person", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=klt|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|noteiktiba=Nenoteikt\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|priedeklis=at|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=atklt", 
+                    "form": "Atklts", 
+                    "index": 1, 
+                    "pos": "v", 
+                    "parentIndex": 2, 
+                    "lemma": "atklt", 
+                    "tag": "v_npdmsnpsn"
+                }, 
+                {
+                    "namedEntityID": 53, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvijas", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atbalst\u012bt|skaitlis=Vienskaitlis|avota_pamatforma=atbalst\u012bt|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=atbalst\u012bt", 
+                    "form": "atbalst\u012btais", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 7, 
+                    "lemma": "atbalst\u012bt", 
+                    "tag": "v_npdmsnpsy"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 5, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirknis", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsn2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=province", 
+                    "form": "provinc\u0113", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "province", 
+                    "tag": "ncfsl5"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=afganist\u0101na|avota_pamatforma=afganist\u0101na|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Lokat\u012bvs|pamatforma=afganist\u0101na", 
+                    "form": "Afganist\u0101n\u0101", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "afganist\u0101na", 
+                    "tag": "n_fsl4"
+                }
+            ], 
+            "text": "Atklts Latvijas atbalst\u012btais policijas iecirknis Farjabas provinc\u0113 Afganist\u0101n\u0101", 
+            "frames": [
+                {
+                    "elements2": [
+                        {
+                            "tokenIndex": 7, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 6, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 5, 
+                            "name": "Person"
+                        }
+                    ], 
+                    "tokenIndex": 2, 
+                    "type": "People_by_origin", 
+                    "elements": [
+                        {
+                            "tokenIndex": 1, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 2, 
+                            "name": "Origin"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=12|leta_lemma=12", 
+                    "form": "12", 
+                    "index": 1, 
+                    "pos": "x", 
+                    "parentIndex": 2, 
+                    "lemma": "12", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityID": 3, 
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Sa\u012bsin\u0101jums|pamatforma=Feb|leta_lemma=Feb", 
+                    "form": "Feb", 
+                    "index": 2, 
+                    "pos": "y", 
+                    "parentIndex": 0, 
+                    "lemma": "Feb", 
+                    "tag": "y"
+                }, 
+                {
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=2009|leta_lemma=2009", 
+                    "form": "2009", 
+                    "index": 3, 
+                    "pos": "x", 
+                    "parentIndex": 2, 
+                    "lemma": "2009", 
+                    "tag": "xn"
+                }
+            ], 
+            "text": "12 Feb 2009", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=K\u0101rtas_skaitlis_cipariem|pamatforma=2009.|leta_lemma=2009.", 
+                    "form": "2009.", 
+                    "index": 1, 
+                    "pos": "x", 
+                    "parentIndex": 2, 
+                    "lemma": "2009.", 
+                    "tag": "xo"
+                }, 
+                {
+                    "namedEntityType": "time", 
+                    "features": "leta_lemma=gads|avota_pamatforma=gads|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=gads", 
+                    "form": "gada", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "gads", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityID": 4, 
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=K\u0101rtas_skaitlis_cipariem|pamatforma=12.|leta_lemma=12.", 
+                    "form": "12.", 
+                    "index": 3, 
+                    "pos": "x", 
+                    "parentIndex": 5, 
+                    "lemma": "12.", 
+                    "tag": "xo"
+                }, 
+                {
+                    "namedEntityType": "time", 
+                    "features": "leta_lemma=_month_|avota_pamatforma=febru\u0101ris|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=febru\u0101ris", 
+                    "form": "febru\u0101ris", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "febru\u0101ris", 
+                    "tag": "ncmsn2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 5, 
+                    "pos": "z", 
+                    "parentIndex": 0, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "2009. gada 12. febru\u0101ris .", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityID": 5, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=inform\u0101cija|avota_pamatforma=inform\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Akuzat\u012bvs|pamatforma=inform\u0101cija", 
+                    "form": "Inform\u0101ciju", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "inform\u0101cija", 
+                    "tag": "ncfsa4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=sagatavot|avota_pamatforma=sagatavot|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=P\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|laiks=Pag\u0101tne|pamatforma=sagatavot", 
+                    "form": "sagatavoja", 
+                    "index": 2, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "sagatavot", 
+                    "tag": "vmnist230an"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "skaitlis_2=Daudzskaitlinieks|leta_lemma=\u0101rlietas|avota_pamatforma=\u0101rlietas|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=\u0101rlietas", 
+                    "form": "\u0100rlietu", 
+                    "index": 3, 
+                    "pos": "n", 
+                    "parentIndex": 4, 
+                    "lemma": "\u0101rlietas", 
+                    "tag": "n_fdg4"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=ministrija|avota_pamatforma=ministrija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=ministrija", 
+                    "form": "ministrijas", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "ministrija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=inform\u0101cija|avota_pamatforma=inform\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=inform\u0101cija", 
+                    "form": "Inform\u0101cijas", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "inform\u0101cija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=departaments|avota_pamatforma=departaments|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=departaments", 
+                    "form": "departamenta", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "departaments", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=prese|avota_pamatforma=prese|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=prese", 
+                    "form": "Preses", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "prese", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityID": 6, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=centrs|avota_pamatforma=centrs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=centrs", 
+                    "form": "centra", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "centrs", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityID": 7, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=noda\u013ca|avota_pamatforma=noda\u013ca|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=noda\u013ca", 
+                    "form": "noda\u013ca", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "noda\u013ca", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 10, 
+                    "pos": "z", 
+                    "parentIndex": 2, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "Inform\u0101ciju sagatavoja \u0100rlietu ministrijas Inform\u0101cijas departamenta Preses centra noda\u013ca .", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "time", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=K\u0101rtas_skaitlis_cipariem|pamatforma=11.|leta_lemma=11.", 
+                    "form": "11.", 
+                    "index": 1, 
+                    "pos": "x", 
+                    "parentIndex": 2, 
+                    "lemma": "11.", 
+                    "tag": "xo"
+                }, 
+                {
+                    "namedEntityID": 8, 
+                    "namedEntityType": "time", 
+                    "features": "leta_lemma=_month_|avota_pamatforma=febru\u0101ris|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=febru\u0101ris", 
+                    "form": "febru\u0101r\u012b", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "febru\u0101ris", 
+                    "tag": "ncmsl2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=tikt|avota_pamatforma=tikt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbi_'tikt'_un_'tapt'|laiks=Pag\u0101tne|pamatforma=tikt", 
+                    "form": "tika", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "tikt", 
+                    "tag": "vtnisi130an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atkl\u0101t|skaitlis=Vienskaitlis|avota_pamatforma=atkl\u0101t|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=atkl\u0101t", 
+                    "form": "atkl\u0101ts", 
+                    "index": 4, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "atkl\u0101t", 
+                    "tag": "vmnpdmsnpsn"
+                }, 
+                {
+                    "namedEntityID": 9, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvijas", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atbalst\u012bt|skaitlis=Vienskaitlis|avota_pamatforma=atbalst\u012bt|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=atbalst\u012bt", 
+                    "form": "atbalst\u012btais", 
+                    "index": 6, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "atbalst\u012bt", 
+                    "tag": "v_npdmsnpsy"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 54, 
+                    "namedEntityType": "person", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirknis", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsn2"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=afganist\u0101na|avota_pamatforma=afganist\u0101na|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=afganist\u0101na", 
+                    "form": "Afganist\u0101nas", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "afganist\u0101na", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 10, 
+                    "pos": "n", 
+                    "parentIndex": 11, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=province", 
+                    "form": "provinces", 
+                    "index": 11, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "province", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "skaitlis_2=Daudzskaitlinieks|leta_lemma=_rare_|avota_pamatforma=dienvidrietumi|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=dienvidrietumi", 
+                    "form": "dienvidrietumos", 
+                    "index": 12, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "dienvidrietumi", 
+                    "tag": "n_mdl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 13, 
+                    "pos": "z", 
+                    "parentIndex": 6, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "11. febru\u0101r\u012b tika atkl\u0101ts Latvijas atbalst\u012btais policijas iecirknis Afganist\u0101nas Farjabas provinces dienvidrietumos .", 
+            "frames": [
+                {
+                    "elements2": [
+                        {
+                            "tokenIndex": 12, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 11, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 10, 
+                            "name": "Person"
+                        }
+                    ], 
+                    "tokenIndex": 5, 
+                    "type": "People_by_origin", 
+                    "elements": [
+                        {
+                            "tokenIndex": 8, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 5, 
+                            "name": "Origin"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Nepiem\u012bt|leta_lemma=t\u0101d\u0113j\u0101di|avota_pamatforma=t\u0101d\u0113j\u0101di|vardskira=Apst\u0101k\u013ca_v\u0101rds|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|apstakla_varda_tips=Veida|pamatforma=t\u0101d\u0113j\u0101di", 
+                    "form": "T\u0101d\u0113j\u0101di", 
+                    "index": 1, 
+                    "pos": "r", 
+                    "parentIndex": 3, 
+                    "lemma": "t\u0101d\u0113j\u0101di", 
+                    "tag": "r0m"
+                }, 
+                {
+                    "namedEntityID": 9, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvija", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=b\u016bt|avota_pamatforma=b\u016bt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbs_'b\u016bt'|laiks=Tagadne|pamatforma=b\u016bt", 
+                    "form": "ir", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "b\u016bt", 
+                    "tag": "vcnipii30an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=sniegt|skaitlis=Vienskaitlis|avota_pamatforma=sniegt|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Dar\u0101m\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=sniegt", 
+                    "form": "sniegusi", 
+                    "index": 4, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "sniegt", 
+                    "tag": "vmnpdfsnasn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=atbalsts|avota_pamatforma=atbalsts|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Akuzat\u012bvs|pamatforma=atbalsts", 
+                    "form": "atbalstu", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "atbalsts", 
+                    "tag": "ncmsa1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=viet\u0113js|skaitlis=Daudzskaitlis|avota_pamatforma=viet\u0113js|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Dat\u012bvs|pamatforma=viet\u0113js", 
+                    "form": "viet\u0113jiem", 
+                    "index": 6, 
+                    "pos": "a", 
+                    "parentIndex": 8, 
+                    "lemma": "viet\u0113js", 
+                    "tag": "armpdnp"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=sp\u0113ks|avota_pamatforma=sp\u0113ks|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=sp\u0113ks", 
+                    "form": "sp\u0113kiem", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "sp\u0113ks", 
+                    "tag": "ncmpd1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 9, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=\u0146emt|skaitlis=Nepiem\u012bt|avota_pamatforma=\u0146emt|lokamiba=Nelok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Nepiem\u012bt|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Nepiem\u012bt|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nepiem\u012bt|locijums=Nepiem\u012bt|laiks=Nepiem\u012bt|pamatforma=\u0146emt", 
+                    "form": "\u0146emot", 
+                    "index": 10, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "\u0146emt", 
+                    "tag": "vmnpu000000"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Apst\u0101k\u013ca_v\u0101rds|avota_pamatforma=v\u0113r\u0101|pakape=Nepiem\u012bt|pamatforma=v\u0113r\u0101|leta_lemma=v\u0113r\u0101", 
+                    "form": "v\u0113r\u0101", 
+                    "index": 11, 
+                    "pos": "r", 
+                    "parentIndex": 10, 
+                    "lemma": "v\u0113r\u0101", 
+                    "tag": "r0_"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 12, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=ka|avota_pamatforma=ka|vardskira=Saiklis|saikla_tips=Pak\u0101rtojuma|pamatforma=ka", 
+                    "form": "ka", 
+                    "index": 13, 
+                    "pos": "c", 
+                    "parentIndex": 10, 
+                    "lemma": "ka", 
+                    "tag": "css"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 14, 
+                    "pos": "n", 
+                    "parentIndex": 15, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=stiprin\u0101\u0161ana|avota_pamatforma=stiprin\u0101t|skaitlis=Vienskaitlis|transitivitate=P\u0101rejo\u0161s|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|locijums=Nominat\u012bvs|pamatforma=stiprin\u0101\u0161ana", 
+                    "form": "stiprin\u0101\u0161ana", 
+                    "index": 15, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "stiprin\u0101\u0161ana", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=afganist\u0101na|avota_pamatforma=afganist\u0101na|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Lokat\u012bvs|pamatforma=afganist\u0101na", 
+                    "form": "Afganist\u0101n\u0101", 
+                    "index": 16, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "afganist\u0101na", 
+                    "tag": "n_fsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=b\u016bt|avota_pamatforma=b\u016bt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbs_'b\u016bt'|laiks=Tagadne|pamatforma=b\u016bt", 
+                    "form": "ir", 
+                    "index": 17, 
+                    "pos": "v", 
+                    "parentIndex": 22, 
+                    "lemma": "b\u016bt", 
+                    "tag": "vcnipii30an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Nepiem\u012bt|leta_lemma=\u013coti|avota_pamatforma=\u013coti|vardskira=Apst\u0101k\u013ca_v\u0101rds|apstakla_varda_tips=M\u0113ra|pamatforma=\u013coti", 
+                    "form": "\u013coti", 
+                    "index": 18, 
+                    "pos": "r", 
+                    "parentIndex": 19, 
+                    "lemma": "\u013coti", 
+                    "tag": "r0q"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=svar\u012bga|skaitlis=Vienskaitlis|avota_pamatforma=svar\u012bgs|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=Nominat\u012bvs|pamatforma=svar\u012bga", 
+                    "form": "svar\u012bga", 
+                    "index": 19, 
+                    "pos": "a", 
+                    "parentIndex": 22, 
+                    "lemma": "svar\u012bga", 
+                    "tag": "affsnnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 20, 
+                    "pos": "c", 
+                    "parentIndex": 19, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=J\u0101|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=at\u0146emt|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|priedeklis=ne|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Tagadne|pamatforma=neat\u0146emt", 
+                    "form": "neat\u0146emama", 
+                    "index": 21, 
+                    "pos": "v", 
+                    "parentIndex": 20, 
+                    "lemma": "neat\u0146emt", 
+                    "tag": "vmnpdfsnppn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=sast\u0101vda\u013ca|avota_pamatforma=sast\u0101vda\u013ca|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=sast\u0101vda\u013ca", 
+                    "form": "sast\u0101vda\u013ca", 
+                    "index": 22, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "sast\u0101vda\u013ca", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=att\u012bst\u012bba|avota_pamatforma=att\u012bst\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=att\u012bst\u012bba", 
+                    "form": "att\u012bst\u012bbas", 
+                    "index": 23, 
+                    "pos": "n", 
+                    "parentIndex": 24, 
+                    "lemma": "att\u012bst\u012bba", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=veicin\u0101\u0161ana|avota_pamatforma=veicin\u0101t|skaitlis=Vienskaitlis|transitivitate=P\u0101rejo\u0161s|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|locijums=Lokat\u012bvs|pamatforma=veicin\u0101\u0161ana", 
+                    "form": "veicin\u0101\u0161an\u0101", 
+                    "index": 24, 
+                    "pos": "n", 
+                    "parentIndex": 22, 
+                    "lemma": "veicin\u0101\u0161ana", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 25, 
+                    "pos": "c", 
+                    "parentIndex": 24, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=dro\u0161\u012bba|avota_pamatforma=dro\u0161\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=dro\u0161\u012bba", 
+                    "form": "dro\u0161\u012bbas", 
+                    "index": 26, 
+                    "pos": "n", 
+                    "parentIndex": 27, 
+                    "lemma": "dro\u0161\u012bba", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=situ\u0101cija|avota_pamatforma=situ\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=situ\u0101cija", 
+                    "form": "situ\u0101cijas", 
+                    "index": 27, 
+                    "pos": "n", 
+                    "parentIndex": 28, 
+                    "lemma": "situ\u0101cija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=uzlabo\u0161ana|avota_pamatforma=uzlabot|skaitlis=Vienskaitlis|transitivitate=P\u0101rejo\u0161s|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|locijums=Lokat\u012bvs|pamatforma=uzlabo\u0161ana", 
+                    "form": "uzlabo\u0161an\u0101", 
+                    "index": 28, 
+                    "pos": "n", 
+                    "parentIndex": 25, 
+                    "lemma": "uzlabo\u0161ana", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=valsts|avota_pamatforma=valsts|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=valsts", 
+                    "form": "valst\u012b", 
+                    "index": 29, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "valsts", 
+                    "tag": "ncfsl6"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 30, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "T\u0101d\u0113j\u0101di Latvija ir sniegusi atbalstu viet\u0113jiem policijas sp\u0113kiem , \u0146emot v\u0113r\u0101 , ka policijas stiprin\u0101\u0161ana Afganist\u0101n\u0101 ir \u013coti svar\u012bga un neat\u0146emama sast\u0101vda\u013ca att\u012bst\u012bbas veicin\u0101\u0161an\u0101 un dro\u0161\u012bbas situ\u0101cijas uzlabo\u0161an\u0101 valst\u012b .", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=saska\u0146a|avota_pamatforma=saska\u0146a|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Lokat\u012bvs|pamatforma=saska\u0146a", 
+                    "form": "Saska\u0146\u0101", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 14, 
+                    "lemma": "saska\u0146a", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=ar|avota_pamatforma=ar|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=N\u0113|pamatforma=ar", 
+                    "form": "ar", 
+                    "index": 2, 
+                    "pos": "s", 
+                    "parentIndex": 1, 
+                    "lemma": "ar", 
+                    "tag": "sppdn"
+                }, 
+                {
+                    "namedEntityID": 16, 
+                    "namedEntityType": "time", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=paiet|skaitlis=Vienskaitlis|avota_pamatforma=iet|lokamiba=Lok\u0101ms|transitivitate=Nep\u0101rejo\u0161s|karta=Dar\u0101m\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|priedeklis=pa|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Lokat\u012bvs|laiks=Pag\u0101tne|pamatforma=paiet", 
+                    "form": "pag\u0101ju\u0161\u0101", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 6, 
+                    "lemma": "paiet", 
+                    "tag": "vmnpdmslasn"
+                }, 
+                {
+                    "namedEntityType": "time", 
+                    "features": "leta_lemma=gads|avota_pamatforma=gads|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=gads", 
+                    "form": "gad\u0101", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "gads", 
+                    "tag": "ncmsl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=nosl\u0113gts|skaitlis=Daudzskaitlis|avota_pamatforma=nosl\u0113gts|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=\u0122enit\u012bvs|pamatforma=nosl\u0113gts", 
+                    "form": "nosl\u0113gto", 
+                    "index": 5, 
+                    "pos": "a", 
+                    "parentIndex": 6, 
+                    "lemma": "nosl\u0113gts", 
+                    "tag": "armpgyp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=l\u012bgums|avota_pamatforma=l\u012bgums|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Akuzat\u012bvs|pamatforma=l\u012bgums", 
+                    "form": "l\u012bgumu", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "l\u012bgums", 
+                    "tag": "ncmsa1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=ar|avota_pamatforma=ar|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=N\u0113|pamatforma=ar", 
+                    "form": "ar", 
+                    "index": 7, 
+                    "pos": "s", 
+                    "parentIndex": 6, 
+                    "lemma": "ar", 
+                    "tag": "sppdn"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=etehada", 
+                    "form": "Etehadas", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "etehada", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=rehabilit\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=rehabilit\u0101cija", 
+                    "form": "Rehabilit\u0101cijas", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "rehabilit\u0101cija", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 10, 
+                    "pos": "c", 
+                    "parentIndex": 9, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=att\u012bst\u012bba|avota_pamatforma=att\u012bst\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=att\u012bst\u012bba", 
+                    "form": "att\u012bst\u012bbas", 
+                    "index": 11, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "att\u012bst\u012bba", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 17, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=organiz\u0101cija|avota_pamatforma=organiz\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Akuzat\u012bvs|pamatforma=organiz\u0101cija", 
+                    "form": "organiz\u0101ciju", 
+                    "index": 12, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "organiz\u0101cija", 
+                    "tag": "ncfsa4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=(|pieturzimes_tips=Iekava|pamatforma=(|leta_lemma=(", 
+                    "form": "(", 
+                    "index": 13, 
+                    "pos": "z", 
+                    "parentIndex": 14, 
+                    "lemma": "(", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityID": 18, 
+                    "namedEntityType": "organization", 
+                    "features": "vardskira=Sa\u012bsin\u0101jums|pamatforma=ERDO|leta_lemma=_rare_", 
+                    "form": "ERDO", 
+                    "index": 14, 
+                    "pos": "y", 
+                    "parentIndex": 16, 
+                    "lemma": "ERDO", 
+                    "tag": "y"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=)|pieturzimes_tips=Iekava|pamatforma=)|leta_lemma=)", 
+                    "form": ")", 
+                    "index": 15, 
+                    "pos": "z", 
+                    "parentIndex": 14, 
+                    "lemma": ")", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=par|avota_pamatforma=par|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=N\u0113|pamatforma=par", 
+                    "form": "par", 
+                    "index": 16, 
+                    "pos": "s", 
+                    "parentIndex": 0, 
+                    "lemma": "par", 
+                    "tag": "sppdn"
+                }, 
+                {
+                    "namedEntityID": 9, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvijas", 
+                    "index": 17, 
+                    "pos": "n", 
+                    "parentIndex": 18, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=ieguld\u012bt|skaitlis=Daudzskaitlis|avota_pamatforma=ieguld\u012bt|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|locijums=Dat\u012bvs|laiks=Pag\u0101tne|pamatforma=ieguld\u012bt", 
+                    "form": "ieguld\u012btajiem", 
+                    "index": 18, 
+                    "pos": "v", 
+                    "parentIndex": 20, 
+                    "lemma": "ieguld\u012bt", 
+                    "tag": "v_npdmpdpsy"
+                }, 
+                {
+                    "namedEntityID": 20, 
+                    "namedEntityType": "sum", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=27_087|leta_lemma=_rare_", 
+                    "form": "27_087", 
+                    "index": 19, 
+                    "pos": "x", 
+                    "parentIndex": 20, 
+                    "lemma": "27_087", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityID": 20, 
+                    "namedEntityType": "sum", 
+                    "features": "leta_lemma=lats|avota_pamatforma=lats|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=lats", 
+                    "form": "latiem", 
+                    "index": 20, 
+                    "pos": "n", 
+                    "parentIndex": 16, 
+                    "lemma": "lats", 
+                    "tag": "ncmpd1"
+                }, 
+                {
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 21, 
+                    "pos": "n", 
+                    "parentIndex": 22, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=province", 
+                    "form": "provinces", 
+                    "index": 22, 
+                    "pos": "n", 
+                    "parentIndex": 23, 
+                    "lemma": "province", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "skaitlis_2=Daudzskaitlinieks|leta_lemma=_rare_|avota_pamatforma=dienvidrietumi|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=dienvidrietumi", 
+                    "form": "dienvidrietumos", 
+                    "index": 23, 
+                    "pos": "n", 
+                    "parentIndex": 16, 
+                    "lemma": "dienvidrietumi", 
+                    "tag": "n_mdl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 24, 
+                    "pos": "z", 
+                    "parentIndex": 31, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=keisara", 
+                    "form": "Keisaras", 
+                    "index": 25, 
+                    "pos": "n", 
+                    "parentIndex": 26, 
+                    "lemma": "keisara", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 21, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=rajons|avota_pamatforma=rajons|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=rajons", 
+                    "form": "rajon\u0101", 
+                    "index": 26, 
+                    "pos": "n", 
+                    "parentIndex": 31, 
+                    "lemma": "rajons", 
+                    "tag": "ncmsl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 27, 
+                    "pos": "z", 
+                    "parentIndex": 31, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=tikt|avota_pamatforma=tikt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbi_'tikt'_un_'tapt'|laiks=Pag\u0101tne|pamatforma=tikt", 
+                    "form": "tika", 
+                    "index": 28, 
+                    "pos": "v", 
+                    "parentIndex": 31, 
+                    "lemma": "tikt", 
+                    "tag": "vtnisi130an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=uzb\u016bv\u0113t|skaitlis=Vienskaitlis|avota_pamatforma=uzb\u016bv\u0113t|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=uzb\u016bv\u0113t", 
+                    "form": "uzb\u016bv\u0113ta", 
+                    "index": 29, 
+                    "pos": "v", 
+                    "parentIndex": 31, 
+                    "lemma": "uzb\u016bv\u0113t", 
+                    "tag": "v_npdfsnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 30, 
+                    "pos": "c", 
+                    "parentIndex": 29, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=labiek\u0101rtot|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=labiek\u0101rtot", 
+                    "form": "labiek\u0101rtota", 
+                    "index": 31, 
+                    "pos": "v", 
+                    "parentIndex": 23, 
+                    "lemma": "labiek\u0101rtot", 
+                    "tag": "vmnpdfsnpsn"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 32, 
+                    "pos": "n", 
+                    "parentIndex": 33, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirk\u0146a", 
+                    "index": 33, 
+                    "pos": "n", 
+                    "parentIndex": 34, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=\u0113ka|avota_pamatforma=\u0113ka|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=\u0113ka", 
+                    "form": "\u0113ka", 
+                    "index": 34, 
+                    "pos": "n", 
+                    "parentIndex": 31, 
+                    "lemma": "\u0113ka", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 35, 
+                    "pos": "z", 
+                    "parentIndex": 31, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=uzb\u016bv\u0113t|skaitlis=Daudzskaitlis|avota_pamatforma=uzb\u016bv\u0113t|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=uzb\u016bv\u0113t", 
+                    "form": "uzb\u016bv\u0113tas", 
+                    "index": 36, 
+                    "pos": "v", 
+                    "parentIndex": 47, 
+                    "lemma": "uzb\u016bv\u0113t", 
+                    "tag": "v_npdfpnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=2,5|leta_lemma=_rare_", 
+                    "form": "2,5", 
+                    "index": 37, 
+                    "pos": "x", 
+                    "parentIndex": 38, 
+                    "lemma": "2,5", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=metrs|avota_pamatforma=metrs|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=metrs", 
+                    "form": "metru", 
+                    "index": 38, 
+                    "pos": "n", 
+                    "parentIndex": 43, 
+                    "lemma": "metrs", 
+                    "tag": "ncmpg1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=augsta|skaitlis=Vienskaitlis|avota_pamatforma=augsts|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=\u0122enit\u012bvs|pamatforma=augsta", 
+                    "form": "augstas", 
+                    "index": 39, 
+                    "pos": "a", 
+                    "parentIndex": 40, 
+                    "lemma": "augsta", 
+                    "tag": "affsgnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=J\u0101|persona=3|noliegums=N\u0113|leta_lemma=_rare_|avota_pamatforma=sargsienties|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|vardskira=Darb\u012bbas_v\u0101rds|priedeklis=aiz|laiks=Tagadne|pamatforma=aizsargsienties", 
+                    "form": "aizsargsienas", 
+                    "index": 40, 
+                    "pos": "v", 
+                    "parentIndex": 38, 
+                    "lemma": "aizsargsienties", 
+                    "tag": "v_yip_130an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=ap|avota_pamatforma=ap|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=J\u0101|pamatforma=ap", 
+                    "form": "ap", 
+                    "index": 41, 
+                    "pos": "s", 
+                    "parentIndex": 40, 
+                    "lemma": "ap", 
+                    "tag": "sppdy"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirk\u0146a", 
+                    "index": 42, 
+                    "pos": "n", 
+                    "parentIndex": 41, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=teritorija|avota_pamatforma=teritorija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Akuzat\u012bvs|pamatforma=teritorija", 
+                    "form": "teritoriju", 
+                    "index": 43, 
+                    "pos": "n", 
+                    "parentIndex": 36, 
+                    "lemma": "teritorija", 
+                    "tag": "ncfsa4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=200|leta_lemma=200", 
+                    "form": "200", 
+                    "index": 44, 
+                    "pos": "x", 
+                    "parentIndex": 45, 
+                    "lemma": "200", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=metrs|avota_pamatforma=metrs|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=metrs", 
+                    "form": "metru", 
+                    "index": 45, 
+                    "pos": "n", 
+                    "parentIndex": 46, 
+                    "lemma": "metrs", 
+                    "tag": "ncmpg1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=garums|avota_pamatforma=garums|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=garums", 
+                    "form": "garum\u0101", 
+                    "index": 46, 
+                    "pos": "n", 
+                    "parentIndex": 36, 
+                    "lemma": "garums", 
+                    "tag": "ncmsl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 47, 
+                    "pos": "z", 
+                    "parentIndex": 31, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }
+            ], 
+            "text": "Saska\u0146\u0101 ar pag\u0101ju\u0161\u0101 gad\u0101 nosl\u0113gto l\u012bgumu ar Etehadas Rehabilit\u0101cijas un att\u012bst\u012bbas organiz\u0101ciju ( ERDO ) par Latvijas ieguld\u012btajiem 27_087 latiem Farjabas provinces dienvidrietumos , Keisaras rajon\u0101 , tika uzb\u016bv\u0113ta un labiek\u0101rtota policijas iecirk\u0146a \u0113ka , uzb\u016bv\u0113tas 2,5 metru augstas aizsargsienas ap iecirk\u0146a teritoriju 200 metru garum\u0101 ,", 
+            "frames": [
+                {
+                    "tokenIndex": 5, 
+                    "type": "People_by_age", 
+                    "elements": []
+                }, 
+                {
+                    "elements2": [
+                        {
+                            "tokenIndex": 14, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 23, 
+                            "name": "Person"
+                        }
+                    ], 
+                    "tokenIndex": 17, 
+                    "type": "People_by_origin", 
+                    "elements": [
+                        {
+                            "tokenIndex": 17, 
+                            "name": "Origin"
+                        }, 
+                        {
+                            "tokenIndex": 19, 
+                            "name": "Person"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Divk\u0101r\u0161s|leta_lemma=_rare_|avota_pamatforma=k\u0101_ar\u012b|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=k\u0101_ar\u012b", 
+                    "form": "k\u0101_ar\u012b", 
+                    "index": 1, 
+                    "pos": "c", 
+                    "parentIndex": 2, 
+                    "lemma": "k\u0101_ar\u012b", 
+                    "tag": "ccd"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=ieg\u0101d\u0101t|skaitlis=Vienskaitlis|avota_pamatforma=ieg\u0101d\u0101t|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=ieg\u0101d\u0101t", 
+                    "form": "ieg\u0101d\u0101ts", 
+                    "index": 2, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "ieg\u0101d\u0101t", 
+                    "tag": "vmnpdmsnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=autonoms|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=autonoms", 
+                    "form": "autonoms", 
+                    "index": 3, 
+                    "pos": "a", 
+                    "parentIndex": 5, 
+                    "lemma": "autonoms", 
+                    "tag": "armsnnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=elektr\u012bba|avota_pamatforma=elektr\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=elektr\u012bba", 
+                    "form": "elektr\u012bbas", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 5, 
+                    "lemma": "elektr\u012bba", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=\u0123enerators|avota_pamatforma=\u0123enerators|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=\u0123enerators", 
+                    "form": "\u0123enerators", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "\u0123enerators", 
+                    "tag": "ncmsn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 6, 
+                    "pos": "c", 
+                    "parentIndex": 5, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=izveidot|skaitlis=Vienskaitlis|avota_pamatforma=izveidot|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=izveidot", 
+                    "form": "izveidota", 
+                    "index": 7, 
+                    "pos": "v", 
+                    "parentIndex": 6, 
+                    "lemma": "izveidot", 
+                    "tag": "vmnpdfsnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=\u016bdens|avota_pamatforma=\u016bdens|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=\u016bdens", 
+                    "form": "\u016bdens", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "\u016bdens", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=ieguve|avota_pamatforma=ieguve|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=ieguve", 
+                    "form": "ieguves", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "ieguve", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=aka|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=aka", 
+                    "form": "aka", 
+                    "index": 10, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "aka", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 11, 
+                    "pos": "z", 
+                    "parentIndex": 7, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "k\u0101_ar\u012b ieg\u0101d\u0101ts autonoms elektr\u012bbas \u0123enerators un izveidota \u016bdens ieguves aka .", 
+            "frames": [
+                {
+                    "tokenIndex": 7, 
+                    "type": "Intentionally_create", 
+                    "elements": []
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=province", 
+                    "form": "provinces", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "province", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=keisara", 
+                    "form": "Keisaras", 
+                    "index": 3, 
+                    "pos": "n", 
+                    "parentIndex": 4, 
+                    "lemma": "keisara", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 21, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=rajons|avota_pamatforma=rajons|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=rajons", 
+                    "form": "rajona", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "rajons", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Daudzskaitlis|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|pamatforma=\u010dilgazs", 
+                    "form": "\u010cilgazi", 
+                    "index": 5, 
+                    "pos": "a", 
+                    "parentIndex": 6, 
+                    "lemma": "\u010dilgazs", 
+                    "tag": "a_mpnn_"
+                }, 
+                {
+                    "namedEntityID": 24, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=policists|avota_pamatforma=policists|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=policists", 
+                    "form": "policisti", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "policists", 
+                    "tag": "ncmpn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=sa\u0146emt|avota_pamatforma=sa\u0146emt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=P\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|laiks=Pag\u0101tne|pamatforma=sa\u0146emt", 
+                    "form": "sa\u0146\u0113ma", 
+                    "index": 7, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "sa\u0146emt", 
+                    "tag": "vmnist130an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "skaitlis_2=Daudzskaitlinieks|leta_lemma=m\u016bsdienas|avota_pamatforma=m\u016bsdienas|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=m\u016bsdienas", 
+                    "form": "m\u016bsdienu", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "m\u016bsdienas", 
+                    "tag": "ncfdg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=standarts|avota_pamatforma=standarts|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=standarts", 
+                    "form": "standartiem", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "standarts", 
+                    "tag": "ncmpd1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atbilst|skaitlis=Vienskaitlis|avota_pamatforma=bilst|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Dar\u0101m\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|priedeklis=at|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Akuzat\u012bvs|laiks=Tagadne|pamatforma=atbilst", 
+                    "form": "atbilsto\u0161u", 
+                    "index": 10, 
+                    "pos": "v", 
+                    "parentIndex": 9, 
+                    "lemma": "atbilst", 
+                    "tag": "vmnpdmsaapn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 11, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=dro\u0161s|skaitlis=Vienskaitlis|avota_pamatforma=dro\u0161s|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=Akuzat\u012bvs|pamatforma=dro\u0161s", 
+                    "form": "dro\u0161u", 
+                    "index": 12, 
+                    "pos": "a", 
+                    "parentIndex": 10, 
+                    "lemma": "dro\u0161s", 
+                    "tag": "afmsanp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 13, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=jauna|skaitlis=Daudzskaitlis|avota_pamatforma=jauns|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=\u0122enit\u012bvs|pamatforma=jauna", 
+                    "form": "jaunu", 
+                    "index": 14, 
+                    "pos": "a", 
+                    "parentIndex": 17, 
+                    "lemma": "jauna", 
+                    "tag": "affpgnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 15, 
+                    "pos": "c", 
+                    "parentIndex": 14, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=gai\u0161a|skaitlis=Vienskaitlis|avota_pamatforma=gai\u0161s|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=Akuzat\u012bvs|pamatforma=gai\u0161a", 
+                    "form": "gai\u0161u", 
+                    "index": 16, 
+                    "pos": "a", 
+                    "parentIndex": 15, 
+                    "lemma": "gai\u0161a", 
+                    "tag": "affsanp"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 17, 
+                    "pos": "n", 
+                    "parentIndex": 18, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Akuzat\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirkni", 
+                    "index": 18, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsa2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 19, 
+                    "pos": "z", 
+                    "parentIndex": 10, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "Farjabas provinces Keisaras rajona \u010cilgazi policisti sa\u0146\u0113ma m\u016bsdienu standartiem atbilsto\u0161u , dro\u0161u , jaunu un gai\u0161u policijas iecirkni .", 
+            "frames": [
+                {
+                    "tokenIndex": 7, 
+                    "type": "Win_prize", 
+                    "elements": []
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=iecirknis", 
+                    "form": "Iecirk\u0146a", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=izb\u016bve|avota_pamatforma=izb\u016bve|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=izb\u016bve", 
+                    "form": "izb\u016bve", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "izb\u016bve", 
+                    "tag": "ncfsn5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=tikt|avota_pamatforma=tikt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbi_'tikt'_un_'tapt'|laiks=Pag\u0101tne|pamatforma=tikt", 
+                    "form": "tika", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "tikt", 
+                    "tag": "vtnisi130an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=izstr\u0101d\u0101t|skaitlis=Vienskaitlis|avota_pamatforma=izstr\u0101d\u0101t|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=izstr\u0101d\u0101t", 
+                    "form": "izstr\u0101d\u0101ta", 
+                    "index": 4, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "izstr\u0101d\u0101t", 
+                    "tag": "vmnpdfsnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=sadarb\u012bba|avota_pamatforma=sadarb\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=sadarb\u012bba", 
+                    "form": "sadarb\u012bb\u0101", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "sadarb\u012bba", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Partikula|uzbuve=Vienk\u0101r\u0161s|avota_pamatforma=ar\u012b|pamatforma=ar\u012b|leta_lemma=ar\u012b", 
+                    "form": "ar\u012b", 
+                    "index": 6, 
+                    "pos": "q", 
+                    "parentIndex": 7, 
+                    "lemma": "ar\u012b", 
+                    "tag": "qs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=ar|avota_pamatforma=ar|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=N\u0113|pamatforma=ar", 
+                    "form": "ar", 
+                    "index": 7, 
+                    "pos": "s", 
+                    "parentIndex": 3, 
+                    "lemma": "ar", 
+                    "tag": "sppdn"
+                }, 
+                {
+                    "namedEntityID": 26, 
+                    "namedEntityType": "location", 
+                    "features": "lielo_burtu_lietojums=Rakst\u012bts_ar_lielajiem_burtiem|vardskira=Sa\u012bsin\u0101jums|avota_pamatforma=ASV|pamatforma=ASV|leta_lemma=ASV", 
+                    "form": "ASV", 
+                    "index": 8, 
+                    "pos": "y", 
+                    "parentIndex": 9, 
+                    "lemma": "ASV", 
+                    "tag": "y"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=milit\u0101rs|skaitlis=Daudzskaitlis|avota_pamatforma=milit\u0101rs|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Dat\u012bvs|pamatforma=milit\u0101rs", 
+                    "form": "milit\u0101rajiem", 
+                    "index": 9, 
+                    "pos": "a", 
+                    "parentIndex": 13, 
+                    "lemma": "milit\u0101rs", 
+                    "tag": "armpdyp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 10, 
+                    "pos": "c", 
+                    "parentIndex": 9, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Norv\u0113\u0123ija|avota_pamatforma=norv\u0113\u0123ija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Norv\u0113\u0123ija", 
+                    "form": "Norv\u0113\u0123ijas", 
+                    "index": 11, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "Norv\u0113\u0123ija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 12, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 28, 
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=p\u0101rst\u0101vis|avota_pamatforma=p\u0101rst\u0101vis|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=p\u0101rst\u0101vis", 
+                    "form": "p\u0101rst\u0101vjiem", 
+                    "index": 13, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "p\u0101rst\u0101vis", 
+                    "tag": "ncmpd2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 14, 
+                    "pos": "n", 
+                    "parentIndex": 15, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=province", 
+                    "form": "provinc\u0113", 
+                    "index": 15, 
+                    "pos": "n", 
+                    "parentIndex": 13, 
+                    "lemma": "province", 
+                    "tag": "ncfsl5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 16, 
+                    "pos": "z", 
+                    "parentIndex": 3, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "Iecirk\u0146a izb\u016bve tika izstr\u0101d\u0101ta sadarb\u012bb\u0101 ar\u012b ar ASV milit\u0101rajiem un Norv\u0113\u0123ijas policijas p\u0101rst\u0101vjiem Farjabas provinc\u0113 .", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "novietojums=Pirms|leta_lemma=l\u012bdz|avota_pamatforma=l\u012bdz|skaitlis=Daudzskaitlis|vardskira=Priev\u0101rds|rekcija=Dat\u012bvs|vietas_apstakla_nozime=J\u0101|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|pamatforma=l\u012bdz", 
+                    "form": "L\u012bdz", 
+                    "index": 1, 
+                    "pos": "s", 
+                    "parentIndex": 8, 
+                    "lemma": "l\u012bdz", 
+                    "tag": "sppdy"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "persona=3|noliegums=N\u0113|vietniekvarda_tips=Nor\u0101d\u0101mie|leta_lemma=\u0161is|skaitlis=Vienskaitlis|anafora=Aizst\u0101j_substant\u012bvu|avota_pamatforma=\u0161is|vardskira=Vietniekv\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=\u0161is", 
+                    "form": "\u0161im", 
+                    "index": 2, 
+                    "pos": "p", 
+                    "parentIndex": 1, 
+                    "lemma": "\u0161is", 
+                    "tag": "pd3msdn"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Daudzskaitlis|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|pamatforma=\u010dilgazs", 
+                    "form": "\u010cilgazi", 
+                    "index": 3, 
+                    "pos": "a", 
+                    "parentIndex": 4, 
+                    "lemma": "\u010dilgazs", 
+                    "tag": "a_mpnn_"
+                }, 
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 5, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirk\u0146a", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=40|leta_lemma=40", 
+                    "form": "40", 
+                    "index": 6, 
+                    "pos": "x", 
+                    "parentIndex": 7, 
+                    "lemma": "40", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityID": 24, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policists|avota_pamatforma=policists|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policists", 
+                    "form": "policistu", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "policists", 
+                    "tag": "ncmpg1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=darbs|avota_pamatforma=darbs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=darbs", 
+                    "form": "darbs", 
+                    "index": 8, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "darbs", 
+                    "tag": "ncmsn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=J\u0101|persona=3|noliegums=N\u0113|leta_lemma=risin\u0101ties|avota_pamatforma=risin\u0101ties|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|laiks=Pag\u0101tne|pamatforma=risin\u0101ties", 
+                    "form": "risin\u0101j\u0101s", 
+                    "index": 9, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "risin\u0101ties", 
+                    "tag": "vmyisi330an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=darbs|avota_pamatforma=darbs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Dat\u012bvs|pamatforma=darbs", 
+                    "form": "darbam", 
+                    "index": 10, 
+                    "pos": "n", 
+                    "parentIndex": 9, 
+                    "lemma": "darbs", 
+                    "tag": "ncmsd1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=piln\u012bba|avota_pamatforma=piln\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=piln\u012bba", 
+                    "form": "piln\u012bb\u0101", 
+                    "index": 11, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "piln\u012bba", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=V\u0113l\u0113juma|atgriezeniskums=J\u0101|persona=Nepiem\u012bt|noliegums=J\u0101|leta_lemma=_rare_|avota_pamatforma=piem\u0113roties|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|priedeklis=ne|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|laiks=Nepiem\u012bt|pamatforma=nepiem\u0113roties", 
+                    "form": "nepiem\u0113rotos", 
+                    "index": 12, 
+                    "pos": "v", 
+                    "parentIndex": 10, 
+                    "lemma": "nepiem\u0113roties", 
+                    "tag": "vmyc0i200ay"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=apst\u0101klis|avota_pamatforma=apst\u0101klis|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=apst\u0101klis", 
+                    "form": "apst\u0101k\u013cos", 
+                    "index": 13, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "apst\u0101klis", 
+                    "tag": "ncmpl2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=kar\u0161|avota_pamatforma=kar\u0161|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=kar\u0161", 
+                    "form": "kara", 
+                    "index": 14, 
+                    "pos": "n", 
+                    "parentIndex": 25, 
+                    "lemma": "kar\u0161", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 15, 
+                    "pos": "z", 
+                    "parentIndex": 25, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Divk\u0101r\u0161s|leta_lemma=_rare_|avota_pamatforma=k\u0101_ar\u012b|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=k\u0101_ar\u012b", 
+                    "form": "k\u0101_ar\u012b", 
+                    "index": 16, 
+                    "pos": "c", 
+                    "parentIndex": 15, 
+                    "lemma": "k\u0101_ar\u012b", 
+                    "tag": "ccd"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=krimin\u0101ls|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=\u0122enit\u012bvs|pamatforma=krimin\u0101ls", 
+                    "form": "krimin\u0101la", 
+                    "index": 17, 
+                    "pos": "a", 
+                    "parentIndex": 18, 
+                    "lemma": "krimin\u0101ls", 
+                    "tag": "armsgnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=raksturs|avota_pamatforma=raksturs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=raksturs", 
+                    "form": "rakstura", 
+                    "index": 18, 
+                    "pos": "n", 
+                    "parentIndex": 19, 
+                    "lemma": "raksturs", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=uzbrukums|avota_pamatforma=uzbrukums|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Lokat\u012bvs|pamatforma=uzbrukums", 
+                    "form": "uzbrukumos", 
+                    "index": 19, 
+                    "pos": "n", 
+                    "parentIndex": 20, 
+                    "lemma": "uzbrukums", 
+                    "tag": "ncmpl1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=_rare_|skaitlis=Vienskaitlis|avota_pamatforma=izpost\u012bt|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Lokat\u012bvs|laiks=Pag\u0101tne|pamatforma=izpost\u012bt", 
+                    "form": "izpost\u012bt\u0101", 
+                    "index": 20, 
+                    "pos": "v", 
+                    "parentIndex": 16, 
+                    "lemma": "izpost\u012bt", 
+                    "tag": "v_npdmslpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=\u0113ka|avota_pamatforma=\u0113ka|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=\u0113ka", 
+                    "form": "\u0113k\u0101", 
+                    "index": 21, 
+                    "pos": "n", 
+                    "parentIndex": 25, 
+                    "lemma": "\u0113ka", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 22, 
+                    "pos": "z", 
+                    "parentIndex": 25, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "persona=Nepiem\u012bt|noliegums=N\u0113|vietniekvarda_tips=Nenoteiktie|leta_lemma=k\u0101da|skaitlis=Daudzskaitlis|anafora=Nepiem\u012bt|avota_pamatforma=k\u0101da|vardskira=Vietniekv\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=k\u0101da", 
+                    "form": "k\u0101das", 
+                    "index": 23, 
+                    "pos": "p", 
+                    "parentIndex": 25, 
+                    "lemma": "k\u0101da", 
+                    "tag": "pi0fpnn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Nepiem\u012bt|leta_lemma=joproj\u0101m|avota_pamatforma=joproj\u0101m|vardskira=Apst\u0101k\u013ca_v\u0101rds|apstakla_varda_tips=Laika|pamatforma=joproj\u0101m", 
+                    "form": "joproj\u0101m", 
+                    "index": 24, 
+                    "pos": "r", 
+                    "parentIndex": 25, 
+                    "lemma": "joproj\u0101m", 
+                    "tag": "r0t"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atrast|skaitlis=Daudzskaitlis|avota_pamatforma=atrast|lokamiba=Lok\u0101ms|transitivitate=P\u0101rejo\u0161s|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Tagadne|pamatforma=atrast", 
+                    "form": "atrodamas", 
+                    "index": 25, 
+                    "pos": "v", 
+                    "parentIndex": 13, 
+                    "lemma": "atrast", 
+                    "tag": "vmnpdfpnppn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=liela|skaitlis=Vienskaitlis|avota_pamatforma=liels|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|ipasibas_varda_tips=K\u0101d\u012bbas|locijums=Lokat\u012bvs|pamatforma=liela", 
+                    "form": "liel\u0101", 
+                    "index": 26, 
+                    "pos": "a", 
+                    "parentIndex": 27, 
+                    "lemma": "liela", 
+                    "tag": "affslnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=da\u013ca|avota_pamatforma=da\u013ca|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=da\u013ca", 
+                    "form": "da\u013c\u0101", 
+                    "index": 27, 
+                    "pos": "n", 
+                    "parentIndex": 25, 
+                    "lemma": "da\u013ca", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 28, 
+                    "pos": "n", 
+                    "parentIndex": 29, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Lokat\u012bvs|pamatforma=province", 
+                    "form": "provinc\u0113", 
+                    "index": 29, 
+                    "pos": "n", 
+                    "parentIndex": 30, 
+                    "lemma": "province", 
+                    "tag": "ncfsl5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 30, 
+                    "pos": "c", 
+                    "parentIndex": 27, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityID": 2, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=afganist\u0101na|avota_pamatforma=afganist\u0101na|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Lokat\u012bvs|pamatforma=afganist\u0101na", 
+                    "form": "Afganist\u0101n\u0101", 
+                    "index": 31, 
+                    "pos": "n", 
+                    "parentIndex": 30, 
+                    "lemma": "afganist\u0101na", 
+                    "tag": "n_fsl4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 32, 
+                    "pos": "z", 
+                    "parentIndex": 25, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "L\u012bdz \u0161im \u010cilgazi policijas iecirk\u0146a 40 policistu darbs risin\u0101j\u0101s darbam piln\u012bb\u0101 nepiem\u0113rotos apst\u0101k\u013cos kara , k\u0101_ar\u012b krimin\u0101la rakstura uzbrukumos izpost\u012bt\u0101 \u0113k\u0101 , k\u0101das joproj\u0101m atrodamas liel\u0101 da\u013c\u0101 Farjabas provinc\u0113 un Afganist\u0101n\u0101 .", 
+            "frames": [
+                {
+                    "tokenIndex": 19, 
+                    "type": "Attack", 
+                    "elements": []
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityID": 0, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "Policijas", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=iecirknis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=iecirknis", 
+                    "form": "iecirk\u0146a", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "iecirknis", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atkl\u0101\u0161ana|avota_pamatforma=atkl\u0101t|skaitlis=Vienskaitlis|transitivitate=P\u0101rejo\u0161s|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|locijums=Lokat\u012bvs|pamatforma=atkl\u0101\u0161ana", 
+                    "form": "atkl\u0101\u0161an\u0101", 
+                    "index": 3, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "atkl\u0101\u0161ana", 
+                    "tag": "ncfsl4"
+                }, 
+                {
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=meimana", 
+                    "form": "Meimanas", 
+                    "index": 4, 
+                    "pos": "n", 
+                    "parentIndex": 5, 
+                    "lemma": "meimana", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=province|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=province", 
+                    "form": "provin\u010du", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "province", 
+                    "tag": "ncfpg5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=atjauno\u0161ana|avota_pamatforma=atjaunot|skaitlis=Vienskaitlis|transitivitate=P\u0101rejo\u0161s|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|darbibas_varda_tips=Patst\u0101v\u012bgs_darb\u012bbas_v\u0101rds|locijums=\u0122enit\u012bvs|pamatforma=atjauno\u0161ana", 
+                    "form": "atjauno\u0161anas", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 7, 
+                    "lemma": "atjauno\u0161ana", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=vien\u012bba|avota_pamatforma=vien\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Akuzat\u012bvs|pamatforma=vien\u012bba", 
+                    "form": "vien\u012bbu", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "vien\u012bba", 
+                    "tag": "ncfsa4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=p\u0101rst\u0101v\u0113t|avota_pamatforma=p\u0101rst\u0101v\u0113t|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|vardskira=Darb\u012bbas_v\u0101rds|laiks=Pag\u0101tne|pamatforma=p\u0101rst\u0101v\u0113t", 
+                    "form": "p\u0101rst\u0101v\u0113ja", 
+                    "index": 8, 
+                    "pos": "v", 
+                    "parentIndex": 0, 
+                    "lemma": "p\u0101rst\u0101v\u0113t", 
+                    "tag": "v_nis_330an"
+                }, 
+                {
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=komandieris|avota_pamatforma=komandieris|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=komandieris", 
+                    "form": "komandiera", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "komandieris", 
+                    "tag": "ncmsg2"
+                }, 
+                {
+                    "namedEntityID": 55, 
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=vietnieks|avota_pamatforma=vietnieks|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=vietnieks", 
+                    "form": "vietnieks", 
+                    "index": 10, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "vietnieks", 
+                    "tag": "ncmsn1"
+                }, 
+                {
+                    "namedEntityID": 36, 
+                    "namedEntityType": "person", 
+                    "features": "leta_lemma=J\u0101nis|avota_pamatforma=j\u0101nis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=J\u0101nis", 
+                    "form": "J\u0101nis", 
+                    "index": 11, 
+                    "pos": "n", 
+                    "parentIndex": 12, 
+                    "lemma": "J\u0101nis", 
+                    "tag": "npmsn2"
+                }, 
+                {
+                    "namedEntityID": 36, 
+                    "namedEntityType": "person", 
+                    "features": "leta_lemma=gailis|avota_pamatforma=gailis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=gailis", 
+                    "form": "Gailis", 
+                    "index": 12, 
+                    "pos": "n", 
+                    "parentIndex": 8, 
+                    "lemma": "gailis", 
+                    "tag": "ncmsn2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 13, 
+                    "pos": "z", 
+                    "parentIndex": 8, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityID": 9, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvijas", 
+                    "index": 14, 
+                    "pos": "n", 
+                    "parentIndex": 13, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=politisks|skaitlis=Vienskaitlis|avota_pamatforma=politisks|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=politisks", 
+                    "form": "politiskais", 
+                    "index": 15, 
+                    "pos": "a", 
+                    "parentIndex": 20, 
+                    "lemma": "politisks", 
+                    "tag": "armsnyp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 16, 
+                    "pos": "c", 
+                    "parentIndex": 15, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=att\u012bst\u012bba|avota_pamatforma=att\u012bst\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=att\u012bst\u012bba", 
+                    "form": "att\u012bst\u012bbas", 
+                    "index": 17, 
+                    "pos": "n", 
+                    "parentIndex": 18, 
+                    "lemma": "att\u012bst\u012bba", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 56, 
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=padomnieks|avota_pamatforma=padomnieks|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=padomnieks", 
+                    "form": "padomnieks", 
+                    "index": 18, 
+                    "pos": "n", 
+                    "parentIndex": 16, 
+                    "lemma": "padomnieks", 
+                    "tag": "ncmsn1"
+                }, 
+                {
+                    "namedEntityID": 39, 
+                    "namedEntityType": "person", 
+                    "features": "leta_lemma=_surname_|avota_pamatforma=Valts|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=Valts", 
+                    "form": "Valts", 
+                    "index": 19, 
+                    "pos": "n", 
+                    "parentIndex": 20, 
+                    "lemma": "Valts", 
+                    "tag": "npmsn1"
+                }, 
+                {
+                    "namedEntityID": 39, 
+                    "namedEntityType": "person", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=v\u012btums|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=v\u012btums", 
+                    "form": "V\u012btums", 
+                    "index": 20, 
+                    "pos": "n", 
+                    "parentIndex": 14, 
+                    "lemma": "v\u012btums", 
+                    "tag": "ncmsn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 21, 
+                    "pos": "z", 
+                    "parentIndex": 14, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityID": 9, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Latvija|avota_pamatforma=latvija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Latvija", 
+                    "form": "Latvijas", 
+                    "index": 22, 
+                    "pos": "n", 
+                    "parentIndex": 21, 
+                    "lemma": "Latvija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 23, 
+                    "pos": "c", 
+                    "parentIndex": 22, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityID": 57, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=Norv\u0113\u0123ija|avota_pamatforma=norv\u0113\u0123ija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Norv\u0113\u0123ija", 
+                    "form": "Norv\u0113\u0123ijas", 
+                    "index": 24, 
+                    "pos": "n", 
+                    "parentIndex": 25, 
+                    "lemma": "Norv\u0113\u0123ija", 
+                    "tag": "npfsg4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 25, 
+                    "pos": "n", 
+                    "parentIndex": 26, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 58, 
+                    "namedEntityType": "profession", 
+                    "features": "leta_lemma=p\u0101rst\u0101vis|avota_pamatforma=p\u0101rst\u0101vis|skaitlis=Daudzskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=Nominat\u012bvs|pamatforma=p\u0101rst\u0101vis", 
+                    "form": "p\u0101rst\u0101vji", 
+                    "index": 26, 
+                    "pos": "n", 
+                    "parentIndex": 23, 
+                    "lemma": "p\u0101rst\u0101vis", 
+                    "tag": "ncmpn2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 27, 
+                    "pos": "z", 
+                    "parentIndex": 8, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "Policijas iecirk\u0146a atkl\u0101\u0161an\u0101 Meimanas provin\u010du atjauno\u0161anas vien\u012bbu p\u0101rst\u0101v\u0113ja komandiera vietnieks J\u0101nis Gailis , Latvijas politiskais un att\u012bst\u012bbas padomnieks Valts V\u012btums , Latvijas un Norv\u0113\u0123ijas policijas p\u0101rst\u0101vji .", 
+            "frames": [
+                {
+                    "elements2": [
+                        {
+                            "tokenIndex": 9, 
+                            "name": "Position"
+                        }
+                    ], 
+                    "tokenIndex": 10, 
+                    "type": "Being_employed", 
+                    "elements": [
+                        {
+                            "tokenIndex": 10, 
+                            "name": "Position"
+                        }, 
+                        {
+                            "tokenIndex": 11, 
+                            "name": "Employee"
+                        }
+                    ]
+                }, 
+                {
+                    "tokenIndex": 18, 
+                    "type": "Being_employed", 
+                    "elements": [
+                        {
+                            "tokenIndex": 18, 
+                            "name": "Position"
+                        }, 
+                        {
+                            "tokenIndex": 19, 
+                            "name": "Employee"
+                        }
+                    ]
+                }, 
+                {
+                    "tokenIndex": 26, 
+                    "type": "Being_employed", 
+                    "elements": [
+                        {
+                            "tokenIndex": 24, 
+                            "name": "Place_of_employment"
+                        }, 
+                        {
+                            "tokenIndex": 26, 
+                            "name": "Position"
+                        }
+                    ]
+                }, 
+                {
+                    "elements2": [
+                        {
+                            "tokenIndex": 19, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 12, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 2, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 5, 
+                            "name": "Person"
+                        }
+                    ], 
+                    "tokenIndex": 14, 
+                    "type": "People_by_origin", 
+                    "elements": [
+                        {
+                            "tokenIndex": 20, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 14, 
+                            "name": "Origin"
+                        }
+                    ]
+                }, 
+                {
+                    "tokenIndex": 22, 
+                    "type": "People_by_origin", 
+                    "elements": [
+                        {
+                            "tokenIndex": 20, 
+                            "name": "Person"
+                        }, 
+                        {
+                            "tokenIndex": 22, 
+                            "name": "Origin"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=pla\u0161i|avota_pamatforma=pla\u0161s|vardskira=Apst\u0101k\u013ca_v\u0101rds|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|ipasibas_varda_tips=K\u0101d\u012bbas|pamatforma=pla\u0161i", 
+                    "form": "Pla\u0161i", 
+                    "index": 1, 
+                    "pos": "r", 
+                    "parentIndex": 5, 
+                    "lemma": "pla\u0161i", 
+                    "tag": "r__"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=\u012asten\u012bbas|atgriezeniskums=N\u0113|persona=3|noliegums=N\u0113|leta_lemma=b\u016bt|avota_pamatforma=b\u016bt|skaitlis=Nepiem\u012bt|karta=Dar\u0101m\u0101|transitivitate=Nep\u0101rejo\u0161s|vardskira=Darb\u012bbas_v\u0101rds|darbibas_varda_tips=Pal\u012bgverbs_'b\u016bt'|laiks=Pag\u0101tne|pamatforma=b\u016bt", 
+                    "form": "bija", 
+                    "index": 2, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "b\u016bt", 
+                    "tag": "vcnisii30an"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "izteiksme=Divdabis|atgriezeniskums=N\u0113|noliegums=N\u0113|leta_lemma=p\u0101rst\u0101v\u0113t|skaitlis=Vienskaitlis|avota_pamatforma=p\u0101rst\u0101v\u0113t|lokamiba=Lok\u0101ms|karta=Cie\u0161am\u0101|vardskira=Darb\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Nenoteikt\u0101|locijums=Nominat\u012bvs|laiks=Pag\u0101tne|pamatforma=p\u0101rst\u0101v\u0113t", 
+                    "form": "p\u0101rst\u0101v\u0113ta", 
+                    "index": 3, 
+                    "pos": "v", 
+                    "parentIndex": 5, 
+                    "lemma": "p\u0101rst\u0101v\u0113t", 
+                    "tag": "v_npdfsnpsn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=viet\u0113ja|skaitlis=Vienskaitlis|avota_pamatforma=viet\u0113js|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=viet\u0113ja", 
+                    "form": "viet\u0113j\u0101", 
+                    "index": 4, 
+                    "pos": "a", 
+                    "parentIndex": 5, 
+                    "lemma": "viet\u0113ja", 
+                    "tag": "arfsnyp"
+                }, 
+                {
+                    "namedEntityID": 44, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=sabiedr\u012bba|avota_pamatforma=sabiedr\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=sabiedr\u012bba", 
+                    "form": "sabiedr\u012bba", 
+                    "index": 5, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "sabiedr\u012bba", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 6, 
+                    "pos": "z", 
+                    "parentIndex": 5, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=farjaba", 
+                    "form": "Farjabas", 
+                    "index": 7, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "farjaba", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "pakape=Pamata|leta_lemma=galvena|skaitlis=Vienskaitlis|avota_pamatforma=galvens|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=galvena", 
+                    "form": "galven\u0101", 
+                    "index": 8, 
+                    "pos": "a", 
+                    "parentIndex": 10, 
+                    "lemma": "galvena", 
+                    "tag": "arfsnyp"
+                }, 
+                {
+                    "namedEntityID": 43, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 9, 
+                    "pos": "n", 
+                    "parentIndex": 10, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 44, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=p\u0101rvalde|avota_pamatforma=p\u0101rvalde|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=p\u0101rvalde", 
+                    "form": "p\u0101rvalde", 
+                    "index": 10, 
+                    "pos": "n", 
+                    "parentIndex": 6, 
+                    "lemma": "p\u0101rvalde", 
+                    "tag": "ncfsn5"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 11, 
+                    "pos": "z", 
+                    "parentIndex": 5, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=_rare_|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=keisara", 
+                    "form": "Keisaras", 
+                    "index": 12, 
+                    "pos": "n", 
+                    "parentIndex": 13, 
+                    "lemma": "keisara", 
+                    "tag": "n_fsg4"
+                }, 
+                {
+                    "namedEntityID": 21, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=rajons|avota_pamatforma=rajons|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=rajons", 
+                    "form": "rajona", 
+                    "index": 13, 
+                    "pos": "n", 
+                    "parentIndex": 14, 
+                    "lemma": "rajons", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=policija|avota_pamatforma=policija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=policija", 
+                    "form": "policijas", 
+                    "index": 14, 
+                    "pos": "n", 
+                    "parentIndex": 15, 
+                    "lemma": "policija", 
+                    "tag": "ncfsg4"
+                }, 
+                {
+                    "namedEntityID": 44, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=vad\u012bba|avota_pamatforma=vad\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=vad\u012bba", 
+                    "form": "vad\u012bba", 
+                    "index": 15, 
+                    "pos": "n", 
+                    "parentIndex": 11, 
+                    "lemma": "vad\u012bba", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 16, 
+                    "pos": "z", 
+                    "parentIndex": 15, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=viet\u0113ja|skaitlis=Vienskaitlis|avota_pamatforma=viet\u0113js|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=viet\u0113ja", 
+                    "form": "viet\u0113j\u0101", 
+                    "index": 17, 
+                    "pos": "a", 
+                    "parentIndex": 18, 
+                    "lemma": "viet\u0113ja", 
+                    "tag": "arfsnyp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=_rare_|avota_pamatforma=gar\u012bdzniec\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=gar\u012bdzniec\u012bba", 
+                    "form": "gar\u012bdzniec\u012bba", 
+                    "index": 18, 
+                    "pos": "n", 
+                    "parentIndex": 16, 
+                    "lemma": "gar\u012bdzniec\u012bba", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "uzbuve=Vienk\u0101r\u0161s|leta_lemma=un|avota_pamatforma=un|vardskira=Saiklis|saikla_tips=Sak\u0101rtojuma|pamatforma=un", 
+                    "form": "un", 
+                    "index": 19, 
+                    "pos": "c", 
+                    "parentIndex": 18, 
+                    "lemma": "un", 
+                    "tag": "ccs"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "pakape=Pamata|leta_lemma=viet\u0113ja|skaitlis=Vienskaitlis|avota_pamatforma=viet\u0113js|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=Sievie\u0161u|noteiktiba=Noteikt\u0101|ipasibas_varda_tips=Attieksmes|locijums=Nominat\u012bvs|pamatforma=viet\u0113ja", 
+                    "form": "viet\u0113j\u0101", 
+                    "index": 20, 
+                    "pos": "a", 
+                    "parentIndex": 21, 
+                    "lemma": "viet\u0113ja", 
+                    "tag": "arfsnyp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=pa\u0161vald\u012bba|avota_pamatforma=pa\u0161vald\u012bba|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=pa\u0161vald\u012bba", 
+                    "form": "pa\u0161vald\u012bba", 
+                    "index": 21, 
+                    "pos": "n", 
+                    "parentIndex": 19, 
+                    "lemma": "pa\u0161vald\u012bba", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=.|pieturzimes_tips=Punkts|pamatforma=.|leta_lemma=.", 
+                    "form": ".", 
+                    "index": 22, 
+                    "pos": "z", 
+                    "parentIndex": 5, 
+                    "lemma": ".", 
+                    "tag": "zs"
+                }
+            ], 
+            "text": "Pla\u0161i bija p\u0101rst\u0101v\u0113ta viet\u0113j\u0101 sabiedr\u012bba , Farjabas galven\u0101 policijas p\u0101rvalde , Keisaras rajona policijas vad\u012bba , viet\u0113j\u0101 gar\u012bdzniec\u012bba un viet\u0113j\u0101 pa\u0161vald\u012bba .", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "skaitlis_2=Daudzskaitlinieks|pakape=Pamata|leta_lemma=papildu|skaitlis=Daudzskaitlis|avota_pamatforma=papildu|locijums_2=\u0122enit\u012bvenis|noteiktiba=Nenoteikt\u0101|vardskira=\u012apa\u0161\u012bbas_v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|ipasibas_varda_tips=Attieksmes|locijums=\u0122enit\u012bvs|pamatforma=papildu", 
+                    "form": "Papildu", 
+                    "index": 1, 
+                    "pos": "a", 
+                    "parentIndex": 2, 
+                    "lemma": "papildu", 
+                    "tag": "armpgnp"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=inform\u0101cija|avota_pamatforma=inform\u0101cija|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=inform\u0101cija", 
+                    "form": "inform\u0101cija", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "inform\u0101cija", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=:|pieturzimes_tips=Kols|pamatforma=:|leta_lemma=:", 
+                    "form": ":", 
+                    "index": 3, 
+                    "pos": "z", 
+                    "parentIndex": 2, 
+                    "lemma": ":", 
+                    "tag": "zo"
+                }
+            ], 
+            "text": "Papildu inform\u0101cija :", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=prese|avota_pamatforma=prese|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=prese", 
+                    "form": "Preses", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "prese", 
+                    "tag": "ncfsg5"
+                }, 
+                {
+                    "namedEntityID": 6, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=centrs|avota_pamatforma=centrs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=V\u012brie\u0161u|locijums=\u0122enit\u012bvs|pamatforma=centrs", 
+                    "form": "centra", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "centrs", 
+                    "tag": "ncmsg1"
+                }, 
+                {
+                    "namedEntityID": 7, 
+                    "namedEntityType": "organization", 
+                    "features": "leta_lemma=noda\u013ca|avota_pamatforma=noda\u013ca|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=noda\u013ca", 
+                    "form": "noda\u013ca", 
+                    "index": 3, 
+                    "pos": "n", 
+                    "parentIndex": 4, 
+                    "lemma": "noda\u013ca", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=:|pieturzimes_tips=Kols|pamatforma=:|leta_lemma=:", 
+                    "form": ":", 
+                    "index": 4, 
+                    "pos": "z", 
+                    "parentIndex": 0, 
+                    "lemma": ":", 
+                    "tag": "zo"
+                }
+            ], 
+            "text": "Preses centra noda\u013ca :", 
+            "frames": []
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=(|pieturzimes_tips=Iekava|pamatforma=(|leta_lemma=(", 
+                    "form": "(", 
+                    "index": 1, 
+                    "pos": "z", 
+                    "parentIndex": 0, 
+                    "lemma": "(", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityID": 59, 
+                    "namedEntityType": "sum", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=371|leta_lemma=371", 
+                    "form": "371", 
+                    "index": 2, 
+                    "pos": "x", 
+                    "parentIndex": 1, 
+                    "lemma": "371", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=)|pieturzimes_tips=Iekava|pamatforma=)|leta_lemma=)", 
+                    "form": ")", 
+                    "index": 3, 
+                    "pos": "z", 
+                    "parentIndex": 2, 
+                    "lemma": ")", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=67016_272|leta_lemma=_rare_", 
+                    "form": "67016_272", 
+                    "index": 4, 
+                    "pos": "x", 
+                    "parentIndex": 2, 
+                    "lemma": "67016_272", 
+                    "tag": "xn"
+                }
+            ], 
+            "text": "( 371 ) 67016_272", 
+            "frames": [
+                {
+                    "tokenIndex": 2, 
+                    "type": "People_by_age", 
+                    "elements": [
+                        {
+                            "tokenIndex": 2, 
+                            "name": "Age"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=fakss|avota_pamatforma=fakss|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=fakss", 
+                    "form": "Fakss", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "fakss", 
+                    "tag": "n_msn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=:|pieturzimes_tips=Kols|pamatforma=:|leta_lemma=:", 
+                    "form": ":", 
+                    "index": 2, 
+                    "pos": "z", 
+                    "parentIndex": 4, 
+                    "lemma": ":", 
+                    "tag": "zo"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=(|pieturzimes_tips=Iekava|pamatforma=(|leta_lemma=(", 
+                    "form": "(", 
+                    "index": 3, 
+                    "pos": "z", 
+                    "parentIndex": 4, 
+                    "lemma": "(", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityID": 60, 
+                    "namedEntityType": "sum", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=371|leta_lemma=371", 
+                    "form": "371", 
+                    "index": 4, 
+                    "pos": "x", 
+                    "parentIndex": 1, 
+                    "lemma": "371", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=)|pieturzimes_tips=Iekava|pamatforma=)|leta_lemma=)", 
+                    "form": ")", 
+                    "index": 5, 
+                    "pos": "z", 
+                    "parentIndex": 4, 
+                    "lemma": ")", 
+                    "tag": "zb"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=67222_335|leta_lemma=_rare_", 
+                    "form": "67222_335", 
+                    "index": 6, 
+                    "pos": "x", 
+                    "parentIndex": 4, 
+                    "lemma": "67222_335", 
+                    "tag": "xn"
+                }
+            ], 
+            "text": "Fakss : ( 371 ) 67222_335", 
+            "frames": [
+                {
+                    "tokenIndex": 4, 
+                    "type": "People_by_age", 
+                    "elements": [
+                        {
+                            "tokenIndex": 4, 
+                            "name": "Age"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityID": 49, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=_surname_|avota_pamatforma=Kri\u0161j\u0101nis|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=Kri\u0161j\u0101nis", 
+                    "form": "Kri\u0161j\u0101\u0146a", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 2, 
+                    "lemma": "Kri\u0161j\u0101nis", 
+                    "tag": "npmsg2"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=valdem\u0101rs|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=\u0122enit\u012bvs|pamatforma=valdem\u0101rs", 
+                    "form": "Valdem\u0101ra", 
+                    "index": 2, 
+                    "pos": "n", 
+                    "parentIndex": 3, 
+                    "lemma": "valdem\u0101rs", 
+                    "tag": "n_msg1"
+                }, 
+                {
+                    "namedEntityID": 50, 
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=iela|avota_pamatforma=iela|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=Sugas_v\u0101rds|dzimte=Sievie\u0161u|locijums=Nominat\u012bvs|pamatforma=iela", 
+                    "form": "iela", 
+                    "index": 3, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "iela", 
+                    "tag": "ncfsn4"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|reziduala_tips=Skaitlis_cipariem|pamatforma=3|leta_lemma=3", 
+                    "form": "3", 
+                    "index": 4, 
+                    "pos": "x", 
+                    "parentIndex": 3, 
+                    "lemma": "3", 
+                    "tag": "xn"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=,|pieturzimes_tips=Komats|pamatforma=,|leta_lemma=,", 
+                    "form": ",", 
+                    "index": 5, 
+                    "pos": "z", 
+                    "parentIndex": 3, 
+                    "lemma": ",", 
+                    "tag": "zc"
+                }, 
+                {
+                    "namedEntityID": 51, 
+                    "namedEntityType": "location", 
+                    "features": "leta_lemma=R\u012bga|avota_pamatforma=r\u012bga|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|lietvarda_tips=\u012apa\u0161v\u0101rds|dzimte=Sievie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=R\u012bga", 
+                    "form": "R\u012bga", 
+                    "index": 6, 
+                    "pos": "n", 
+                    "parentIndex": 5, 
+                    "lemma": "R\u012bga", 
+                    "tag": "npfsn4"
+                }
+            ], 
+            "text": "Kri\u0161j\u0101\u0146a Valdem\u0101ra iela 3 , R\u012bga", 
+            "frames": [
+                {
+                    "tokenIndex": 3, 
+                    "type": "Participation", 
+                    "elements": []
+                }
+            ]
+        }, 
+        {
+            "tokens": [
+                {
+                    "namedEntityType": "O", 
+                    "features": "leta_lemma=e-pasts|avota_pamatforma=e-pasts|skaitlis=Vienskaitlis|vardskira=Lietv\u0101rds|dzimte=V\u012brie\u0161u|lielo_burtu_lietojums=S\u0101kas_ar_lielo_burtu|locijums=Nominat\u012bvs|pamatforma=e-pasts", 
+                    "form": "E-pasts", 
+                    "index": 1, 
+                    "pos": "n", 
+                    "parentIndex": 0, 
+                    "lemma": "e-pasts", 
+                    "tag": "n_msn1"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Pieturz\u012bme|avota_pamatforma=:|pieturzimes_tips=Kols|pamatforma=:|leta_lemma=:", 
+                    "form": ":", 
+                    "index": 2, 
+                    "pos": "z", 
+                    "parentIndex": 3, 
+                    "lemma": ":", 
+                    "tag": "zo"
+                }, 
+                {
+                    "namedEntityType": "O", 
+                    "features": "vardskira=Rezidu\u0101lis|pamatforma=media@mfa.gov.lv|leta_lemma=_rare_", 
+                    "form": "media@mfa.gov.lv", 
+                    "index": 3, 
+                    "pos": "x", 
+                    "parentIndex": 1, 
+                    "lemma": "media@mfa.gov.lv", 
+                    "tag": "xx"
+                }
+            ], 
+            "text": "E-pasts : media@mfa.gov.lv", 
+            "frames": []
+        }
+    ]
+}
