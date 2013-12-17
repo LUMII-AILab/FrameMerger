@@ -61,7 +61,6 @@ def get_frame_text(mentioned_entities, frame):
             entity = mentioned_entities[element["Value"]["Entity"]]
         except KeyError, e:
             log.error("Entity ID %s (used in a frame element) not found! Can not generate frame text. Data:\n%r\n", element["Value"]["Entity"], frame)
-            print "\nERROR: Entity ID %s (in frame element) not found! Can not generate frame text. Data:\n%r\n" % (element["Value"]["Entity"], frame)
             continue
         
         # try to load NameInflections
@@ -71,14 +70,13 @@ def get_frame_text(mentioned_entities, frame):
                 roles[role] = json.loads(entity["NameInflections"])
             except ValueError:
                 log.exception("Problem parsing JSON in NameInflections for entity:\n%s", entity)
-                print "\nProblem w. NameInflections for entity:\n%s\n" % (entity,)
 
                 fallback = True
                 #raise
 
         # fallback: no inflection info available
         if entity["NameInflections"] == u'' or entity["NameInflections"] == u'null' or fallback:
-            print 'Entītija bez locījumiem', entity
+            log.debug('Entītija %s bez locījumiem', entity)
             roles[role] = { # Fallback, lai ir vismaz kautkādi apraksti
                 u'Nominatīvs': entity[u'Name'],
                 u'Ģenitīvs': entity[u'Name'],
@@ -89,7 +87,7 @@ def get_frame_text(mentioned_entities, frame):
             try:
                 roles[role] = json.loads(entity["NameInflections"])        
             except ValueError:
-                print 'Slikti inflectioni: ', entity["NameInflections"]
+                log.exception('Slikti inflectioni: %s', entity["NameInflections"])
 
     # Tipiskās vispārīgās lomas
     # FIXME - šausmīga atkārtošanās sanāk...
@@ -107,7 +105,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 0: # Dzimšana
         if elem(u'Bērns') is None:
-            print "Dzimšana bez bērna :( ", frame
+            log.debug("Dzimšana bez bērna :( %s", frame)
             return simpleVerbalization()
         radinieki = u''    
         if elem(u'Radinieki') is not None:
@@ -116,13 +114,13 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 1: # Vecums
         if elem(u'Persona') is None or elem(u'Vecums') is None:
-            print "Vecums bez pilna komplekta :( ", frame
+            log.debug("Vecums bez pilna komplekta :( %s", frame)
             return simpleVerbalization()
         return elem(u'Persona', u'Ģenitīvs') + u" vecums ir " + elem(u'Vecums')
 
     if frame_type == 2: # Miršana
         if elem(u'Mirušais') is None:
-            print "Miršana bez mirēja :( ", frame
+            log.debug("Miršana bez mirēja :( %s", frame)
             return simpleVerbalization() 
         ceelonis = u''
         if elem('Cēlonis') is not None:
@@ -131,7 +129,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 3: # Attiecības
         if elem(u'Partneris_1') is None or elem(u'Partneris_2') is None or elem(u'Attiecības') is None:
-            print "Attiecības bez pilna komplekta :( ", frame
+            log.debug("Attiecības bez pilna komplekta :( %s", frame)
             return simpleVerbalization()
 
         # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
@@ -139,7 +137,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 4: # Vārds alternatīvais
         if elem(u'Vārds') is None or elem(u'Entītija') is None:
-            print "Cits nosaukums bez pilna komplekta :(", frame
+            log.debug("Cits nosaukums bez pilna komplekta :( %s", frame)
             return simpleVerbalization()
 
         if elem(u'Tips') is None:
@@ -149,7 +147,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 5: # Dzīvesvieta
         if elem(u'Rezidents') is None or elem(u'Vieta') is None:
-            print "Dzīvesvieta bez minimālā komplekta :(", frame
+            log.debug("Dzīvesvieta bez minimālā komplekta :(%s", frame)
             return simpleVerbalization()
 
         biezhums = u''
@@ -160,7 +158,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 6: # Izglītība    
         if elem(u'Students') is None:
-            print "Izglītība bez studenta :( ", frame
+            log.debug("Izglītība bez studenta :( %s", frame)
             return simpleVerbalization()
 
         iestaade = u''    
@@ -178,14 +176,14 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 7: # Nodarbošanās
         if elem(u'Persona') is None or elem(u'Nodarbošanās') is None:
-            print "Nodarbošanās bez pašas nodarbošanās vai dalībnieka :( ", frame
+            log.debug("Nodarbošanās bez pašas nodarbošanās vai dalībnieka :( %s", frame)
             return simpleVerbalization()
 
         return laiks + u' ' + elem(u'Persona') + u" ir" + statuss + u' ' + elem(u'Nodarbošanās')
 
     if frame_type == 8: # Izcelsme
         if elem(u'Persona') is None:
-            print "Izcelsme bez personas :( ", frame
+            log.debug("Izcelsme bez personas :( %s", frame)
             return simpleVerbalization()
 
         if elem(u'Tautība') is not None:
@@ -194,12 +192,12 @@ def get_frame_text(mentioned_entities, frame):
         if elem(u'Izcelsme') is not None:
             return elem(u'Persona') + u' nāk no ' + elem(u'Izcelsme', u'Ģenitīvs') #TODO - jānočeko cik labi iet kopā ar reālajām izcelsmēm
 
-        print "Izcelsme bez izcelsmes :( ", frame
-        return None
+        log.debug("Izcelsme bez izcelsmes :( %s", frame)
+        return simpleVerbalization()
 
     if frame_type == 9: # Amats
         if elem(u'Darbinieks') is None:
-            print "Amats bez darbinieka :( ", frame
+            log.debug("Amats bez darbinieka :( %s", frame)
             return simpleVerbalization()
 
         if elem(u'Sākums') is not None:
@@ -217,7 +215,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 10: # Darba sākums
         if elem(u'Darbinieks') is None:
-            print "Darba sākums bez darbinieka :( ", frame
+            log.debug("Darba sākums bez darbinieka :( %s", frame)
             return simpleVerbalization()
 
         darbavieta = u''
@@ -244,7 +242,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 11: # Darba beigas
         if elem(u'Darbinieks') is None:
-            print "Darba beigas bez darbinieka :( ", frame
+            log.debug("Darba beigas bez darbinieka :( %s", frame)
             return simpleVerbalization()
 
         darbavieta = u''
@@ -269,14 +267,14 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 12: # Dalība
         if elem(u'Biedrs') is None or elem(u'Organizācija') is None:
-            print "Dalība bez biedra vai organizācijas :( ", frame
+            log.debug("Dalība bez biedra vai organizācijas :( %s", frame)
             return simpleVerbalization()
 
         return laiks + u' ' + elem(u'Biedrs') + u' ir ' + statuss + elem(u'Organizācija', u'Lokatīvs') 
 
     if frame_type == 13: # Vēlēšanas
         if elem(u'Dalībnieks') is None or elem(u'Vēlēšanas') is None:
-            print "Vēlēšanas bez dalībnieka vai vēlēšanām :( ", frame
+            log.debug("Vēlēšanas bez dalībnieka vai vēlēšanām :( %s", frame)
             return simpleVerbalization()
         amats = u''
         if elem(u'Amats') is not None:
@@ -286,7 +284,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 14: # Atbalsts
         if elem(u'Atbalstītājs') is None or elem(u'Saņēmējs') is None:
-            print "Atbalsts bez dalībnieka vai saņēmēja :( ", frame
+            log.debug("Atbalsts bez dalībnieka vai saņēmēja :( %s", frame)
             return simpleVerbalization()
 
         atbalsts = u''
@@ -297,7 +295,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 15: # Dibināšana
         if elem(u'Organizācija') is None:
-            print "Dibināšana bez dibinātā :( ", frame
+            log.debug("Dibināšana bez dibinātā :( %s", frame)
             return simpleVerbalization()
         veids = u''
         if elem(u'Veids') is not None:
@@ -313,7 +311,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 16: # Piedalīšanās
         if elem(u'Notikums') is None:
-            print "Piedalīšanās bez notikuma :( ", frame
+            log.debug("Piedalīšanās bez notikuma :( %s", frame)
             return simpleVerbalization()
         veids = u''
         if elem(u'Veids') is not None:
@@ -332,7 +330,7 @@ def get_frame_text(mentioned_entities, frame):
             
     if frame_type == 17: # Finanses
         if elem(u'Organizācija') is None:
-            print "Finanses bez organizācijas :( ", frame
+            log.debug("Finanses bez organizācijas :( %s", frame)
             return simpleVerbalization()
 
         avots = u''
@@ -362,7 +360,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 18: # Īpašums
         if elem(u'Īpašnieks') is None or elem(u'Īpašums') is None:
-            print "Īpašuma freims bez īpašnieka vai paša īpašuma :( ", frame
+            log.debug("Īpašuma freims bez īpašnieka vai paša īpašuma :( %s", frame)
             return simpleVerbalization()
 
         if elem(u'Daļa') is None:
@@ -372,7 +370,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 19: # Parāds
         if elem(u'Parādnieks') is None and elem(u'Aizdevējs') is None:
-            print "Parādam nav ne aizdevēja ne parādnieka :( ", frame
+            log.debug("Parādam nav ne aizdevēja ne parādnieka :( %s", frame)
             return simpleVerbalization()    
 
         aizdevums = u''
@@ -397,7 +395,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 20: # Tiesvedība
         if elem(u'Apsūdzētais') is None:
-            print "Tiesvedība bez apsūdzētā :( ", frame  #FIXME - teorētiski varētu arī būt teikums kur ir tikai prasītājs kas apsūdz kādu nekonkrētu
+            log.debug("Tiesvedība bez apsūdzētā :( %s", frame)  #FIXME - teorētiski varētu arī būt teikums kur ir tikai prasītājs kas apsūdz kādu nekonkrētu
             return simpleVerbalization()  
 
         tiesa = u''
@@ -419,7 +417,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 22: # Sasniegums
         if elem(u'Sasniegums') is None:
-            print "Sasniegums bez sasnieguma :( ", frame
+            log.debug("Sasniegums bez sasnieguma :( %s", frame)
             return simpleVerbalization()
 
         sacensiibas = u''
@@ -445,7 +443,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 23: # Ziņošana
         if elem(u'Ziņa') is None:
-            print "Ziņošana bez ziņas :( ", frame
+            log.debug("Ziņošana bez ziņas :( %s", frame)
             return simpleVerbalization() 
 
         avots = u''
@@ -461,7 +459,7 @@ def get_frame_text(mentioned_entities, frame):
 
     if frame_type == 25: # Zīmols
         if elem(u'Organizācija') is None or (elem(u'Zīmols') is None and elem(u'Produkts') is None):
-            print "Zīmols bez īpašnieka vai paša zīmola :( ", frame
+            log.debug("Zīmols bez īpašnieka vai paša zīmola :( %s", frame)
             return simpleVerbalization() 
 
         produkts = u''
@@ -477,10 +475,8 @@ def get_frame_text(mentioned_entities, frame):
             return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols:' + ziimols
 
     # ja nekas nav atrasts
-    print "Nemācējām apstrādāt ", frame
-    return None
-
-
+    log.debug("Nemācējām apstrādāt %s", frame)
+    return simpleVerbalization()
 
 def main():
     # do nothing for now
