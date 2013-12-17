@@ -245,7 +245,6 @@ class SemanticApiPostgres(object):
         entityid = res # insertotās rindas id
 
         names_sql = "INSERT INTO EntityOtherNames(EntityID, Name) VALUES (%s, %s)"
-        self.api.insert(names_sql, (entityid, name) )
         for othername in othernames:
             self.api.insert(names_sql, (entityid, othername) )
 

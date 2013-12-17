@@ -306,8 +306,9 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                     extra_alias = re.sub(ur'([A-Z])\w+ ', ur'\1. ', representative, flags=re.UNICODE )
                     if not extra_alias in insertalias:
                         insertalias.append(extra_alias)
-            if representative in insertalias:
-                insertalias.remove(representative)  # NER ieliek arī galveno nosaukumu pie aliasiem; taču API sagaida ka tā nebūs, savādāk insertos dubultā
+            # if representative in insertalias:
+            #     insertalias.remove(representative)  # NER ieliek arī galveno nosaukumu pie aliasiem; taču API sagaida ka tā nebūs, savādāk insertos dubultā
+            #                                               ^^^ šis tagad ir mainījies pie pārejas no Mārtiņa API uz datubāzes tiešo pieeju
 
             category = getNETypeCode(entity['type'])
             outerId = [] # Organizācijām un personām pieliekam random UUID
