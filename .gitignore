@@ -3,3 +3,4 @@ db_config.py
 log/*
 output/*
 src/*.pyc
+*.pyc

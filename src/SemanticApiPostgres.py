@@ -239,7 +239,7 @@ class SemanticApiPostgres(object):
     def insertEntity(self, name, othernames, category, outerids=[], inflections = None):
         main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections) VALUES (%s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
-        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, dataset, inflections),
+        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections),
                 returning = True,
                 commit = False)
         entityid = res # insertotās rindas id
@@ -268,7 +268,7 @@ class SemanticApiPostgres(object):
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
         res = self.api.insert(main_sql,
-                (frametype, source, sentenceId, document, targetword, 0, dataset, None, False, date),
+                (frametype, source, sentenceId, document, targetword, 0, self.api.dataset, None, False, date),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
@@ -446,37 +446,6 @@ class SemanticApiPostgres(object):
             cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
         self.api.commit()
         cursor.close()
-
-# ---- duplicate API calls (which have 2 implementations) ----  
-
-    # DUPLICATE OF: entity_data_by_id()
-
-    # Pēc entītijas ID atgriež tās datus
-    # alldata - vai ņemt tikai pamatinfo (primārais vārds, kategorija), vai arī pievilkt klāt visus aliasus un outerid
-    def entityByID(self, entityID, alldata = False):
-        cursor = self.api.new_cursor()
-        if not alldata:
-            query = "select entityid, name, category from entities where deleted is false and entityid = %s"
-        else:
-            query = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
-                        left outer join entityothernames n on e.entityid = n.entityid \
-                        left outer join entityouterids i on e.entityid = i.entityid \
-                        where e.entityid = %s and e.deleted is false \
-                        group by e.entityid, e.name, e.category, e.nameinflections"
-
-        cursor.execute(query, (entityID,) )
-        r = cursor.fetchone()
-        cursor.close()
-
-        if r is None: # Ja ir rezultāts, izņemam no tuples, ja ieraksts nav atrasts, atgriežam None
-            return None
-        else:
-            if not alldata:
-                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2]}
-            else:
-                return {'EntityId':r[0], 'Name':r[1], 'Category':r[2], 'NameInflections':r[3], 'OtherName':r[4], 'OuterId':r[5]}
-
-
 
 # ------------------------------------------------------------  
 
