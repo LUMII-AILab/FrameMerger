@@ -36,9 +36,7 @@ class DummyConsolidator(object):
     """
     
     def __init__(self):
-        self.info_str = INFO_STR + __name__
-        print self.info_str
-        pass
+        self.info_str = INFO_STR + self.__class__.__name__
 
     def apply(self, frame_list):
         # simple case - return frames as-is
@@ -72,9 +70,7 @@ class BaseConsolidator(object):
     """
 
     def __init__(self):
-        self.info_str = INFO_STR + __name__
-        print self.info_str
-        pass
+        self.info_str = INFO_STR + self.__class__.__name__
 
     def apply(self, frame_list):
         # simple case - return frames as-is
@@ -128,7 +124,7 @@ class BaseConsolidator(object):
 class Consolidator(object):
 
     def __init__(self):
-        pass
+        self.info_str = INFO_STR + __name__
 
     def apply(self, frame_list):
         # > simple / default case - return frames as-is

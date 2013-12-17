@@ -355,7 +355,7 @@ def get_frame_text(mentioned_entities, frame):
             if elem(u'Peļņa') is not None: # tikai peļņa
                 return elem(u'Organizācija', u'Ģenitīvs') + u' peļņa' + laiks + u' bija ' + elem(u'Peļņa') + vieniibas + pieaugums + avots 
             else: #hmm, ne viens ne otrs... FIXME, nezinu vispār vai te ko var darī†
-                print "Finanses bez peļņas vai apgrozījuma ;("
+                log.debug("Finanses bez peļņas vai apgrozījuma ;( %s", frame)
                 return elem(u'Organizācija', u'Ģenitīvs') + u' finanses' + laiks + u' bija ' + vieniibas + pieaugums + avots 
 
     if frame_type == 18: # Īpašums
