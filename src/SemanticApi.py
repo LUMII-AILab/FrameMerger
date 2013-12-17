@@ -13,8 +13,6 @@ log.addHandler(logging.NullHandler())
 import shelve
 from pprint import pprint, pformat
 
-from nose.tools import ok_, eq_
-
 from EntityFrames import EntityFrames
 
 class EntityDb(object):
@@ -131,11 +129,9 @@ class SemanticApi(object):
 
     def entity_data_by_id(self, e_id):
         data = self.entities_by_id([e_id])["Answers"]
-        eq_(len(data), 1)
 
         if data[0]["Answer"] == 0:
             entity = data[0]["Entity"]
-            eq_(str(entity["EntityId"]), str(e_id))      # assert
 
         else:
             log.warning("Entity %s not found. Error code [%s], message: %s" % (e_id, data[0]["Answer"], data[0]["AnswerTypeString"]))
@@ -145,13 +141,6 @@ class SemanticApi(object):
 
     def entity_frames_by_id(self, e_id):
         data = self.get_frames([e_id])["Answers"]
-
-        try:
-            eq_(len(data), 1)
-        except AssertionError:
-            log_data = "\n".join([pformat(log_item) for log_item in data])
-            log.exception("Data does not meet asserted assumptions:\n%s", log_data)
-            log.warning("API data assertion error. Continuing processing, but be warned - data might not be OK!")
 
         if data[0]["Answer"] == 0:
             frames = data[0]["FrameData"]
@@ -164,13 +153,6 @@ class SemanticApi(object):
 
     def entity_summary_frames_by_id(self, e_id):
         data = self.get_summary_frames([e_id])["Answers"]
-
-        try:
-            eq_(len(data), 1)
-        except AssertionError:
-            log_data = "\n".join([pformat(log_item) for log_item in data])
-            log.exception("Data does not meet asserted assumptions:\n%s", log_data)
-            log.warning("API data assertion error. Continuing processing, but be warned - data might not be OK!")
 
         if data[0]["Answer"] == 0:
             frames = data[0]["FrameData"]
@@ -336,190 +318,3 @@ class SemanticApi(object):
                }
 
         return self.api_call(method, data)
-        
-
-
-def test_entities_by_id():
-
-    print "Testing GetEntityDataById"
-    print
-
-    id_list = [1184, 1191, 4351, 5000]
-
-    api = SemanticApi()
-    res = api.entities_by_id(id_list)
-
-    pprint(res)
-    print
-
-    print res['Answers'][2]['Entity']['Name'].encode("utf-8")
-    print
-
-
-def test_entity_ids_by_name():
-
-    print "Testing GetEntityIdByName"
-    print
-
-    name_list = [
-        'Tumanova I.',          # 1184
-        '"Infima"',             # 1191
-        "Lācīša skola ",        # 4351
-        "Lācīša skola"          # not exact match, but similar to 4351 (w/out the trailing " ")
-    ]
-
-    api = SemanticApi()
-    res = api.entity_ids_by_name(name_list)
-
-    pprint(res)
-    print
-
-def try_get_frames_example():
-
-    api = SemanticApi()
-
-    print "Trying GetFrame example (1)"
-    print
-
-    res = api.get_frames([13], [0, 1])
-
-    pprint(res)
-    print
-
-    print "Trying GetFrame example (1) with all frame types"
-    print
-
-    res = api.get_frames([13], [])
-
-    pprint(res)
-    print
-
-    print "Trying GetFrame example (2)"
-    print
-
-    res = api.get_frames([19], [1])
-
-    pprint(res)
-    print
-
-
-def test_get_frames():
-
-    api = SemanticApi()
-
-    print "Testing GetFrame (1)"
-    print
-
-    id_list = [1097,]
-    
-    res = api.get_frames(id_list)
-
-    pprint(res)
-    print
-
-    print "Testing GetFrame (1)"
-    print
-
-    id_list = [1191, 1097, 5000]
-    f_types = [4, 5, 6, 7]
-
-    res = api.get_frames(id_list, f_types)
-
-    pprint(res)
-    print
-
-def test_get_all_entities():
-
-    api = SemanticApi()
-
-    print "Trying Get All Entities by ID"
-    print
-
-    res = api.entities_by_id([])
-
-    pprint(res)
-    print
-
-    print "Trying Get All Entities by Name"
-    print
-
-    res = api.entity_ids_by_name([])
-
-    pprint(res)
-    print
-
-def get_entity_list():
-
-    print "Getting NamedEntity list (0..4999)"
-    print
-
-    id_list = range(5000)
-
-    api = SemanticApi()
-    res = api.entities_by_id(id_list)
-
-    entity_db = {}
-
-    for item in res["Answers"]:
-        item_id = item["Entity"]["EntityId"]
-
-        if item["Answer"] == 0:     # 0 = OK
-            entity_db[item_id] = item["Entity"]
-
-    print "Entity list length:", len(entity_db)
-    print
-    
-    out = filter(lambda x: "Tilts" not in x["Name"], entity_db.values())
-    pprint(out[:5])
-    print
-
-def main():
-
-    test_entities_by_id()
-
-    test_entity_ids_by_name()
-
-    try_get_frames_example()
-
-    test_get_frames()
-
-    #get_entity_list()
-
-    test_get_all_entities()
-
-if __name__ == "__main__":
-    main()
-
-
-# --- FRAME TYPES ---
-
-"""
-Freima tips:
-
-Dzimšana - 0
-Vecums - 1
-Miršana - 2
-Attiecības - 3
-Vārds - 4
-Dzīvesvieta - 5
-Izglītība - 6
-Nodarbošanās - 7
-Izcelsme - 8
-Amats - 9
-Darba_sākums - 10
-Darba_beigas - 11
-Dalība - 12
-Vēlēšanas - 13
-Atbalsts - 14
-Dibināšana - 15
-Piedalīšanās - 16
-Finanses - 17
-Īpašums - 18
-Parāds - 19
-Tiesvedība - 20
-Uzbrukums - 21
-Sasniegums - 22
-Ziņošana - 23
-Publisks_Iepirkums - 24
-Zīmols - 25
-"""
