@@ -6,7 +6,7 @@ import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-import psycopg2, psycopg2.extensions, psycopg2.extras
+import psycopg2, psycopg2.extensions, psycopg2.extras, json
 import atexit
 
 from pprint import pprint
@@ -245,8 +245,10 @@ class SemanticApiPostgres(object):
         entityid = res # insertotās rindas id
 
         names_sql = "INSERT INTO EntityOtherNames(EntityID, Name) VALUES (%s, %s)"
+        self.api.insert(names_sql, (entityid, name) )
         for othername in othernames:
             self.api.insert(names_sql, (entityid, othername) )
+
 
         outerid_sql = "INSERT INTO EntityOuterIDs(EntityID, OuterID) VALUES (%s, %s)"
         for outerid in outerids:
