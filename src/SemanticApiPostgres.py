@@ -331,51 +331,59 @@ class SemanticApiPostgres(object):
 	# targetword - unicode string
 	# date - freima datums - string ISO datumformātā 
     def insert_summary_frame(self, frame):
-        main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime)\
-                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+        main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
+                         FrameCnt, FrameText, SummaryInfo, Deleted)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
-        #metadata = {  for k,v in frame["FrameMetadata"]}
-        # XXX
-        fdatetime = None
+        log.debug("Inserting summary frame:\n %r", frame)
+
+        # fix MergeType codes (!) as the API requires Int for now
+        merge_type_map = {"O": 0, "M": 2, "E": 1}
+
+        if frame["MergeType"] in merge_type_map:
+            merge_type = merge_type_map[frame["MergeType"]]
+        else:
+            merge_type = None
+
+        if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
+            frame["IsHidden"] = True
 
         res = self.api.insert(main_sql,
                 (frame["FrameType"], frame["SourceId"], frame["SentenceId"], frame["DocumentId"], frame["TargetWord"], 
-                    0, self.api.dataset, frame["IsBlessed"], frame["IsHidden"], fdatetime),
+                    merge_type, self.api.dataset, frame["IsBlessed"], frame["IsHidden"], frame["FrameCnt"], frame["FrameText"],
+                    frame["SummaryInfo"], frame["IsDeleted"]),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
 
-        elements = frame["FrameData"]
-        pprint(elements.items())
+        element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID, WordIndex) VALUES (%s, %s, %s, %s)"
 
-        element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
-        for element, entityid in elements.iteritems():
-            self.api.insert(element_sql, (frameid, entityid, element) )       
-            # NB! Te nav validācijas; te arī neuzstāda wordindex lauku
+        # insert frame elements
+        for entry in frame["FrameData"]:
+            i_entity = entry["Value"]["Entity"]
+            i_word_index = entry["Value"]["PlaceInSentence"]
+            i_element = entry["Key"]
+
+            self.api.insert(element_sql, (frameid, i_entity, i_element, i_word_index) )       
+            # NB! Te nav validācijas
+
+        relation_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
+
+        # record info about Summarized raw frames
+        for raw_frame_id in frame[u"SummarizedFrames"]:
+            self.api.insert(relation_sql, (frameid, raw_frame_id) )       
 
         self.api.commit()
 
-        return frameid
+        # form result report
+        report = {"Answers":[
+            {   
+                "Answer": 0,
+                "FrameId": frameid,
+            },
+        ]}
 
-        """
- 'FrameCnt': 1,
- u'FrameData': [{u'Key': 1,
-                 u'Value': {u'Entity': 1560102, u'PlaceInSentence': 0}},
-                {u'Key': 3,
-                 u'Value': {u'Entity': 1617797, u'PlaceInSentence': 0}},
-                {u'Key': 2,
-                 u'Value': {u'Entity': 1617796, u'PlaceInSentence': 0}},
-                {u'Key': 6,
-                 u'Value': {u'Entity': 1617795, u'PlaceInSentence': 0}}],
- u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': None}],
- 'FrameText': u'1983 - 1990 Egils Ziedi\u0146\u0161 bija redaktora amat\u0101 izdevniec\u012bb\u0101 " Zvaigzne "',
- u'IsDeleted': False,
- 'MergeType': 'O',
- 'SummarizedFrames': [2208371],
- 'SummaryInfo': 'captsolo | ConsolidateFrames:  BaseConsolidator | 2013_12_17 00:40:27',
-        """
-
-        raise NotImplementedError("method not implemented")
+        return report
 
     def summary_frame_data_by_id(self):
         raise NotImplementedError("method not implemented")
