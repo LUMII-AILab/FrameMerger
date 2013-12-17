@@ -12,10 +12,22 @@ from pprint import pprint
 import EntityFrames as EF
 
 from SemanticApi import SemanticApi
+from SemanticApiPostgres import SemanticApiPostgres
 from FrameInfo import FrameInfo
 
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
+
+# pašpietiekama funkcija, kas verbalizē izolētu freimu, paņemot visu vajadzīgo no DB
+def verbalizeframe(api, frameID):
+    frame = api.frame_by_id(frameID)
+
+    mentioned_entities = set()
+    for element in frame["FrameData"]:
+        mentioned_entities.add( element["Value"]["Entity"])
+    entity_data = fetch_all_entities (mentioned_entities)
+
+    return get_frame_text(entity_data, frame)
 
 # Izvelkam sarakstu ar entīšu ID, kas šajā entīšu un to freimu kopā ir pieminēti
 def get_mentioned_entities(entity_list):
@@ -24,6 +36,11 @@ def get_mentioned_entities(entity_list):
         for frame in entity.frames: # FIXME - ja sauc pēc konsolidācijas, tad var ņemt cons_frames kuru ir mazāk un tas ir ātrāk
             for element in frame["FrameData"]:
                 mentioned_entities.add( element["Value"]["Entity"])
+
+    return fetch_all_entities( mentioned_entities)
+
+# Paprasam no api pilnos datus par iesaistītajām entītēm - lai būtu pieejami iepriekš uzģenerētie locījumi
+def fetch_all_entities( mentioned_entities ):
     answers = SemanticApi().entities_by_id( list(mentioned_entities))
     entity_data = {}
     for answer in answers["Answers"]:
