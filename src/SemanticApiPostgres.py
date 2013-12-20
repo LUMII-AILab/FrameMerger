@@ -204,7 +204,12 @@ class SemanticApiPostgres(object):
                         where e.entityid = %s and e.deleted is false \
                         group by e.entityid, e.name, e.category, e.nameinflections"
 
-        res = self.api.query(sql, (e_id,) )[0]
+        res = self.api.query(sql, (e_id,) )
+        if len(res) == 1:
+            res = res[0]
+        else:
+            System.err.write('Entity ID '+str(e_id)+'not found in entity_data_by_id')
+            return None
 
         entity_info = {
             u'Category': res.category,
@@ -226,6 +231,7 @@ class SemanticApiPostgres(object):
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
         # kur ir "iepakots" ID saraksts)
         sql = "select entityid from entityothernames where lower(name) = %s"
+        # sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
         res = self.api.query(sql, (name.lower(),) )
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
@@ -386,8 +392,34 @@ class SemanticApiPostgres(object):
 
         return report
 
-    def summary_frame_data_by_id(self):
-        raise NotImplementedError("method not implemented")
+    # Pēc entītijas ID, atgriež visus summary freimus par viņu. 
+    def summary_frame_data_by_id(self, entityID):
+        cursor = self.api.new_cursor()
+        main_sql = "select blessed, sourceid, frametypeid, json_agg(r) as elements from SummaryFrames f\
+                    join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
+                    where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
+                    group by blessed, sourceid, frametypeid"
+        cursor.execute(main_sql, (entityID,))
+        r = []
+
+        for frame in cursor.fetchall():            
+
+            frame_info = {
+                 # u'DocumentId': frame.documentid,   
+                 u'FrameData':  frame.elements,
+                 # u'FrameId':    frame.frameid,
+                 # u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
+                 u'FrameType':  frame.frametypeid,
+                 u'Blessed':  frame.blessed,
+                 # u'IsDeleted':  frame.deleted,
+                 # u'IsHidden':   frame.hidden,
+                 # u'SentenceId': frame.sentenceid,
+                 u'SourceId':   frame.sourceid,
+                 # u'TargetWord': frame.targetword,
+            }
+            r.append(frame_info)
+        cursor.close()
+        return r
 
     def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False):
         cursor = self.api.new_cursor()

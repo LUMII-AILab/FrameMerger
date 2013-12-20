@@ -364,13 +364,13 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
     best_k = None
     best_score = -99999
     for kandidaats in matchedEntities:
-        db_info = api.entity_data_by_id(kandidaats) # todo - šo request vajag tikai priekš debuginfo, pēc tam būs lieks
         bags = api.getCDCWordBags(kandidaats)
         if bags is None: # šai entītijai nekad nav ģenerēti CDC bagi... uzģenerēsim!    TODO - varbūt šo efektīvāk veikt kā batch job kautkur citur, piemēram, pie freimu summarizācijas šai entītei
             bags = buildGlobalEntityBags(kandidaats)
             api.putCDCWordBags(kandidaats, bags)
 
         if showDisambiguation: # debuginfo    
+            db_info = api.entity_data_by_id(kandidaats) # todo - šo request vajag tikai priekš debuginfo, pēc tam būs lieks
             print 'kandidāts', kandidaats, db_info['Name'], db_info['OuterId']            
             print bags.get('namebag')
             print 'Name match:', CDC.cosineSimilarity(bags.get('namebag'), CDC.namebag(entity))
@@ -398,13 +398,16 @@ def buildGlobalEntityBags(globalID):
     namebag = Counter() # namebag liksim aliasus, kā arī amatus/nodarbošanās - jo tie nonāk dokumenta entītijas aliasos
     mentionbag = Counter() # mentionbag liksim visas 'ID-entītes' kas labajos freimos ir saistītas ar šo ID - personas, organizācijas, vietas
     contextbag = Counter() 
+    if not db_info:  # Ja entītija nav atrasta (izdzēsta utml) - tad ir tukši bag'i
+        return {'namebag':namebag, 'mentionbag':mentionbag, 'contextbag':contextbag}
+
     for alias in db_info['OtherName']:
         namebag.update(alias.split()) # vairākvārdu aliasiem ieliekam katru atsevišķo vārdu
     
-    freimi = entityFrames(globalID) # paņemam no DB visus summarizētos freimus par šo entīti
+    freimi = api.summary_frame_data_by_id(globalID) # paņemam no DB visus summarizētos freimus par šo entīti
 
     for frame in freimi: 
-        if not frame["IsBlessed"] and frame["SourceId"] != 'LETA CV dati': # Ņemam vērā manuāli blesotos freimus - tie ir autoritāte par to, ka saite attiecas tieši uz šo konkrēto 'vārdabrāli'
+        if not frame["Blessed"] and frame["SourceId"] != 'LETA CV dati': # Ņemam vērā manuāli blesotos freimus - tie ir autoritāte par to, ka saite attiecas tieši uz šo konkrēto 'vārdabrāli'
             continue
 
         elementi = convert_api_framedata(frame)
@@ -425,7 +428,7 @@ def buildGlobalEntityBags(globalID):
                 contextbag.update(apraksts.split()) # Pieņemam, ka brīvā teksta apraksti labi korelē ar kontekstu reālajos rakstos
 
         for element in frame["FrameData"]:
-            entityID = element['Value']['Entity']
+            entityID = element['entityid']
             # Šis aizkomentētais būtu production variants - mazāk korekti nekā tiešās entīšu kategorijas, bet vajadzētu (nav pārbaudīts) būt būtiski ātrāk jo nav lieku DB request
             # defaultroletype = getDefaultRole(frame['FrameType'], element['Key'])
             # if (defaultroletype == 'person') or (defaultroletype == 'organization') or (defaultroletype == 'location'):
@@ -530,11 +533,13 @@ def convert_elements(elements, sentence, entities):
     return result
 
 # paņem API atgriezto framedata formātu un pārveido uz Dict no lomas nosaukuma uz entītijas global-ID
+# DB dati ir domāti formā "[{"frameid":1377293,"roleid":1,"entityid":1563176}, {"frameid":1377293,"roleid":3,"entityid":1923390}]"
+# Rezultāts ir domāts formā {"Employee":1563176, "Position":1923390}
 def convert_api_framedata(frame):
     result = {}
     for element in frame["FrameData"]:
-        rolename = getElementName(frame["FrameType"], element['Key'])
-        globalid = element['Value']['Entity']
+        rolename = getElementName(frame["FrameType"], element['roleid'])
+        globalid = element['entityid']
         result[rolename] = globalid
     return result
 
@@ -565,40 +570,3 @@ def outer_id_score(id):
     if id is None: return -100 # ja nu ir izvēle starp tādu entītiju kam ir profils un tādu, kam nav - liekam pie 'zināmās'
     if id.startswith("FP-") or id.startswith("JP-"): return -10 # Kamēr nav entītiju blesošana, šādi prioritizējam LETA iepriekšējos profilus (VIP) no automātiski veidotajiem
     return 0
-
-# Veic API pieprasījumu, nosūtot atbilstošo request saturu
-# service - API funkcijas nosaukums; request - body saturs; rezultāts - kādu nu json tur atgriež 
-def makeRequest(service, request):
-    serviceURL = "http://sps.inside.lv:789/Rest/Semantic/"
-    #serviceURL = "http://alnis.ailab.lv/"
-    user = "PeterisP"
-    try:
-        r = requests.post(serviceURL + service + "Pg/" + user, data = request, headers = {'content-type': 'application/json'}, timeout = 5)
-        #r = requests.post(serviceURL + service + "Pg/" + user, data = request, headers = {'content-type': 'application/json'}, timeout = 5)
-        j = r.json()
-    except ValueError:
-        print "Couldn't decode JSON response from API"
-        print r.text.encode('utf-8')
-        j = {'Answers':[]}
-    except requests.exceptions.Timeout:
-        print "Timeout at API"
-        print request
-        j = {'Answers':[]}
-
-    return j
-
-# Pēc entītijas ID, atgriež visus summary freimus par viņu. TODO - kad būs reāli lietošanā blessotie freimi, jāfiltrē uz tiem.
-def entityFrames(entityID):
-    # TODO - cache
-    request = {'parameterList':{'QueryParameters':[{'EntityIdList':[entityID], 'FrameTypes':[]}]}}
-    r = makeRequest('GetSummaryFrame', json.dumps(request))
-    if len(r["Answers"]) != 1:
-        print "entityFrames: API returned unexpected number of answers"
-        print r
-    answer = r["Answers"][0]
-    if answer["Answer"] == 0: # Ok
-        return answer["FrameData"]
-    elif answer["Answer"] != 6: # 6 - nav atrasts neviens freims; citi paziņojumi būtu slikti
-        print "Unknown answer: ", answer["Answer"], " - ", answer["AnswerTypeString"], " when searching for entityframes for id", entityID
-    return [] 
-

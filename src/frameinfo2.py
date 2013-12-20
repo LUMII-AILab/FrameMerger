@@ -36,14 +36,14 @@ def getFrameType (name):
     if name in frameTypes:
         return frameTypes.index(name)
     else:
-        print "Nesaprasts freima tips '", name, "'"
+        sys.stderr.write("Nesaprasts freima tips '"+name+"'")
         return 0
 
 def getFrameName (code):
     try:
         name = frameTypes[code]
     except IndexError:
-        print "Hmm mēģinam dabūt vārdu freimam ar nelabu numuru", code
+        sys.stderr.write("Mēģinam dabūt vārdu freimam ar nelabu numuru"+str(code))
         name = ""
     return name
 
@@ -81,14 +81,14 @@ def getElementCode(frameCode, name):
     if name in frameElements[frameCode]:
         return frameElements[frameCode].index(name)+1 # +1 jo Freimu lomas numurējas no 1
     else:
-        print "Freimā '", frameTypes[frameCode], "' nesaprasts elements '", name, "'"
+        sys.stderr.write("Freimā '"+frameTypes[frameCode]+"' nesaprasts elements '"+name+"'")
         return 0
 
 def getElementName(frameCode, elementCode):
     try:
         name = frameElements[frameCode][elementCode-1] # -1 jo Freimu lomas numurējas no 1
     except IndexError:
-        print "Hmm mēģinam dabūt vārdu elementam ar nelabu numuru", elementCode, "freimā", frameCode
+        sys.stderr.write("Hmm mēģinam dabūt vārdu elementam ar nelabu numuru"+elementCode+"freimā"+frameCode)
         name = ""
     return name
 
@@ -110,11 +110,11 @@ NETypeCodes = {
 
 def getNETypeCode (name):
     if name is None: 
-        print "Prasam NE tipu priekš None..."
+        sys.stderr.write("Prasam NE tipu priekš None...")
         return 0
     code = NETypeCodes.get(name)
     if code is None:
-        print "Nesaprasts NE tips '", name, "'"
+        sys.stderr.write("Nesaprasts NE tips '"+name+"'")
         return 0
     else:        
         return code

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys, os, glob, fnmatch, json, codecs
+import sys, os, glob, fnmatch, json, codecs, traceback
 from datetime import date, datetime
 
 sys.path.append("./src")
@@ -51,20 +51,20 @@ try:
             filename = os.path.join(basedir, filename)
         basename = os.path.basename(filename)
 
-        # sys.stderr.write('Input file: '+filename+' ... \n')
+        try:
+            if filename.endswith('.json'):
+                with open(filename) as f:
+                    document = json.load(f, object_hook=Dict)
 
-        # try:
-        if filename.endswith('.json'):
-            with open(filename) as f:
-                document = json.load(f, object_hook=Dict)
+                document.id = os.path.splitext(basename)[0]
+                document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
-            document.id = os.path.splitext(basename)[0]
-            document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
-
-            upload2db(document)
-            sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
-        # except Exception as e:
-        #     print filename, '\tFail:\t', e
+                upload2db(document)
+                sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
+        except Exception as e:
+            sys.stderr.write('Problem on file: '+filename+' ... \n')
+            traceback.print_exc()
+            print filename, '\tFail:\t', e
 
     sys.stderr.flush()
 
