@@ -6,7 +6,8 @@ import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-import psycopg2, psycopg2.extensions, psycopg2.extras, json
+import psycopg2, psycopg2.extensions, psycopg2.extras
+from psycopg2.extras import Json
 import atexit
 
 from pprint import pprint
@@ -224,9 +225,8 @@ class SemanticApiPostgres(object):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
         # kur ir "iepakots" ID saraksts)
-
-        sql = "select entityid from entityothernames where name = %s"
-        res = self.api.query(sql, (name,) )
+        sql = "select entityid from entityothernames where lower(name) = %s"
+        res = self.api.query(sql, (name.lower(),) )
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
@@ -445,6 +445,16 @@ class SemanticApiPostgres(object):
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
             cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
+        self.api.commit()
+        cursor.close()
+
+    # Ja šāds dokuments nav dokumentu tabulā, tad to pievieno
+    def insertDocument(self, documentID, timestamp = None):
+        cursor = self.api.new_cursor()
+        cursor.execute("select documentid from documents where documentid = %s;", (documentID, ))
+        r = cursor.fetchone()
+        if not r: # ja nav tāds atrasts
+            cursor.execute("insert into documents (documentid, i_time) values (%s, %s);", (documentID, timestamp))
         self.api.commit()
         cursor.close()
 

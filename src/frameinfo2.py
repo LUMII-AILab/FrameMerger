@@ -104,7 +104,9 @@ NETypeCodes = {
     'descriptor': 9,
     'relatives': 10,
     'prize': 11,
-    'media': 12  }
+    'media': 12 ,
+    'product': 13,
+    'event' : 14 }
 
 def getNETypeCode (name):
     if name is None: 

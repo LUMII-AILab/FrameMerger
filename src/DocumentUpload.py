@@ -86,11 +86,12 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 api.insertFrame(frameType, elements, document.id, source, sentences.index(sentence), targetword, document.date.isoformat())
 
     if realUpload: 
+        api.insertDocument(document.id, document.date.isoformat())
         for entity in entities.values():
             if (entity.get('type') == 'person') or (entity.get('type') == 'organization'):
                 api.dirtyEntity(entity.get(u'GlobalID'))
+        api.api.commit()
 
-    api.api.commit()
     # Iztīram krossreferences, lai document objektu var smuki noseivot kā JSON
     for sentence in sentences:
         for frame in sentence.frames:
@@ -189,12 +190,15 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         if headtoken.namedEntityType is None or headtoken.namedEntityType == u'O':
             headtoken.namedEntityType = defaultType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
 
-        entityID = headtoken.namedEntityID # Ja LVCoref visu izdarītu, tad šādi varētu arī beigt; bet šobrīd ir profesijas ar cilvēkiem kopā savilktas...
+        entityID = headtoken.namedEntityID 
 
         # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
         if entityID is not None and entities[str(entityID)].get(u'type') == u'person' and headtoken.namedEntityType == u'profession':
             phrase = entityPhraseByNER(tokenIndex, tokens)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+
+        if entityID is None and headtoken.pos == u'p': # vietniekvārds, kas nav ne ar ko savilkts
+            entityID = makeEntity(entities, u'_NEKONKRĒTS_', headtoken['namedEntityType'])
 
         # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
         if entityID is None or (headtoken.form == u'Rīgas' and headtoken.namedEntityType == u'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
@@ -299,7 +303,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             insertables.append(localID) # šeit sakrājam entītiju objektu ID, lai pēc tam varētu piesiet pie API atbildēm
 
             representative = entity.get('representative')
-            insertalias = [] # ... filtrējam entity['aliases'] lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
+            insertalias = [representative] # ja ņemtu visus, tad te būtu vismaz jāfiltrē entity['aliases'] lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
             # pirms insertošanas personām pieliekam aliasu ar iniciāli, ja tāds tur jau nav
             if entity['type'] == 'person' or entity['type'] == u'person':                
                 if re.match(r'[A-Z]\w+ [A-Z]\w+', representative, re.UNICODE):   #FIXME - šis regexp acīmredzot nestrādās ja sāksies ar lielo garo vai mīksto burtu

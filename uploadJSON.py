@@ -53,18 +53,18 @@ try:
 
         # sys.stderr.write('Input file: '+filename+' ... \n')
 
-        try:
-            if filename.endswith('.json'):
-                with open(filename) as f:
-                    document = json.load(f, object_hook=Dict)
+        # try:
+        if filename.endswith('.json'):
+            with open(filename) as f:
+                document = json.load(f, object_hook=Dict)
 
-                document.id = os.path.splitext(basename)[0]
-                document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
+            document.id = os.path.splitext(basename)[0]
+            document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
-                upload2db(document)
-                sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
-        except Exception as e:
-            print filename, '\tFail:\t', e
+            upload2db(document)
+            sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
+        # except Exception as e:
+        #     print filename, '\tFail:\t', e
 
     sys.stderr.flush()
 
