@@ -208,7 +208,7 @@ class SemanticApiPostgres(object):
         if len(res) == 1:
             res = res[0]
         else:
-            System.err.write('Entity ID '+str(e_id)+'not found in entity_data_by_id')
+            log.error('Entity ID '+str(e_id)+'not found in entity_data_by_id')
             return None
 
         entity_info = {
@@ -230,8 +230,8 @@ class SemanticApiPostgres(object):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
         # kur ir "iepakots" ID saraksts)
-        sql = "select entityid from entityothernames where lower(name) = %s"
-        # sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
+        # sql = "select entityid from entityothernames where lower(name) = %s"
+        sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
         res = self.api.query(sql, (name.lower(),) )
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem

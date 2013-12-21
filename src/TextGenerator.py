@@ -33,9 +33,10 @@ def verbalizeframe(api, frameID):
 def get_mentioned_entities(entity_list):
     mentioned_entities = set()    
     for entity in entity_list:
-        for frame in entity.frames: # FIXME - ja sauc pēc konsolidācijas, tad var ņemt cons_frames kuru ir mazāk un tas ir ātrāk
-            for element in frame["FrameData"]:
-                mentioned_entities.add( element["Value"]["Entity"])
+        if entity and entity.frames: # .. ja nav None
+            for frame in entity.frames: # FIXME - ja sauc pēc konsolidācijas, tad var ņemt cons_frames kuru ir mazāk un tas ir ātrāk
+                for element in frame["FrameData"]:
+                    mentioned_entities.add( element["Value"]["Entity"])
 
     return fetch_all_entities( mentioned_entities)
 

@@ -398,7 +398,7 @@ def buildGlobalEntityBags(globalID):
     namebag = Counter() # namebag liksim aliasus, kā arī amatus/nodarbošanās - jo tie nonāk dokumenta entītijas aliasos
     mentionbag = Counter() # mentionbag liksim visas 'ID-entītes' kas labajos freimos ir saistītas ar šo ID - personas, organizācijas, vietas
     contextbag = Counter() 
-    if not db_info:  # Ja entītija nav atrasta (izdzēsta utml) - tad ir tukši bag'i
+    if not db_info:  # Ja entītija nav atrasta (jānoskaidro, kapēc) - tad ir tukši bag'i
         return {'namebag':namebag, 'mentionbag':mentionbag, 'contextbag':contextbag}
 
     for alias in db_info['OtherName']:
