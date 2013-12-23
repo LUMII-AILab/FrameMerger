@@ -90,6 +90,7 @@ def first_col(seq):
 
 class SemanticApiPostgres(object):
     def __init__(self, api):
+        log.info("starting SemanticApiPostgres instance")
         self.api = api
 
     def frame_ids_by_entity(self, e_id):

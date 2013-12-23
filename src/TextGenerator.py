@@ -10,9 +10,6 @@ import json
 from pprint import pprint
 
 import EntityFrames as EF
-
-from SemanticApi import SemanticApi
-from SemanticApiPostgres import SemanticApiPostgres
 from FrameInfo import FrameInfo
 
 
@@ -30,7 +27,7 @@ def verbalizeframe(api, frameID):
     return get_frame_text(entity_data, frame)
 
 # Izvelkam sarakstu ar entīšu ID, kas šajā entīšu un to freimu kopā ir pieminēti
-def get_mentioned_entities(entity_list):
+def get_mentioned_entities(entity_list, api):
     mentioned_entities = set()    
     for entity in entity_list:
         if entity and entity.frames: # .. ja nav None
@@ -38,18 +35,21 @@ def get_mentioned_entities(entity_list):
                 for element in frame["FrameData"]:
                     mentioned_entities.add( element["Value"]["Entity"])
 
-    return fetch_all_entities( mentioned_entities)
+    return fetch_all_entities(mentioned_entities, api)
 
 # Paprasam no api pilnos datus par iesaistītajām entītēm - lai būtu pieejami iepriekš uzģenerētie locījumi
-def fetch_all_entities( mentioned_entities ):
-    answers = SemanticApi().entities_by_id( list(mentioned_entities))
+def fetch_all_entities(mentioned_entities, api):
     entity_data = {}
-    for answer in answers["Answers"]:
-        if answer["Answer"] == 0:
-            entity = answer["Entity"]
+
+    for e_id in mentioned_entities:
+
+        entity = api.entity_data_by_id(e_id)
+
+        if entity is not None:
             entity_data[entity["EntityId"]] = entity
         else:
-            log.warning("Entity not found. Error code [%s], message: %s" % (answer["Answer"], answer["AnswerTypeString"]))
+            log.warning("Entity not found. Entity ID: %s" % (e_id,))
+
     return entity_data # Dict no entītiju id uz entītijas pilnajiem datiem
 
 # Izveidot smuku aprakstu freimam
@@ -83,7 +83,7 @@ def get_frame_text(mentioned_entities, frame):
         
         # try to load NameInflections
         fallback = False
-        if not (entity["NameInflections"] == u'' or entity["NameInflections"] == u'null'):
+        if not (entity["NameInflections"] == u'' or entity["NameInflections"] is None):
             try:
                 roles[role] = json.loads(entity["NameInflections"])
             except ValueError:
@@ -91,9 +91,13 @@ def get_frame_text(mentioned_entities, frame):
 
                 fallback = True
                 #raise
+            except TypeError, e:
+                print "Problem with entity:"
+                pprint(entity)
+                raise
 
         # fallback: no inflection info available
-        if entity["NameInflections"] == u'' or entity["NameInflections"] == u'null' or fallback:
+        if entity["NameInflections"] == u'' or entity["NameInflections"] is None or fallback:
             log.debug('Entītija %s bez locījumiem', entity)
             roles[role] = { # Fallback, lai ir vismaz kautkādi apraksti
                 u'Nominatīvs': entity[u'Name'],

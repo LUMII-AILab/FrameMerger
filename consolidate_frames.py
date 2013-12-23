@@ -17,8 +17,6 @@ import requests
 
 import EntityFrames as EF
 
-from SemanticApi import SemanticApi
-
 from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
@@ -29,11 +27,8 @@ from TextGenerator import get_mentioned_entities, get_frame_text
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 
-def get_entity_frames(e_id_list):
+def get_entity_frames(e_id_list, api):
 
-    conn = PostgresConnection(api_conn_info)
-    api = SemanticApiPostgres(conn)
-     
     try:
         for e_id in e_id_list:
             # FIXME - replace w. EntityFrames for Postgres API
@@ -44,12 +39,12 @@ def get_entity_frames(e_id_list):
         log.exception("Error getting entity frames from the API:")
         raise
     
-def consolidate_frames(entity_list):
+def consolidate_frames(entity_list, api):
     
     c = BaseConsolidator()
     #c = Consolidator()
 
-    mentioned_entities = get_mentioned_entities(entity_list) # Ielasam visu freimos pieminēto (ne tikai galveno) entītiju vārdus un locījumus
+    mentioned_entities = get_mentioned_entities(entity_list, api) # Ielasam visu freimos pieminēto (ne tikai galveno) entītiju vārdus un locījumus
 
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
@@ -316,9 +311,9 @@ def print_entity_frames(entity_list):
 #        pprint(entity.frames)
         
 
-def process_entities(entity_list, out_dir):
-    data = list(get_entity_frames(entity_list))
-    gen_frames = consolidate_frames(data)
+def process_entities(entity_list, out_dir, api):
+    data = list(get_entity_frames(entity_list, api))
+    gen_frames = consolidate_frames(data, api)
 
     frames = list(gen_frames)
 
@@ -361,14 +356,17 @@ TypeError: can't pickle connection objects
 
     #save_entity_frames(out_dir, frames)
 
-    conn = PostgresConnection(api_conn_info)
-    api = SemanticApiPostgres(conn)
-     
-    # api = SemanticApi()     # TODO: refactor, change to all SemanticApi() just once (!)
     save_entity_frames_to_api(api, frames)
 
-def chunks(l, n):
-    return [l[i:i+n] for i in range(0, len(l), n)]    
+def entity_ids_from_stdin():
+    """
+    Generator. Returns Entity_IDs (int) read from stdin.
+    """
+
+    for e_line in sys.stdin:
+        if len(e_line.strip()) > 0:
+            e_id = int(e_line)
+            yield e_id
 
 def main():
     start_logging(log.DEBUG) #log.INFO)
@@ -377,21 +375,15 @@ def main():
     out_dir = "./output"
     log.info("Output directory: %s\n", out_dir)
 
-    #entity_list = range(1585428,1587072) # 17.nov ieimportēto LETA organizāciju profilu pamatentītijas - dataset=3 category=2
-    #entity_list = range(1559649,1581329) # 17.nov ieimportēto LETA personu profilu pamatentītijas - dataset=3 category=3
-    #entity_list = [1560495] # Dzintars Zaķis
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn)
+    
+    entity_list = entity_ids_from_stdin()
 
-    # Test50 personas + Test30 organizācijas
-    #entity_list = [1559976, 1560091, 1560102, 1560478, 1560495, 1560585, 1561151, 1561201, 1561241, 1561343, 1561468, 1561533, 1561619, 1561704, 1561920, 1561970, 1562094, 1562112, 1562226, 1562325, 1562343, 1562348, 1562462, 1562674, 1562958, 1563176, 1563381, 1565010, 1565782, 1567846, 1568840, 1569456, 1572029, 1574126, 1574828, 1574829, 1575614, 1575627, 1575673, 1575689, 1575990, 1576028, 1576160, 1576165, 1576529, 1576537, 1577582, 1578000, 1581090, 1581094, 1586718, 1586596, 1586761, 1586843, 1586639, 1586845, 1586560, 1586562, 1587054, 1586686, 1586687, 1586769, 1586606, 1586811, 1586730, 1587063, 1586613, 1586861, 1586577, 1586537, 1586824, 1586662, 1586949, 1587034, 1586625, 1587039, 1586794, 1586673, 1586592, 1586839]
+    for e_id in entity_list:
+        process_entities((e_id,), out_dir, api=api)
 
-    #entity_chunks = chunks(entity_list, 1)
-    #for chunk in entity_chunks:
-
-    for e_line in sys.stdin:
-        if len(e_line.strip()) > 0:
-            e_id = int(e_line)
-            process_entities((e_id,), out_dir)
-            log.info('Noprocesēts līdz %s', e_id)
+    log.info('Darbs pabeigts.')
 
 def start_logging(log_level = log.ERROR):
     log_dir = "log"
@@ -409,7 +401,7 @@ def start_logging(log_level = log.ERROR):
     )
 
     log.getLogger("requests.packages.urllib3").level = log.ERROR
-    log.getLogger("SemanticApi").level = log.INFO
+    log.getLogger("SemanticApiPostgres").level = log.INFO
 
 # ---------------------------------------- 
 
