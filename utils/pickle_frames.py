@@ -14,88 +14,10 @@ import cPickle as pickle
 from datetime import datetime
 import os
 
-import requests
-
 import EntityFrames as EF
 
 from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
-
-from ConsolidateFrames import Consolidator, BaseConsolidator
-from FrameInfo import FrameInfo
-
-from TextGenerator import get_mentioned_entities, get_frame_text
-
-
-def save_entity_frames(out_dir, entity_list):
-
-    for entity in entity_list:
-
-        fname = os.path.join(out_dir, str(entity.entity_id) + ".csv")
-        log.info("Saving frame data to file: %s", fname)
-
-        with open(fname, "wb") as outf:
-
-            out = csv.writer(outf)
-
-            out.writerow((entity.entity["Name"].encode("utf-8"), entity.entity["EntityId"]))
-            out.writerow([])
-
-            out.writerow(("Total frames:", len(entity.frames)))
-            out.writerow(("Consolidated frames:", len(entity.cons_frames)))
-            out.writerow([])
-
-            out.writerow(("> Consolidated frames: <",))
-            out.writerow([])
-
-            # output consolidated frames
-
-            out.writerow(format_header_for_output())
-            data = sorted(entity.cons_frames, key = lambda x: x["FrameType"])
-
-            for frame in data:
-                if frame["FrameData"] is not None:
-                    out.writerow(format_frame_for_output(frame))
-
-            out.writerow([])
-
-            out.writerow(("> Original frames: <",))
-            out.writerow([])
-
-            # output original frames
-
-            out.writerow(format_header_for_output())
-            data = sorted(entity.frames, key = lambda x: x["FrameType"])
-            for frame in data:
-                if frame["FrameData"] is not None:
-                    out.writerow(format_frame_for_output(frame))
-
-            out.writerow(("-"*80,))
-
-        # print "Frames for e_id = [%s] written to: %s" % (entity.entity_id, fname)
-
-def format_header_for_output():
-    return (
-        "Status",
-        "Type",
-        "Count",
-        "SourceId",
-#       // FrameId -> not using for now, need to taker FrameIdList into account
-    )
-
-def format_frame_for_output(frame):
-    buf = [
-        frame.get("FrameStatus", ""),
-
-        frame["FrameType"],
-        frame.get("FrameCnt", ""),
-        frame["SourceId"],
-#       // FrameId -> not using for now, need to taker FrameIdList into account
-    ]
-
-    buf.extend(chain((item["Key"], item["Value"]["Entity"]) for item in frame["FrameData"])) 
-
-    return buf
 
 
 def print_entity_frames(entity_list):
@@ -109,16 +31,6 @@ def print_entity_frames(entity_list):
         for frame in entity.cons_frames:
             frametext = frame.get("FrameText")
             frame_type = frame["FrameType"]
-
-            # if not frametext is None:
-            #     print frametext.encode("utf8")
-            #     None
-            # else: 
-            #     print "None - ", f_info.type_name_from_id(frame_type).encode("utf8"), frame                
-
-#        print "> Original frames: <"
-#        print
-#        pprint(entity.frames)
         
 
 def pickle_entity_frame(e_id, out_dir, api):
@@ -189,7 +101,6 @@ def start_logging(log_level = log.ERROR):
         format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s",
     )
 
-    log.getLogger("requests.packages.urllib3").level = log.ERROR
     log.getLogger("SemanticApiPostgres").level = log.INFO
 
 # ---------------------------------------- 
