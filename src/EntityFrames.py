@@ -21,14 +21,13 @@ f_info = FrameInfo("input/frames-new-modified.xlsx")
 class EntityFrames(object):
     def __init__(self, api, entity_id):
         self.entity_id = entity_id
-        self._api = api
 
-        self.load_data()
+        self.load_data(api)
 
-    def load_data(self):
+    def load_data(self, api):
         # load entity info
         try:
-            self.entity = self._api.entity_data_by_id(self.entity_id)
+            self.entity = api.entity_data_by_id(self.entity_id)
         except requests.exceptions.ConnectionError, e:
             log.error("Error retrieving entity info for entity %s", self.entity_id)
             self.entity = None
@@ -36,7 +35,7 @@ class EntityFrames(object):
         # load frames info
         if self.entity is not None:
             try:
-                self.frames = self._api.entity_frames_by_id(self.entity_id)
+                self.frames = api.entity_frames_by_id(self.entity_id)
             except requests.exceptions.ConnectionError, e:
                 log.error("Error retrieving frames for entity %s", self.entity_id)
                 self.frames = None
@@ -63,6 +62,41 @@ class EntityFrames(object):
     def set_consolidated_frames(self, frames):
         log.info("Setting consolidated frames for entity %s (%s frames).", self.entity_id, len(frames))
         self.cons_frames = frames
+
+class EntitySummaryFrames(object):
+    def __init__(self, api, entity_id):
+        self.entity_id = entity_id
+
+        self.load_data(api)
+
+    def load_data(self, api):
+        # load entity info
+        try:
+            self.entity = api.entity_data_by_id(self.entity_id)
+        except requests.exceptions.ConnectionError, e:
+            log.error("Error retrieving entity info for entity %s", self.entity_id)
+            self.entity = None
+
+        # load frames info
+        if self.entity is not None:
+            try:
+                self.frames = api.entity_frames_by_id(self.entity_id)
+            except requests.exceptions.ConnectionError, e:
+                log.error("Error retrieving frames for entity %s", self.entity_id)
+                self.frames = None
+
+            self.summary_frames = api.summary_frame_data_by_id(self.entity_id)
+
+        else:
+            self.frames = None
+            self.summary_frames = None
+
+        # add frame counts
+        if self.frames is not None:
+            for item in self.frames:
+                if item.get("FrameCnt") is None:
+                    item["FrameCnt"] = 1
+
 
 def frame_key(frame):
 

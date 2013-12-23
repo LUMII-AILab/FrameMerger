@@ -86,38 +86,61 @@ class BaseConsolidator(object):
             res_cnt[key] = res_cnt.get(key, 0) + 1
             res_buf.setdefault(key, []).append(f)
 
-        # re-assemble result list
         res = []
-        for key in res_cnt:
 
-            item = deepcopy(res_buf[key][0])
+        # handle blessed
+        for key in res_buf:
+            blessed = [frame for frame in res_buf[key] if frame["IsBlessed"]]
 
-            item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+            if len(blessed) > 0:
+                # copy blessed frame
+                item = deepcopy(blessed[0])
 
-            if res_cnt[key] > 1:
-                item["MergeType"] = "M"
-
-                # TODO: remove elements that do not make sense in a summary
-
-                all_docs = set(f["DocumentId"] for f in res_buf[key])
-                # PP - vajag lai ir vismaz kautkāds links tur ir uz pirmavotu, tas ļoti palīdz freimera debugam
-                # if len(all_docs) > 1:
-                #     item["DocumentId"] = ""
-                #item["SentenceId"] = ""
-
-                all_docs = set(f["SourceId"] for f in res_buf[key])
-                # if len(all_docs) > 1:
-                #     item["SourceId"] = ""
-                pass
-
-            else:
                 item["MergeType"] = "O"
+                item["FrameCnt"] = 1
 
-            item["FrameCnt"] = res_cnt[key]
+                item["SummaryInfo"] = get_info_str(self) + " + blessed"
+                item["SummarizedFrames"] = [item["FrameId"],]
 
-            item["SummaryInfo"] = get_info_str(self)
+                # skip these frames from normal processing
+                res_buf[key] = None
 
-            res.append(item)
+                res.append(item)
+
+        # re-assemble result list
+        for key in res_buf:
+
+            # process what is not handled before
+            if res_buf[key] is not None:
+
+                item = deepcopy(res_buf[key][0])
+
+                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+
+                if res_cnt[key] > 1:
+                    item["MergeType"] = "M"
+
+                    # TODO: remove elements that do not make sense in a summary
+
+                    all_docs = set(f["DocumentId"] for f in res_buf[key])
+                    # PP - vajag lai ir vismaz kautkāds links tur ir uz pirmavotu, tas ļoti palīdz freimera debugam
+                    # if len(all_docs) > 1:
+                    #     item["DocumentId"] = ""
+                    #item["SentenceId"] = ""
+
+                    all_docs = set(f["SourceId"] for f in res_buf[key])
+                    # if len(all_docs) > 1:
+                    #     item["SourceId"] = ""
+                    pass
+
+                else:
+                    item["MergeType"] = "O"
+
+                item["FrameCnt"] = res_cnt[key]
+
+                item["SummaryInfo"] = get_info_str(self)
+
+                res.append(item)
 
         return res
 
@@ -127,6 +150,9 @@ class Consolidator(object):
         self.info_str = INFO_STR + __name__
 
     def apply(self, frame_list):
+
+        raise NotImplementedError("blessed/anti-blessed needed")
+
         # > simple / default case - return frames as-is
         if EF.all_frame_cores_unique(frame_list): 
 

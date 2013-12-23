@@ -390,7 +390,7 @@ def start_logging(log_level = log.ERROR):
     if not os.path.exists(log_dir):
         os.mkdir(log_dir)
 
-    filename = "demo_consolidate_frames-%s.log" % (datetime.now().strftime("%Y_%m_%d-%H_%M"))
+    filename = "consolidate_frames-%s.log" % (datetime.now().strftime("%Y_%m_%d-%H_%M"))
     filename = os.path.join(log_dir, filename)
 
     log.basicConfig(

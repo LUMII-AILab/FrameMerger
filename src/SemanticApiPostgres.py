@@ -353,8 +353,9 @@ class SemanticApiPostgres(object):
         else:
             merge_type = None
 
-        if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
-            frame["IsHidden"] = True
+        if not frame["IsBlessed"]:
+            if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
+                frame["IsHidden"] = True
 
         res = self.api.insert(main_sql,
                 (frame["FrameType"], frame["SourceId"], frame["SentenceId"], frame["DocumentId"], frame["TargetWord"], 
@@ -396,10 +397,10 @@ class SemanticApiPostgres(object):
     # Pēc entītijas ID, atgriež visus summary freimus par viņu. 
     def summary_frame_data_by_id(self, entityID):
         cursor = self.api.new_cursor()
-        main_sql = "select blessed, sourceid, frametypeid, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select blessed, sourceid, frametypeid, summaryinfo, framecnt, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
-                    group by blessed, sourceid, frametypeid"
+                    group by blessed, sourceid, frametypeid, summaryinfo, framecnt"
         cursor.execute(main_sql, (entityID,))
         r = []
 
@@ -417,6 +418,8 @@ class SemanticApiPostgres(object):
                  # u'SentenceId': frame.sentenceid,
                  u'SourceId':   frame.sourceid,
                  # u'TargetWord': frame.targetword,
+                 u'SummaryInfo': frame.summaryinfo,
+                 u'FrameCnt': frame.framecnt,
             }
             r.append(frame_info)
         cursor.close()
