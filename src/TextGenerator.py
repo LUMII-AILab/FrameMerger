@@ -22,7 +22,7 @@ def verbalizeframe(api, frameID):
     mentioned_entities = set()
     for element in frame["FrameData"]:
         mentioned_entities.add( element["Value"]["Entity"])
-    entity_data = fetch_all_entities (mentioned_entities)
+    entity_data = fetch_all_entities (mentioned_entities, api)
 
     return get_frame_text(entity_data, frame)
 
