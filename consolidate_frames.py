@@ -44,11 +44,13 @@ def consolidate_frames(entity_list, api):
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
 
+            blessed_summary_frames = api.blessed_summary_frame_data_by_entity_id(entity.entity_id)
+
             try:
                 frames = filter(lambda x: x["FrameData"] is not None, entity.frames)
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 
-                frames = c.apply(frames)
+                frames = c.apply(frames, blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
                 frames = filter(valid_frame, frames) # Izmetam tos kam arī pēc apvienošanas par maz datu
                 log.info("Frames after filtering for sparsity: %s\n", len(frames))
@@ -151,7 +153,6 @@ def save_entity_frames_to_api(api, entity_list):
 
         # delete previous summary frames
         api.delete_entity_summary_frames_except_blessed(entity.entity_id, commit=True)  # NOTE: switch to commit=False here (!)
-        #api.delete_all_entity_summary_frames(entity.entity_id, commit=True)  # NOTE: switch to commit=False here (!)
 
         # insert all entity frames [as summary frames]
 
@@ -162,10 +163,8 @@ def save_entity_frames_to_api(api, entity_list):
         log.info("Save_entity_frames_to_api - summary frames to save for entity %s: %s", entity.entity_id, len(to_save))
 
         for frame in to_save:            
-            log.debug("Saving summary frame data to API: calling api.insert_summary_frame:\n%s", repr(frame))
             res = api.insert_summary_frame(frame)
-
-            log.debug("... return value from saving summary frame:\n%s", repr(res))
+            #log.debug("... return value from saving summary frame:\n%s", repr(res))
 
             is_ok = res["Answers"][0]
 

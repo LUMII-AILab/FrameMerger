@@ -112,6 +112,20 @@ def frame_key(frame):
 
     return (frame["FrameType"], frame_data_set(frame))
 
+def summary_frame_key(frame):
+
+    def summary_frame_data_set(frame):
+        data = frozenset((item["roleid"], item["entityid"]) for item in frame["FrameData"])
+        return data
+
+    # XXX - what happens if one of the frames is missing an element that the other has?
+    #  - it will be treated as different frame in comparisons
+
+    # Q: is it safer to use tuples and not set() for frame element values?
+    #  - A: tuple(..., set()) comparison should work as expected
+
+    return (frame["FrameType"], summary_frame_data_set(frame))
+
 class ConflictingFramesError(Exception):
     """
     Exception raised when element value conflicts are detected when merging frames.

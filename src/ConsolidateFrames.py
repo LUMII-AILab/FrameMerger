@@ -72,11 +72,9 @@ class BaseConsolidator(object):
     def __init__(self):
         self.info_str = INFO_STR + self.__class__.__name__
 
-    def apply(self, frame_list):
+    def apply(self, frame_list, blessed_summary_list):
         # simple case - return frames as-is
         #  - add "O" (original frame) as frame status 
-
-        res = []
 
         # put identical frames together
         res_cnt = {}
@@ -88,9 +86,27 @@ class BaseConsolidator(object):
 
         res = []
 
-        # handle blessed
+        # skip when matching blessed/anti-blessed frames found in summary frames list
+        summary_list_keys = frozenset(EF.summary_frame_key(sum_frame) for sum_frame in blessed_summary_list)
+
+        res_buf = {
+                # filter the dictionary
+                key: res_buf[key] for key in res_buf
+                    if key not in summary_list_keys
+                }
+
+        # handle blessed and anti-blessed
         for key in res_buf:
-            blessed = [frame for frame in res_buf[key] if frame["IsBlessed"]]
+            blessed = [frame for frame in res_buf[key] if frame["IsBlessed"] == True]
+            anti_bless = [frame for frame in res_buf[key] if frame["IsBlessed"] == False]  # NOTE: frame["IsBlessed"] can be None
+
+            if len(blessed) > 0 and len(anti_bless) > 0:
+                log.error("Both blessed and anti-blessed frames present when summarizing (skipping this key):\n - blessed: %r\n - anti-blessed: %r\n",  
+                    blessed, anti_bless)
+
+                # ignore this key, skip to next
+                res_buf[key] = None
+                continue
 
             if len(blessed) > 0:
                 # copy blessed frame
@@ -100,6 +116,21 @@ class BaseConsolidator(object):
                 item["FrameCnt"] = 1
 
                 item["SummaryInfo"] = get_info_str(self) + " + blessed"
+                item["SummarizedFrames"] = [item["FrameId"],]
+
+                # skip these frames from normal processing
+                res_buf[key] = None
+
+                res.append(item)
+
+            elif len(anti_bless) > 0:
+                # copy anti-blessed frame
+                item = deepcopy(anti_bless[0])
+
+                item["MergeType"] = "O"
+                item["FrameCnt"] = 1
+
+                item["SummaryInfo"] = get_info_str(self) + " + anti_bless"
                 item["SummarizedFrames"] = [item["FrameId"],]
 
                 # skip these frames from normal processing
