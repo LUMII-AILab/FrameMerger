@@ -365,7 +365,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
 	# sentenceId - teikuma id
 	# targetword - unicode string
 	# date - freima datums - string ISO datumformātā 
-    def insert_summary_frame(self, frame):
+    def insert_summary_frame(self, frame, commit):
         main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
                          FrameCnt, FrameText, SummaryInfo, Deleted)\
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
@@ -409,7 +409,8 @@ where fr_data.entityid = %s and fr.blessed is null;"
         for raw_frame_id in frame[u"SummarizedFrames"]:
             self.api.insert(relation_sql, (frameid, raw_frame_id) )       
 
-        self.api.commit()
+        if commit:
+            self.api.commit()
 
         # form result report
         report = {"Answers":[

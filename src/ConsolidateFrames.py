@@ -8,6 +8,7 @@ log.addHandler(logging.NullHandler())
 
 import os
 from datetime import datetime
+from collections import Counter
 
 import EntityFrames as EF
 
@@ -170,6 +171,10 @@ class BaseConsolidator(object):
                 item["FrameCnt"] = res_cnt[key]
 
                 item["SummaryInfo"] = get_info_str(self)
+
+                # get target words
+                c = Counter(f["TargetWord"] for f in res_buf[key])
+                item["TargetWord"] = c.most_common(1)[0][0]
 
                 res.append(item)
 
