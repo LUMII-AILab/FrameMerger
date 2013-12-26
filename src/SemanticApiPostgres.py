@@ -102,9 +102,8 @@ class SemanticApiPostgres(object):
         return frame_ids
 
     def summary_frame_ids_by_entity(self, e_id):
-        sql = "select frameid from SummaryFrameRoleData where entityid = %s"
+        sql = "select distinct frameid from SummaryFrameRoleData where entityid = %s"
         res = self.api.query(sql, (e_id,) )
-        #self.cSearchByName += 1
 
         frame_ids = first_col(res)
         return frame_ids
@@ -290,19 +289,45 @@ class SemanticApiPostgres(object):
 
         return frameid
 
-    def delete_entity_summary_frames(self, e_id):
+    def delete_entity_summary_frames_except_blessed(self, e_id, commit=True):
+        """
+        Delete summary frames [except blessed/anti-blessed] referring to a given entity ID.
+
+        Parameters:
+         - e_id (int) = entity ID
+         - commit (bool) = if commit should be called (default: True)
+        """
+
+        sql = "select distinct fr.frameid from SummaryFrameRoleData fr_data \
+join SummaryFrames fr on fr.frameid = fr_data.frameid \
+where fr_data.entityid = %s and fr.blessed is null;"
+
+        res = self.api.query(sql, (e_id,) )
+        frame_ids = first_col(res)
+
+        return self.delete_summary_frames(frame_ids, commit)
+
+    def delete_all_entity_summary_frames(self, e_id, commit=True):
         """
         Delete all summary frames referring to a given entity ID.
 
         Parameters:
          - e_id (int) = entity ID
+         - commit (bool) = if commit should be called (default: True)
         """
+
         frame_ids = self.summary_frame_ids_by_entity(e_id)
 
-        return self.delete_summary_frames(frame_ids)
+        return self.delete_summary_frames(frame_ids, commit)
 
-    def delete_summary_frames(self, fr_id_list):
-    # Iztīra summary freimus no DB
+    def delete_summary_frames(self, fr_id_list, commit=True):
+        """
+        Delete all summary frames with supplied <frame_IDs>.
+
+        Parameters:
+         - fr_id_list (list) = a list of summary frame IDs
+         - commit (bool) = if commit should be called (default: True)
+        """
         cursor = self.api.new_cursor()
 
         log.debug("Deleting summary frames with IDs %r.", fr_id_list)
@@ -312,7 +337,9 @@ class SemanticApiPostgres(object):
             cursor.execute("delete from SummaryFrameRoleData where frameid = %s", (fr_id,))
             cursor.execute("delete from SummaryFrames where frameid = %s", (fr_id,))
 
-        self.api.commit()
+        if commit:
+            self.api.commit()
+
         cursor.close()
 
     def entities_by_id(self):
