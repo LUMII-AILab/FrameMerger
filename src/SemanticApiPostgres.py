@@ -68,7 +68,7 @@ class PostgresConnection(object):
 
         return r
 
-    def insert(self, sql, parameters, returning=False, commit=False):
+    def insert(self, sql, parameters, returning=False, commit=False): # TODO - šo bieži lieto arī update / delete saukšanai - maldinošs nosaukums
         cursor = self.new_cursor()
 
         cursor.execute(sql, parameters)
@@ -226,6 +226,9 @@ class SemanticApiPostgres(object):
 
 
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
+    # name - unicode string
+    # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
+    # LETA powerpointā gribēja saukt šo metodi 'ListEntity'
     def entity_ids_by_name_list(self, name):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
@@ -259,9 +262,32 @@ class SemanticApiPostgres(object):
         for outerid in outerids:
             self.api.insert(outerid_sql, (entityid, outerid) )       
 
-        self.api.commit()
+        self.api.commit() # TODO - priekš dokumentu upload būtu efektīvāk necommitot pēc katras entītijas
 
         return entityid
+
+    # Atjauno entītijas datus, pārrakstot visus iepriekšējos
+    # entityid - entītijas id, integer
+    # name - unicode string
+    # othernames - list of unicode strings
+    # category - integer code
+    # outerids - list of unicode strings
+    # inflections - unicode string
+    def updateEntity(self, entityid, name, othernames, category, outerids=[], inflections = None):
+        main_sql = "UPDATE Entities SET name = %s, OtherNames = %s, OuterID = %s, category = %s, DataSet = %s, NameInflections = %s where entityid = %s"
+        self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, entityid))
+
+        self.api.insert("DELETE FROM EntityOtherNames where entityid = %s", (entityid,) )
+        names_sql = "INSERT INTO EntityOtherNames(EntityID, Name) VALUES (%s, %s)"
+        for othername in othernames:
+            self.api.insert(names_sql, (entityid, othername) )
+
+        self.api.insert("DELETE FROM EntityOuterIDs where entityid = %s", (entityid,) )
+        outerid_sql = "INSERT INTO EntityOuterIDs(EntityID, OuterID) VALUES (%s, %s)"
+        for outerid in outerids:
+            self.api.insert(outerid_sql, (entityid, outerid) )       
+
+        self.api.commit()
 
 	# Inserto jaunu freimu datubāzē
 	# frametype - freima tipa kods kā int
@@ -283,11 +309,70 @@ class SemanticApiPostgres(object):
         element_sql = "INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
         for element, entityid in elements.iteritems():
             self.api.insert(element_sql, (frameid, entityid, element) )       
-            # NB! Te nav validācijas; te arī neuzstāda wordindex lauku
+            # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
+
+        self.api.commit() # TODO - priekš dokumentu upload būtu efektīvāk necommitot pēc katras entītijas
+
+        return frameid
+
+    # Apdeito summary freima datus datubāzē, pārrakstot visus iepriekšējos
+    # frametype - freima tipa kods kā int
+    # elements - dict no freima-elementa koda uz entityID
+    # document - dokumenta guid kā unicode string
+    # sentenceId - teikuma id
+    # targetword - unicode string
+    # date - freima datums - string ISO datumformātā 
+    # LETA powerpoint gribēja šo f-ju saukt 'UpdateFrame', taču pēc komentāra skaidrs ka runa iet par apkopotajiem freimiem
+    def updateSummaryFrame(self, frameid, frametype, elements, document, frameText = None, summarizedFrames = [], source=None, sentenceId=None, targetword = None, date=None, blessed = None, hidden = False):
+        main_sql = "UPDATE SummaryFrames SET FrameTypeID = %s, SourceID = %s, SentenceID = %s, DocumentID = %s, TargetWord = %s,\
+                     Blessed = %s, Hidden = %s, Fdatetime = %s, FrameText = %s where frameid = %s"
+
+        self.api.insert(main_sql,
+                (frametype, source, sentenceId, document, targetword, blessed, hidden, date, frameText, frameid))
+
+        self.api.insert("DELETE FROM SummaryFrameRoleData where FrameID = %s", (frameid, ))
+        element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
+        for element, entityid in elements.iteritems():
+            self.api.insert(element_sql, (frameid, entityid, element) )       
+            # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
+
+        self.api.insert("DELETE FROM SummaryFrameData where SummaryFrameID = %s", (frameid, ))
+        frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
+        for summarizedFrame in summarizedFrames:
+            self.api.insert(frame_sql, (frameid, summarizedFrame) )       
 
         self.api.commit()
 
-        return frameid
+    # Apvieno 2 entītijas
+    # from - integer, entītijas ID, kuras freimi u.c. tiks pievienota otrai entītei un pati entīte izdzēsta
+    # to - integer, entītijas ID uz kuru tas tiks pāradresēta
+    def mergeEntities(self, entityFrom, entityTo):
+        self.api.insert("UPDATE FrameData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
+        self.api.insert("UPDATE SummaryFrameRoleData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
+        self.api.insert("UPDATE EntityMentions set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
+
+        self.api.insert("UPDATE Entities set Deleted = True where EntityID = %s", (entityFrom, ))
+
+        dirtyEntity(entityTo) #pēc šādas 'pāradresācijas' summaryFrames vajag pilnībā pārrēķināt nevis tikai samest pie vienas entity
+
+        self.api.commit()
+
+    # Izdzēš entītiju
+    # EntityID - integer, entītija kuru izdzēst
+    # fullDelete - boolean, vai neatgriezeniski izdzēst visus datus, vai arī tikai atzīmēt entītiju kā izdzēstu
+    def deleteEntity(self, entityID, fullDelete = False):
+        if fullDelete:
+            self.api.insert("DELETE FROM FrameData where EntityID = %s", (entityID, ))
+            self.api.insert("DELETE FROM SummaryFrameRoleData where EntityID = %s", (entityID, ))
+            self.api.insert("DELETE FROM EntityMentions where EntityID = %s", (entityID, ))
+            self.api.insert("DELETE FROM EntityOtherNames where EntityID = %s", (entityID, ))
+            self.api.insert("DELETE FROM EntityOuterIDs where EntityID = %s", (entityID, ))
+
+            self.api.insert("DELETE FROM Entities where EntityID = %s", (entityID, ))
+
+        else:
+            self.api.insert("UPDATE Entities set Deleted = True where EntityID = %s", (entityID, ))
+        self.api.commit()
 
     def delete_entity_summary_frames_except_blessed(self, e_id, commit=True):
         """
@@ -489,17 +574,74 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor = self.api.new_cursor()
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
         cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear) )
-        # TODO - validācija rezultātiem
         self.api.commit()
         cursor.close()
 
-    # kādas ir apstiprinātās entītijas attiecīgajam dokumentam
+    # Kādas ir apstiprinātās entītijas attiecīgajam dokumentam
     def getBlessedEntityMentions(self, documentID):
         cursor = self.api.new_cursor()
         cursor.execute("select entityid from entitymentions where blessed is true and documentid = %s", (documentID, ) )
         r = cursor.fetchall()
         cursor.close()        
         return map(lambda x: x[0], r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
+    # Kādos dokumentos šī entītija ir pieminēta
+    def getDocsForEntity(self, entityID):
+        cursor = self.api.new_cursor()
+        cursor.execute("select documentid from entitymentions where chosen is true and entityid = %s", (entityID, ) )
+        r = cursor.fetchall()
+        cursor.close()        
+        return map(lambda x: x[0], r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
+    # Kādas entītijas ir pieminētas šajā dokumentā
+    def getEntitiesForDoc(self, entityID):
+        cursor = self.api.new_cursor()
+        cursor.execute("select entityid from entitymentions where chosen is true and documentid = %s", (documentID, ) )
+        r = cursor.fetchall()
+        cursor.close()        
+        return map(lambda x: x[0], r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
+    # Pāradresē dokumentos minēto personu uz citu entītiju
+    # fromID, toID - integer, entītiju ID
+    # docs - list no dokumentu ID, kuros šo pāredresēt (paredzētais usecase - lietotājs ir izvēlējies 1+ dokumentus, kuros ir jālabo entītijas ID)
+    def redirectDocsToEntity(self, fromID, toID, docs):
+        cursor = self.api.new_cursor()
+        cursor.execute("UPDATE EntityMentions SET chosen = FALSE, blessed = FALSE, unclear = FALSE where entityID = %s and documentID in %s", (fromID, tuple(docs) ) )
+        cursor.execute("DELETE EntityMentions where entityID = %s and documentID in %s", (toID, tuple(docs) ) ) 
+        for doc in docs:            
+            cursor.execute("INSERT INTO EntityMentions (entityID, documentID, chosen, blessed, unclear) VALUES (%s, %s, TRUE, TRUE, FALSE)", (toID, doc ) ) 
+            # Reinsertojam tāpēc, ka iespējams ka toID entītija pirms tam entitymentions nebija piemināta
+        self.api.commit()
+        cursor.close()
+
+    # Atgriež sarakstu ar dokumentiem, kur šādu entītiju atzīmēja, ka nesanāk īsti izšķirt
+    # name - unicode string
+    def getUndecidedEntity(self, name):
+        entityIDs = entity_ids_by_name_list(name) # entītijas, kas atbilst tam vārdam
+        return api.query("SELECT documentID, array_agg(entityID) FROM entitymentions where unclear = TRUE and entityID in %s group by documentid", (tuple(entityIDs), ))
+
+    # Norādīt redzamību summāram freimam
+    # frameID - integer, summarizētā freimaID
+    # visibility - boolean
+    def changeVisible(self, frameID, visibility):
+        self.api.insert("UPDATE SummaryFrames SET hidden = %s where frameid = %s", (not visibility, frameID) )
+        self.api.commit()
+
+    def blessEntity(self, entityID):
+        self.api.insert("UPDATE Entities SET blessed = TRUE where entityid = %s", (entityID, ) )
+        self.api.commit()
+
+    def denyEntity(self, entityID):
+        self.api.insert("UPDATE Entities SET blessed = FALSE where entityid = %s", (entityID, ) )
+        self.api.commit()
+
+    def blessSummaryFact(self, frameID):
+        self.api.insert("UPDATE SummaryFrames SET blessed = TRUE where frameid = %s", (frameID, ) )
+        self.api.commit()
+
+    def denySummaryFact(self, frameID):
+        self.api.insert("UPDATE SummaryFrames SET blessed = FALSE where frameid = %s", (frameID, ) )
+        self.api.commit()
 
     # Atgriež entītijas crossdocumentcoreference wordbagus pēc padotā entītijas ID
     def getCDCWordBags(self, entityid):
@@ -532,6 +674,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.close()
 
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
+    # LETA powerpoint gribēja saukt par 'ReprocessSummary'
     def dirtyEntity(self, entityID):
         if entityID == 0: return
         
@@ -541,6 +684,21 @@ where fr_data.entityid = %s and fr.blessed is null;"
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
             cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
+        self.api.commit()
+        cursor.close()
+
+    # Atzīmē, ka dokumentu ar šādu ID pie izdevības vajadzētu paņemt un noprocesēt 
+    # docs - list no dokumentu ID
+    # priority - integer, prioritātes kods, lai nu kā LETA fabrika tos lietos
+    def reprocessDoc(self, docs, priority = 0):
+        cursor = self.api.new_cursor()
+        for docID in docs:
+            # Paskatamies, vai dokuments jau nav rindā
+            cursor.execute("select entityid from dirtydocuments where status = 1 and documentid = %s;", (docID, ))
+            r = cursor.fetchone()
+            if not r: # ja nav tāds atrasts
+                cursor.execute("insert into dirtydocuments values (%s, 1, %s, 'now', null);", (docID, priority))
+
         self.api.commit()
         cursor.close()
 
