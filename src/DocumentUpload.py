@@ -292,7 +292,12 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
 
         matchedEntities = set()
         if not entity.get('representative') is None: # Vispār ir jābūt reprezentative, tas ir FIXME priekš LVCoref moduļa
-            matchedEntities = api.entity_ids_by_name_list(entity['representative'])
+            representative = entity.get('representative')
+            representative = re.sub(u'[«»“”„‟‹›〝〞〟＂]', '"', representative, re.UNICODE)  # Aizvietojam pēdiņas
+            representative = re.sub(u"[‘’‚‛]", "'", representative, re.UNICODE)
+            entity['representative'] = representative 
+            matchedEntities = api.entity_ids_by_name_list(representative)
+
         if len(matchedEntities) == 0 and entity['type'] in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
