@@ -65,7 +65,18 @@ def get_frame_text(mentioned_entities, frame):
         # FIXME - te trūkst parametri - pieliec, ko vajag
         text = f_info.type_name_from_id( frame["FrameType"])
         for role in roles:
-            text = text + ' ' + role + ':' + elem(role)
+            try:
+                text = text + ' ' + role + ':' + elem(role)
+            except TypeError, e:
+                log.exception("Exception in verbalisation:", e)
+                log.error("""Unicode conversion error when building verbalisation:
+  - frame: %r
+  - text: %s
+  - role: %s
+  - elem: %s
+  """, frame, text, role, elem(role))
+                text = text + ' ' + unicode(role) + ':' + unicode(elem(role))
+
         return text
 
     frame_type = frame["FrameType"]
