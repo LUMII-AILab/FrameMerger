@@ -15,16 +15,18 @@ from FrameInfo import FrameInfo
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 
-# pašpietiekama funkcija, kas verbalizē izolētu freimu, paņemot visu vajadzīgo no DB
+# pašpietiekama funkcija, kas verbalizē izolētu *summary* freimu, paņemot visu vajadzīgo no DB
 def verbalizeframe(api, frameID):
-    frame = api.frame_by_id(frameID)
+    frame = api.summary_frame_by_id(frameID)
+    if not frame:
+        return None # Nav freima, nav rezultāta
 
     mentioned_entities = set()
     for element in frame["FrameData"]:
         mentioned_entities.add( element["Value"]["Entity"])
     entity_data = fetch_all_entities (mentioned_entities, api)
 
-    return get_frame_text(entity_data, frame)
+    return get_frame_text(entity_data, frame).strip()
 
 # Izvelkam sarakstu ar entīšu ID, kas šajā entīšu un to freimu kopā ir pieminēti
 def get_mentioned_entities(entity_list, api):
@@ -68,13 +70,14 @@ def get_frame_text(mentioned_entities, frame):
             try:
                 text = text + ' ' + role + ':' + elem(role)
             except TypeError, e:
-                log.exception("Exception in verbalisation:", e)
+                log.exception("Exception in verbalisation: %s", str(e))
                 log.error("""Unicode conversion error when building verbalisation:
   - frame: %r
   - text: %s
   - role: %s
-  - elem: %s
-  """, frame, text, role, elem(role))
+  - element: %s
+  - role data: %s
+  """, frame, text, role, elem(role), roles)
                 text = text + ' ' + unicode(role) + ':' + unicode(elem(role))
 
         return text
@@ -93,34 +96,22 @@ def get_frame_text(mentioned_entities, frame):
             continue
         
         # try to load NameInflections
-        fallback = False
-        if not (entity["NameInflections"] == u'' or entity["NameInflections"] is None):
+        roles[role] = None
+        if entity["NameInflections"] is not None:
             try:
                 roles[role] = json.loads(entity["NameInflections"])
-            except ValueError:
-                log.exception("Problem parsing JSON in NameInflections for entity:\n%s", entity)
-
-                fallback = True
-                #raise
-            except TypeError, e:
-                print "Problem with entity:"
-                pprint(entity)
-                raise
+            except Exception as e:
+                log.exception(u'Slikti inflectioni entītijai %s: "%s"\n%s', element["Value"]["Entity"], entity["NameInflections"], str(e))
 
         # fallback: no inflection info available
-        if entity["NameInflections"] == u'' or entity["NameInflections"] is None or fallback:
-            log.debug('Entītija %s bez locījumiem', entity)
+        if not roles[role]:
+            # log.debug('Entītija %s bez locījumiem', entity)  # zinam jau ka tādas ir CV datos
             roles[role] = { # Fallback, lai ir vismaz kautkādi apraksti
                 u'Nominatīvs': entity[u'Name'],
                 u'Ģenitīvs': entity[u'Name'],
                 u'Datīvs': entity[u'Name'],
                 u'Akuzatīvs': entity[u'Name'],
                 u'Lokatīvs': entity[u'Name']}
-        else:
-            try:
-                roles[role] = json.loads(entity["NameInflections"])        
-            except ValueError:
-                log.exception('Slikti inflectioni: %s', entity["NameInflections"])
 
     # Tipiskās vispārīgās lomas
     # FIXME - šausmīga atkārtošanās sanāk...
@@ -205,7 +196,7 @@ def get_frame_text(mentioned_entities, frame):
             nozare = u' iegūstot ' + elem(u'Grāds', u'Akuzatīvs')    
 
         # TODO - Laura ieteica šķirot pabaigšanu/nepabeigšanu pēc grāda lauka
-        return laiks + vieta + u' ' + elem(u'Students') + u' mācījās ' + iestaade + nozare + graads
+        return laiks + vieta + u' ' + elem(u'Students') + u' mācījās' + iestaade + nozare + graads
 
     if frame_type == 7: # Nodarbošanās
         if elem(u'Persona') is None or elem(u'Nodarbošanās') is None:
@@ -508,7 +499,7 @@ def get_frame_text(mentioned_entities, frame):
             return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols:' + ziimols
 
     # ja nekas nav atrasts
-    log.debug("Nemācējām apstrādāt %s", frame)
+    # log.debug("Nemācējām apstrādāt %s", frame)
     return simpleVerbalization()
 
 def main():

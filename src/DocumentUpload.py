@@ -324,7 +324,10 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             if showInserts:
                 print 'Gribētu insertot entītijas', representative, insertalias, category, outerId
             if realUpload:
-                inflections = json.dumps(entity.get('inflections'))
+                if entity.get('inflections'):
+                    inflections = json.dumps(entity.get('inflections'))
+                else:
+                    inflections = None
                 entity[u'GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections )
                 api.insertMention(entity[u'GlobalID'], documentId)
 

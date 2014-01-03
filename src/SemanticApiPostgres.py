@@ -134,7 +134,7 @@ class SemanticApiPostgres(object):
 """
         sql = "select * from frames where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
-        frame = res[0]
+        frame = res[0]  #FIXME - te nav pārbaudes vai rezultāts ir atrasts
         #self.cSearchByName += 1
 
         fdatetime = frame.fdatetime
@@ -537,6 +537,44 @@ where fr_data.entityid = %s and fr.blessed is null;"
             r.append(frame_info)
         cursor.close()
         return r
+
+    def summary_frame_by_id(self, fr_id):
+        cursor = self.api.new_cursor()
+        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, json_agg(r) as elements from SummaryFrames f\
+                    join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
+                    where f.frameid = %s\
+                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt"
+        cursor.execute(main_sql, (fr_id,))
+        frame = cursor.fetchone()
+        cursor.close()
+        if not frame:
+            return None # Ja nav atrasts šāds freims
+
+        # Sakropļojam freima elementu info lai atbilst vecajam API
+        # TODO - pārrakstīt patērētājfunkcijas, lai visur lieto normālo formu
+        elem_list = []
+        for item in frame.elements:
+            elem_list.append({
+                u'Key': item.get(u'roleid'), 
+                u'Value': {u'Entity': item.get(u'entityid'), u'PlaceInSentence': item.get(u'wordindex')}
+            })  
+
+        return {
+             # u'DocumentId': frame.documentid,   
+             u'FrameData':  elem_list,
+             u'FrameId':    frame.frameid,
+             # u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
+             u'FrameType':  frame.frametypeid,
+             u'Blessed':  frame.blessed,
+             # u'IsDeleted':  frame.deleted,
+             # u'IsHidden':   frame.hidden,
+             # u'SentenceId': frame.sentenceid,
+             u'SourceId':   frame.sourceid,
+             # u'TargetWord': frame.targetword,
+             u'SummaryInfo': frame.summaryinfo,
+             u'FrameCnt': frame.framecnt,
+        }
+
 
     # Pēc entītijas ID, atgriež visus blessed/anti-blessed summary freimus par viņu. 
     def blessed_summary_frame_data_by_entity_id(self, entityID):
