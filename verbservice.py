@@ -41,12 +41,16 @@ def verb(frameid):
     response.conent_type = 'text/html; charset=utf-8'
     try:
         result = verbalizeframe(api, frameid)
+    except Exception as e:
+        response.code = 500
+        result = 'Error in verbalizing frame '+str(frameid)+'</br>'+str(e)
+
+    if result:
         response.code = 200
-    except:
-        # visdrīzāk, ka errors būs, ja frameid netiks atrasts, tādēļ 404
+        return result
+    else: # result = None - freims nav atrasts
         response.code = 404
-        result = 'Error'
-    return result
+        return 'Frame not found'
 
 
 

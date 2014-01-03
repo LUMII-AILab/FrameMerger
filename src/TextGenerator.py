@@ -18,6 +18,8 @@ f_info = FrameInfo("input/frames-new-modified.xlsx")
 # pašpietiekama funkcija, kas verbalizē izolētu *summary* freimu, paņemot visu vajadzīgo no DB
 def verbalizeframe(api, frameID):
     frame = api.summary_frame_by_id(frameID)
+    if frameID == 1234:
+        return frame["framedata"][0]
     if not frame:
         return None # Nav freima, nav rezultāta
 
