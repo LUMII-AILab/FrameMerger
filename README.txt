@@ -17,7 +17,7 @@ Marķēto dokumentu ielādēšana semantiskajā datubāzē
 
 Darbināšana notiek caur
 	./uploadJSON.py
-Pa STDIN nodod apstrādājamo failu nosaukumus, pa vienam nosaukumam rindiņā. Failiem jābūt 'melnās kastes' veidotajā JSON formātā.
+Pa STDIN nodod apstrādājamo failu nosaukumus, pa vienam nosaukumam rindiņā. Failiem jābūt 'melnās kastes' veidotajā JSON formātā - vai nu tīrā veidā ar paplašinājumu .json, vai arī katram failam atsevišķi gzip'otam ar paplašinājumu json.gz
 Darbināšanas piemērs testam:
 	./uploadJSON.py < tests/test_json_list
 Paredzētais izvads uz stdout:
@@ -42,3 +42,12 @@ Paredzētais apstrādes rezultāts:
 	1576028	OK
 	1576160	OK
 
+Verbalizācijas webserviss
+-------------------------
+
+Palaišana:
+	./verbservice.py
+Piekļuve:
+	[servera adrese]:9000/verbalize/[summary freima ID]
+	http://localhost:9000/verbalize/1376556
+	Uz GET pieprasījumiem šādā formā tiks atgriezts verbalizācijas teksts norādītajam summary freima ID, ņemot aktuālos datus no datubāzes, kas ir db_config.py

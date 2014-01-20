@@ -89,7 +89,7 @@ def getElementName(frameCode, elementCode):
     try:
         name = frameElements[frameCode][elementCode-1] # -1 jo Freimu lomas numurējas no 1
     except IndexError:
-        sys.stderr.write("Hmm mēģinam dabūt vārdu elementam ar nelabu numuru "+elementCode+" freimā "+frameCode+"\n")
+        sys.stderr.write("Hmm mēģinam dabūt vārdu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
         name = ""
     return name
 
@@ -124,7 +124,7 @@ def getNETypeName(code):
     for name in NETypeCodes:
         if NETypeCodes[name] == code:
             return name
-    sys.stderr.write("Hmm nesanāca dabūt vārdu entītijas tipam ar kodu "+code+"\n")
+    sys.stderr.write("Hmm nesanāca dabūt vārdu entītijas tipam ar kodu "+str(code)+"\n")
     return ""
 
 __roleDefaultNETypes__ = [  # ja NE nav neko ielicis, bet freima elements uz šo norāda - kāda ir defaultā NE kategorija. reizēm var būt gan persona gan organizācija.. bet nu cerams tos NER palīdzēs.
@@ -160,6 +160,6 @@ def getDefaultRole(frameCode, elementCode):
     try:
         role = __roleDefaultNETypes__[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
     except IndexError:
-        sys.stderr.write("Hmm mēģinam dabūt defaulto lomu elementam ar nelabu numuru "+elementCode+" freimā "+frameCode+"\n")
+        sys.stderr.write("Hmm mēģinam dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
         role = ''
     return role

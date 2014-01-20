@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import sys, os, glob, fnmatch, json, codecs, traceback
+import sys, os, glob, fnmatch, json, codecs, traceback, gzip
 from datetime import date, datetime
 
 sys.path.append("./src")
@@ -52,15 +52,22 @@ try:
         basename = os.path.basename(filename)
 
         try:
+            document = None
             if filename.endswith('.json'):
                 with open(filename) as f:
                     document = json.load(f, object_hook=Dict)
+            if filename.endswith('.json.gz'):
+                with gzip.open(filename, 'rb') as f:
+                    document = json.load(f, object_hook=Dict)
 
+            if document:
                 document.id = os.path.splitext(basename)[0]
                 document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
                 upload2db(document)
                 sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
+            else:
+                sys.stdout.write(filename + "\tNot processed, unknown file type\n")
         except Exception as e:
             sys.stderr.write('Problem on file: '+filename+' ... \n')
             traceback.print_exc()
