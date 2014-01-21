@@ -244,7 +244,9 @@ def filterEntityNames(entities, documentdate):
         return name
 
     def goodName(name):
-        if name.lower() in {u'viņš', u'viņa', u'viņam', u'viņai', u'es', u'man', u'tas', u'tā', u'tie', u'tās'}: 
+        if name.lower() in {u'viņš', u'viņa', u'viņam', u'viņai', u'es', u'man', u'tas', u'tā', u'tie', u'tās', u'kas', u'kam', u'tam', u'tām', u'ko', u'to', u'tos', u'tai', u'tiem', u'kurš', u'kuru'}: 
+            return False
+        if name.lower() in {u'uzņēmums', u'firma', u'tiesa', u'banka', u'fonds', u'koncerns', u'komisija', u'partija', u'apvienība', u'frakcija', u'birojs', u'dome', u'organizācija', u'augstskola', u'studentu sabiedrība', u'studija', u'žurnāls', u'sabiedrība', u'iestāde', u'skola'}: 
             return False
         if name.lower() in {u'gads', u'gada'}: 
             return False
@@ -275,6 +277,13 @@ def goodAlias(name):
         return False
     return True
 
+# mēģina normalizēt organizāciju nosaukumus
+def normalizeOrg(name): 
+    norm = re.sub(u'[«»“”„‟‹›〝〞〟＂"‘’‚‛\']', '', name, re.UNICODE)  # izmetam pēdiņas
+    norm = re.sub(u'(AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība) ', '', norm, re.UNICODE)  # izmetam prefiksus
+    norm = re.sub(u'\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
+    return norm
+
 # Veic API requestu par vārdiem atbilstošām entītijām
 # entities - dokumenta entīšu saraksts; neededEntities - kuras no tām parādās freimos un attiecīgi vajag likt globālajā stuff
 # ... un globālo ID pielikt pie NE objekta lai tas pēc tam pieseivojas
@@ -291,7 +300,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             continue 
 
         matchedEntities = set()
-        if not entity.get('representative') is None: # Vispār ir jābūt reprezentative, tas ir FIXME priekš LVCoref moduļa
+        if not entity.get('representative') is None: 
             representative = entity.get('representative')
             representative = re.sub(u'[«»“”„‟‹›〝〞〟＂]', '"', representative, re.UNICODE)  # Aizvietojam pēdiņas
             representative = re.sub(u"[‘’‚‛]", "'", representative, re.UNICODE)
@@ -301,6 +310,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
         if len(matchedEntities) == 0 and entity['type'] in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
+                matchedEntities = matchedEntities + api.entity_ids_by_name_list(normalizeOrg(alias))
             # Te varētu filtrēt, vai pēc aliasa nav atrasts kautkas nekorekts, kam neatbilst tips
             # bet tad ir pēc ID jānolasa to entītiju pilnie dati, ko skatīties; un tas būtu lēni.
 
@@ -315,9 +325,11 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                     extra_alias = re.sub(ur'([A-Z])\w+ ', ur'\1. ', representative, flags=re.UNICODE )
                     if not extra_alias in insertalias:
                         insertalias.append(extra_alias)
-            # if representative in insertalias:
-            #     insertalias.remove(representative)  # NER ieliek arī galveno nosaukumu pie aliasiem; taču API sagaida ka tā nebūs, savādāk insertos dubultā
-            #                                               ^^^ šis tagad ir mainījies pie pārejas no Mārtiņa API uz datubāzes tiešo pieeju
+
+            if entity['type'] == 'organization' or entity['type'] == u'organization':
+                norm = normalizeOrg(representative)
+                if not norm in insertalias:
+                    insertalias.append(norm)
 
             category = getNETypeCode(entity['type'])
             outerId = [] # Organizācijām un personām pieliekam random UUID

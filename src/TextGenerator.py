@@ -388,9 +388,9 @@ def get_frame_text(mentioned_entities, frame):
             return simpleVerbalization()
 
         if elem(u'Daļa') is None:
-            return laiks + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Īpašums')
+            return laiks + u' ' + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Īpašums')
         else:
-            return laiks + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Daļa') + u' no ' + elem(u'Īpašums', u'Ģenitīvs')
+            return laiks + u' ' + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Daļa') + u' no ' + elem(u'Īpašums', u'Ģenitīvs')
 
     if frame_type == 19: # Parāds
         if elem(u'Parādnieks') is None and elem(u'Aizdevējs') is None:

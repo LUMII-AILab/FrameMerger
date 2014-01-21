@@ -235,7 +235,7 @@ class SemanticApiPostgres(object):
         # kur ir "iepakots" ID saraksts)
         # sql = "select entityid from entityothernames where lower(name) = %s"
         sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
-        res = self.api.query(sql, (name.lower(),) )
+        res = self.api.query(sql, (name.lower().strip(),) )
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
@@ -246,6 +246,9 @@ class SemanticApiPostgres(object):
 	# outerids - list of unicode strings
 	# inflections - unicode string
     def insertEntity(self, name, othernames, category, outerids=[], inflections = None):
+        # debuginfo
+        # if category == 2:
+        #     print 'insertojam', category, name
         main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections) VALUES (%s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
         res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections),
