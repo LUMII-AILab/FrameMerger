@@ -4,4 +4,3 @@ log/*
 output/*
 src/*.pyc
 *.pyc
-testdata/*
