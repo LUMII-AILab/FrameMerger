@@ -4,7 +4,7 @@ Moduļi darbam ar semantisko datubāzi
 Priekšnosacījumi:
 	Python 2.7.6
 	Python modulis psycopg2 (uz ubuntu instalējas ar "apt-get install python-psycopg2" / "pip install psycopg2")
-	Python modulis openpyxl ("pip install openpyxl")
+	Python modulis openpyxl ("sudo pip install openpyxl==1.7.0", ar jaunākām versijām nedarbojas)
 
 Konfigurēšana:
 	Jānorāda datubāzes servera pieslēguma informācija failā 'db_config.py' - skat 'db_config.py.template'
