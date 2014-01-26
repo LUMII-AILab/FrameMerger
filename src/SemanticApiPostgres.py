@@ -349,16 +349,16 @@ class SemanticApiPostgres(object):
     # Apvieno 2 entītijas
     # from - integer, entītijas ID, kuras freimi u.c. tiks pievienota otrai entītei un pati entīte izdzēsta
     # to - integer, entītijas ID uz kuru tas tiks pāradresēta
-    def mergeEntities(self, entityFrom, entityTo):
+    def mergeEntities(self, entityFrom, entityTo, commit = True):
         self.api.insert("UPDATE FrameData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
         self.api.insert("UPDATE SummaryFrameRoleData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
         self.api.insert("UPDATE EntityMentions set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
 
         self.api.insert("UPDATE Entities set Deleted = True where EntityID = %s", (entityFrom, ))
 
-        dirtyEntity(entityTo) #pēc šādas 'pāradresācijas' summaryFrames vajag pilnībā pārrēķināt nevis tikai samest pie vienas entity
-
-        self.api.commit()
+        self.dirtyEntity(entityTo) #pēc šādas 'pāradresācijas' summaryFrames vajag pilnībā pārrēķināt nevis tikai samest pie vienas entity
+        if commit:
+            self.api.commit()
 
     # Izdzēš entītiju
     # EntityID - integer, entītija kuru izdzēst
@@ -735,7 +735,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor = self.api.new_cursor()
         for docID in docs:
             # Paskatamies, vai dokuments jau nav rindā
-            cursor.execute("select entityid from dirtydocuments where status = 1 and documentid = %s;", (docID, ))
+            cursor.execute("select documentid from dirtydocuments where status = 1 and documentid = %s;", (docID, ))
             r = cursor.fetchone()
             if not r: # ja nav tāds atrasts
                 cursor.execute("insert into dirtydocuments values (%s, 1, %s, 'now', null);", (docID, priority))
@@ -743,13 +743,27 @@ where fr_data.entityid = %s and fr.blessed is null;"
         self.api.commit()
         cursor.close()
 
+    # Uzstāda dokumenta apstrādes ierakstam (dirtydocuments) norādīto statusa kodu
+    def setDocProcessingStatus(self, documentID, processID, status):
+        cursor = self.api.new_cursor()
+        cursor.execute("update dirtydocuments set status = %s, process_id = %s where documentid = %s", (status, processID, documentID))
+        cursor.close()
+        self.api.commit()
+
+    # Uzstāda entītiju sarakstam (katrai entītijai) norādīto statusa kodu tabulā dirtyentities
+    def setEntityProcessingStatus(self, entities, processID, status):
+        cursor = self.api.new_cursor()
+        cursor.execute("update dirtyentities set status = %s, process_id = %s where entityid = ANY(%s)", (status, processID, entities))
+        cursor.close()
+        self.api.commit()        
+
     # Ja šāds dokuments nav dokumentu tabulā, tad to pievieno
     def insertDocument(self, documentID, timestamp = None):
         cursor = self.api.new_cursor()
-        cursor.execute("select documentid from documents where documentid = %s;", (documentID, ))
+        cursor.execute("select documentid from documents where documentid = %s", (documentID, ))
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
-            cursor.execute("insert into documents (documentid, i_time) values (%s, %s);", (documentID, timestamp))
+            cursor.execute("insert into documents (documentid, i_time) values (%s, %s)", (documentID, timestamp))
         self.api.commit()
         cursor.close()
 

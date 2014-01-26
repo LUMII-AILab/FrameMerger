@@ -15,3 +15,13 @@ api_conn_info = {
     "password": "",
 }
 
+inflection_webservice = {
+	"host":		"",
+	"port":		8182
+}
+
+# Instances nosaukums kas (kopā ar os procesa id) tiks likts DB pie logiem
+instance_name = ""
+
+# vieta uploadJSON.py logiem
+logfile = "./log/uploadJSON.log"

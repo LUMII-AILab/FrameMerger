@@ -10,7 +10,7 @@ from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from db_config import api_conn_info
 import CDC
 
-realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
+realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus; ja ir False tad rakstīs debuginfo par to, ko gribētu likt datubāzē
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 
@@ -281,6 +281,7 @@ def goodAlias(name):
 def normalizeOrg(name): 
     norm = re.sub(u'[«»“”„‟‹›〝〞〟＂"‘’‚‛\']', '', name, re.UNICODE)  # izmetam pēdiņas
     norm = re.sub(u'(AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība) ', '', norm, re.UNICODE)  # izmetam prefiksus
+    norm = re.sub(u' (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... arī beigās šādi reizēm esot bijuši
     norm = re.sub(u'\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
     return norm
 
