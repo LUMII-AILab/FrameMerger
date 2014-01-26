@@ -7,10 +7,10 @@ from frameinfo2 import getFrameType, getElementCode, getNETypeCode, getDefaultRo
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
-from db_config import api_conn_info
+from db_config import api_conn_info, inflection_webservice
 import CDC
 
-realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus; ja ir False tad rakstīs debuginfo par to, ko gribētu likt datubāzē
+realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 
@@ -345,7 +345,9 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 if entity.get('inflections'):
                     inflections = json.dumps(entity.get('inflections'))
                 else:
-                    inflections = None
+                    # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
+                    r = requests.get('http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), representative, entity['type']) ) 
+                    inflections = r.text
                 entity[u'GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections )
                 api.insertMention(entity[u'GlobalID'], documentId)
 
@@ -391,7 +393,7 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
             api.putCDCWordBags(kandidaats, bags)
 
         if showDisambiguation: # debuginfo    
-            db_info = api.entity_data_by_id(kandidaats) # todo - šo request vajag tikai priekš debuginfo, pēc tam būs lieks
+            db_info = api.entity_data_by_id(kandidaats)
             print 'kandidāts', kandidaats, db_info['Name'], db_info['OuterId']            
             print bags.get('namebag')
             print 'Name match:', CDC.cosineSimilarity(bags.get('namebag'), CDC.namebag(entity))

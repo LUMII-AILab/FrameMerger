@@ -5,7 +5,8 @@ import sys, os, glob, fnmatch, json, codecs, traceback, gzip
 from datetime import date, datetime
 
 sys.path.append("./src")
-from DocumentUpload import upload2db
+from DocumentUpload import upload2db, api
+from db_config import instance_name
 
 basedir = os.path.dirname(os.path.realpath(__file__))
 
@@ -41,6 +42,8 @@ for arg in args:
 sys.stderr.write( 'Starting...\n')
 sys.stderr.write( 'Pass filenames to be processed through stdin, one filename per line\n')
 
+processID = instance_name + ' ' + str(os.getpid())
+
 try:
     for filename in sys.stdin:
         filename = filename.strip()
@@ -50,6 +53,11 @@ try:
         if not os.path.isabs(filename):
             filename = os.path.join(basedir, filename)
         basename = os.path.basename(filename)
+        docid = os.path.splitext(basename)[0]
+        docid = os.path.splitext(docid)[0] # .json.gz gadījumam
+        
+        #api.reprocessDoc([docid]) # temporary for testing - uztaisam ierakstu ka šo dokumentu vispār vajag apstrādāt
+        api.setDocProcessingStatus(docid, processID, 202)
 
         try:
             document = None
@@ -61,14 +69,17 @@ try:
                     document = json.load(f, object_hook=Dict)
 
             if document:
-                document.id = os.path.splitext(basename)[0]
+                document.id = docid
                 document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
                 upload2db(document)
                 sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
+                api.setDocProcessingStatus(docid, processID, 201)
             else:
+                api.setDocProcessingStatus(docid, processID, 404)
                 sys.stdout.write(filename + "\tNot processed, unknown file type\n")
         except Exception as e:
+            api.setDocProcessingStatus(docid, processID, 406)
             sys.stderr.write('Problem on file: '+filename+' ... \n')
             traceback.print_exc()
             print filename, '\tFail:\t', e

@@ -8,11 +8,11 @@ from pprint import pprint
 import logging as log
 import os.path
 from datetime import datetime
-import os
+import os, itertools
 
 import EntityFrames as EF
 
-from db_config import api_conn_info
+from db_config import api_conn_info, instance_name
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
 from ConsolidateFrames import BaseConsolidator
@@ -21,6 +21,7 @@ from FrameInfo import FrameInfo
 from TextGenerator import get_mentioned_entities, get_frame_text
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
+processID = instance_name + ' ' + str(os.getpid())
 
 def get_entity_frames(e_id_list, api):
 
@@ -71,6 +72,7 @@ def consolidate_frames(entity_list, api):
             except TypeError:
                 log_data = "\n".join([repr(log_item) for log_item in entity.frames])
                 log.exception("Error consolidating frames:\n%s", log_data)
+                api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati
                 raise
 
             entity.set_consolidated_frames(frames)
@@ -93,6 +95,7 @@ def valid_frame(frame):
         except KeyError, e:
             log.error("Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n", element["Value"]["Entity"], frame)
             print "Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n" % (element["Value"]["Entity"], frame)
+            api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati - trūkst entītes
             continue
 
     if frame_type == 0: # Dzimšana
@@ -196,10 +199,12 @@ def save_entity_frames_to_api(api, entity_list):
             for fr in error_frames:
                 log.debug("%s", repr(fr))
                 print repr(fr)
+            api.setEntityProcessingStatus([entity.entity_id], processID, 410) # kaut kas nepatika
 
         if len(error_frames)>0:
             status = "ERROR"
         else:
+            api.setEntityProcessingStatus([entity.entity_id], processID, 201) # šai entītijai viss ok
             status = "OK"
 
         print "%s\t%s" % (entity.entity_id, status)
@@ -207,7 +212,10 @@ def save_entity_frames_to_api(api, entity_list):
 
 
 def process_entities(entity_list, out_dir, api):
+    api.setEntityProcessingStatus(entity_list, processID, 202) # sākam apstrādi
+
     data = list(get_entity_frames(entity_list, api))
+    api.setEntityProcessingStatus(entity_list, processID, 203) # jēlie freimi izvilkti
     gen_frames = consolidate_frames(data, api)
 
     frames = list(gen_frames)
@@ -217,6 +225,7 @@ def process_entities(entity_list, out_dir, api):
         log.info("Entity name: %s\tId: %s", fr.entity["Name"], fr.entity["EntityId"])
         log.info("Frames (Total/Consolidated): %s / %s", len(fr.frames), len(fr.cons_frames))
 
+    api.setEntityProcessingStatus(entity_list, processID, 205) # sāku saglabāt freimus
     save_entity_frames_to_api(api, frames)
 
 
@@ -224,11 +233,18 @@ def entity_ids_from_stdin():
     """
     Generator. Returns Entity_IDs (int) read from stdin.
     """
-
     for e_line in sys.stdin:
         if len(e_line.strip()) > 0:
             e_id = int(e_line)
             yield e_id
+
+# NB! tas nozīmētu ka pirmo entītiju nesāks procesēt, kamēr nebūs padots pilns čunks vai arī EOF.
+def split_seq(iterable, size):
+    it = iter(iterable)
+    item = list(itertools.islice(it, size))
+    while item:
+        yield item
+        item = list(itertools.islice(it, size))
 
 def main():
     start_logging(log.DEBUG) #log.INFO)
@@ -242,8 +258,8 @@ def main():
     
     entity_list = entity_ids_from_stdin()
 
-    for e_id in entity_list:
-        process_entities((e_id,), out_dir, api=api)
+    for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
+        process_entities(chunk, out_dir, api=api)
 
     log.info('Darbs pabeigts.')
 
