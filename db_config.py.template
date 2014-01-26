@@ -23,5 +23,5 @@ inflection_webservice = {
 # Instances nosaukums kas (kopā ar os procesa id) tiks likts DB pie logiem
 instance_name = ""
 
-# vieta uploadJSON.py logiem
-logfile = "./log/uploadJSON.log"
+# vieta logiem
+log_dir = "./log"

@@ -9,6 +9,7 @@ from frameinfo2 import getFrameType, getElementCode, getNETypeCode, getDefaultRo
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from db_config import api_conn_info, inflection_webservice
 import CDC
+import logging as log
 
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
@@ -49,7 +50,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
 
     # Tagad vēlreiz apskatam visus freimus, un insertojam tos DB
     requests = []
-    for sentence in sentences:
+    for sentenceID, sentence in enumerate(sentences):
         for frame in sentence.frames:
             if len(frame.elements) < 2:
                 continue # mikrofreimus neliekam. TODO: te varētu vēl pat agresīvāk filtrēt
@@ -66,11 +67,10 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                     print 'Neatradu globalID entītijai', entities[str(entityID)].get('representative')
                 
                 if elementCode in filledRoles: # Freimu analizators nedrīkstētu iedot 2x vienādas lomas, bet ja nu tomēr, tad lai te nenomirst
-                    None
-                    # print 'Hmm, lomai ', element.name, 'vairāki varianti:', sentence.tokens[element.tokenIndex-1].form, 'ir par daudz'
+                    log.debug('Lomai %s vairāki varianti: %s ir par daudz', element.name, sentence.tokens[element.tokenIndex-1].form )
                 elif globalID in usedEntities: 
-                    None
-                    # print 'Hmm, entītija #', globalID, 'atkal parādās tai pašā freimā pie vārda ', sentence.tokens[element.tokenIndex-1].form                    
+                    log.debug('Entītija #%d atkal parādās tai pašā freimā pie vārda %s', globalID, sentence.tokens[element.tokenIndex-1].form)
+                    # principā šāds varētu rasties ja koreferences saliek 2 NER-atrastas entītijas kopā, un vienā freimā pieliek pie katru savas lomas (piemēram, amats+personvārds?) - bet īsti labi tas nav
                 else:
                     # print frame.type, element.name, entityID, entities[str(entityID)]['representative'], '(', sentence.tokens[element.tokenIndex-1].form, ')', globalID
                     elements[elementCode] = globalID
@@ -83,7 +83,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
             if realUpload:                
                 targetword = sentence.tokens[frame.tokenIndex-1].form
                 source = 'Pipeline parse at '+datetime.datetime.now().isoformat()
-                api.insertFrame(frameType, elements, document.id, source, sentences.index(sentence), targetword, document.date.isoformat())
+                api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat())
 
     if realUpload: 
         api.insertDocument(document.id, document.date.isoformat())
@@ -178,7 +178,7 @@ def entityPhraseByNER(tokenIndex, tokens):
 # ja tādas entītijas nav, tad pievieno jaunu sarakstam
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
     if tokenIndex > len(tokens):
-        print 'Error: entity sākas tokenā #',tokenIndex,' no ',len(tokens),' datos :',tokens
+        log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
         return 0
     else: 
         frameType = getFrameType(frame.type)

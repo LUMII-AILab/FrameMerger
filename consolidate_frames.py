@@ -12,7 +12,7 @@ import os, itertools
 
 import EntityFrames as EF
 
-from db_config import api_conn_info, instance_name
+from db_config import api_conn_info, instance_name, log_dir
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
 from ConsolidateFrames import BaseConsolidator
@@ -264,7 +264,6 @@ def main():
     log.info('Darbs pabeigts.')
 
 def start_logging(log_level = log.ERROR):
-    log_dir = "log"
     if not os.path.exists(log_dir):
         os.mkdir(log_dir)
 

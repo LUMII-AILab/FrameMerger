@@ -716,15 +716,17 @@ where fr_data.entityid = %s and fr.blessed is null;"
 
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
     # LETA powerpoint gribēja saukt par 'ReprocessSummary'
-    def dirtyEntity(self, entityID):
+    def dirtyEntity(self, entityID, processID = None):
         if entityID == 0: return
         
         cursor = self.api.new_cursor()
         # Paskatamies, vai entītija jau nav rindā (kas būtu ļoti iespējams)
-        cursor.execute("select entityid from dirtyentities where status = 1 and entityid = %s;", (entityID, ))
+        cursor.execute("select entityid from dirtyentities where entityid = %s;", (entityID, ))
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
-            cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', null);", (entityID, ))
+            cursor.execute("insert into dirtyentities values (%s, 1, 0, 'now', %s);", (entityID, processID))
+        else:
+            cursor.execute("update dirtyentities set status = 1, updated = 'now', process_id = %s where entityid = %s", (processID, entityID))
         self.api.commit()
         cursor.close()
 
@@ -735,7 +737,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor = self.api.new_cursor()
         for docID in docs:
             # Paskatamies, vai dokuments jau nav rindā
-            cursor.execute("select documentid from dirtydocuments where status = 1 and documentid = %s;", (docID, ))
+            cursor.execute("select documentid from dirtydocuments where documentid = %s;", (docID, ))
             r = cursor.fetchone()
             if not r: # ja nav tāds atrasts
                 cursor.execute("insert into dirtydocuments values (%s, 1, %s, 'now', null);", (docID, priority))
