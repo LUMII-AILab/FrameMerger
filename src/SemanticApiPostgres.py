@@ -109,6 +109,7 @@ class SemanticApiPostgres(object):
         return frame_ids
 
     def entity_frames_by_id(self, e_id):
+        # TODO - te sanāk vairāki nestēti DB izsaukumi, visticamāk šeit ir consolidate_frames lēnākā daļa
         res = []
 
         for fr_id in self.frame_ids_by_entity(e_id):
@@ -245,7 +246,7 @@ class SemanticApiPostgres(object):
 	# category - integer code
 	# outerids - list of unicode strings
 	# inflections - unicode string
-    def insertEntity(self, name, othernames, category, outerids=[], inflections = None):
+    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, commit = True):
         # debuginfo
         # if category == 2:
         #     print 'insertojam', category, name
@@ -265,7 +266,8 @@ class SemanticApiPostgres(object):
         for outerid in outerids:
             self.api.insert(outerid_sql, (entityid, outerid) )       
 
-        self.api.commit() # TODO - priekš dokumentu upload būtu efektīvāk necommitot pēc katras entītijas
+        if commit:
+            self.api.commit()
 
         return entityid
 

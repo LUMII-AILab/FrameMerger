@@ -34,7 +34,7 @@ cleanup = [
 	('"deleted" entities',	"delete from entities where deleted = True"),
 	('all dirtyentities',	"delete from dirtyentities"),
 	('all dirtydocuments',	"delete from dirtydocuments"),
-	# TODO - dirtytexts arī?
+	('all dirtytexts',	"delete from dirtytexts")
 ]
 
 orphans = [

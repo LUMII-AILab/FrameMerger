@@ -277,13 +277,115 @@ def goodAlias(name):
         return False
     return True
 
-# mēģina normalizēt organizāciju nosaukumus
-def normalizeOrg(name): 
+def fixName(name):
+    fixname = re.sub(u'[«»“”„‟‹›〝〞〟＂]', '"', name, re.UNICODE)  # Aizvietojam pēdiņas
+    fixname = re.sub(u"[‘’‚`‛]", "'", fixname, re.UNICODE)
+    return fixname
+
+#TODO - varbūt visu šo loģiku labāk SemanticApiPosgres modulī?
+def personAliases(name):
+    insertalias = [name] 
+    if re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+ [A-ZČĒĢĪĶĻŅŠŪŽ]\w+', name, re.UNICODE):   #FIXME - šis regexp acīmredzot nestrādās ja sāksies ar lielo garo vai mīksto burtu
+        extra_alias = re.sub(ur'([A-ZČĒĢĪĶĻŅŠŪŽ])\w+ ', ur'\1. ', name, flags=re.UNICODE )
+        if not extra_alias in insertalias:
+            insertalias.append(extra_alias)
+    return insertalias
+
+orgTypes = [
+    ['SIA', u'Sabiedrība ar ierobežotu atbildību'],
+    ['AS', 'A/S', u'Akciju sabiedrība'],
+    [u'apdrošināšanas AS', u'Apdrošināšanas akciju sabiedrība'],
+    ['ZS', 'Z/S', u'Zemnieka saimniecība'],
+    ['IU', u'Individuālais uzņēmums'],
+    [u'Zvejnieka saimniecība'],
+    ['UAB'],
+    ['VAS'],
+    [u'valsts aģentūra'],
+    [u'biedrība'],
+    [u'fonds'],
+    [u'mednieku biedrība'],
+    [u'mednieku klubs'],
+    [u'mednieku kolektīvs'],
+    [u'kooperatīvā sabiedrība'],
+    [u'nodibinājums'],
+    [u'komandītsabiedrība'],
+    [u'zvērinātu advokātu birojs'],
+    [u'advokātu birojs'],
+    ['partija'],
+    [u'dzīvokļu īpašnieku kooperatīvā sabiedrība'],
+    [u'dzīvokļu īpašnieku biedrība'],
+    [u'Pilnsabiedrība', u'PS']
+    ]
+
+def orgAliases(name):
+    aliases = set()
+    aliases.add(name)
+    representative = name
+
+    fixname = fixName(name)
+    aliases.add(fixname)
+    if re.match(ur'^"[^"]+"$', fixname, re.UNICODE):
+        fixname = fixname[1:-1] # noņemam pirmo/pēdējo simbolu, kas ir pēdiņa
+        aliases.add(fixname)
+
+    understood = False
+    for orgGroup in orgTypes:
+        maintitle = orgGroup[0]
+        clearname = None
+        #TODO - šos regexpus varētu 1x sagatavot un nokompilēt, ja paliek par lēnu
+        p1 = re.compile(r'^"([\w\s\.,\-\'\+/!:\(\)@&]+)" ?, (%s)$' % '|'.join(orgGroup), re.UNICODE) # "Kautkas", SIA
+        m = p1.match(fixname)
+        if m:
+            clearname = m.group(1)
+        p2 = re.compile(r'^(%s) " ?([\w\s\.,\-\'\+/!:\(\)@&]+) ?"$' % '|'.join(orgGroup), re.UNICODE) # SIA "Kautkas"
+        m = p2.match(fixname)
+        if m:
+            clearname = m.group(2)
+
+        if clearname:
+            understood = True            
+            representative = '%s "%s"' % (maintitle, clearname)  # SIA "Nosaukums"
+            aliases.add(representative)
+            for title in orgGroup:  # Visiem uzņēmējdarbības veida variantiem
+                aliases.add('%s "%s"'     % (title, clearname)) # SIA "Nosaukums"
+                aliases.add('%s %s'       % (title, clearname)) # SIA Nosaukums
+                aliases.add('%s, %s'      % (clearname, title)) # Nosaukums, SIA
+                aliases.add('"%s", %s'    % (clearname, title)) # "Nosaukums", SIA
+                aliases.add('"%s"'        % (clearname, ))      # "Nosaukums"
+                # aliases.add('%s'          % (clearname, ))      # Nosaukums   TODO - šis ir bīstams!   A/S "Dzintars" pārvērtīsies par Dzintars, kas konfliktēs ar personvārdiem, līdzīgi ļoti daudz firmu kam ir vietvārdi, utml
+                # modifikācijas ar atstarpēm, kādas liek morfotageris
+                aliases.add('" %s " , %s' % (clearname, title)) # " Nosaukums " , SIA  
+                aliases.add('%s " %s "'   % (title, clearname)) # SIA " Nosaukums "
+                aliases.add('" %s "'      % (clearname, ))      # " Nosaukums "
+            break # nemeklējam tālāk
+
+    if not understood:
+        if not '"' in fixname and re.search(ur' (partija|pārvalde|dome|iecirknis|aģentūra|augstskola|koledža|vēstniecība|asociācija|apvienība|savienība|centrs|skola|federācija|fonds|institūts|biedrība|teātris|pašvaldība|arodbiedrība|[Šš]ķīrējtiesa)$', fixname, re.UNICODE):
+            aliases.add( clearOrgName(fixname) )
+            understood = True # 'hardkodētie' nosaukumi kuriem bez standartformas citu aliasu nebūs
+        elif re.search(ur'(filiāle Latvijā|Latvijas filiāle|korporācija|biedrība|krājaizdevu sabiedrība|klubs|kopiena|atbalsta centrs|asociācija)$', fixname, re.UNICODE):
+            aliases.add( clearOrgName(fixname) )
+            understood = True # šādus nevar normāli normalizēt
+
+    if not understood:
+        # print 'Not understood', fixname # debuginfo - ja ir "labs" avots kur itkā vajadzētu būt 100% sakarīgiem nosaukumiem
+        aliases.add( clearOrgName(fixname) )
+
+    aliases.remove(representative)
+    return [representative] + list(aliases)
+
+# mēģina attīrīt organizāciju nosaukumus no viskautkā
+def clearOrgName(name): 
     norm = re.sub(u'[«»“”„‟‹›〝〞〟＂"‘’‚‛\']', '', name, re.UNICODE)  # izmetam pēdiņas
     norm = re.sub(u'(AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība) ', '', norm, re.UNICODE)  # izmetam prefiksus
+    norm = re.sub(u', (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... postfixotie nosaukumi ar komatu
     norm = re.sub(u' (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... arī beigās šādi reizēm esot bijuši
     norm = re.sub(u'\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
     return norm
+
+def inflectEntity(name, category):
+    r = requests.get('http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name, category) ) 
+    return r.text # TODO - errorchecking
 
 # Veic API requestu par vārdiem atbilstošām entītijām
 # entities - dokumenta entīšu saraksts; neededEntities - kuras no tām parādās freimos un attiecīgi vajag likt globālajā stuff
@@ -302,16 +404,14 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
 
         matchedEntities = set()
         if not entity.get('representative') is None: 
-            representative = entity.get('representative')
-            representative = re.sub(u'[«»“”„‟‹›〝〞〟＂]', '"', representative, re.UNICODE)  # Aizvietojam pēdiņas
-            representative = re.sub(u"[‘’‚‛]", "'", representative, re.UNICODE)
+            representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
             matchedEntities = api.entity_ids_by_name_list(representative)
 
         if len(matchedEntities) == 0 and entity['type'] in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
-                matchedEntities = matchedEntities + api.entity_ids_by_name_list(normalizeOrg(alias))
+                matchedEntities = matchedEntities + api.entity_ids_by_name_list(clearOrgName(alias))
             # Te varētu filtrēt, vai pēc aliasa nav atrasts kautkas nekorekts, kam neatbilst tips
             # bet tad ir pēc ID jānolasa to entītiju pilnie dati, ko skatīties; un tas būtu lēni.
 
@@ -319,18 +419,15 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             insertables.append(localID) # šeit sakrājam entītiju objektu ID, lai pēc tam varētu piesiet pie API atbildēm
 
             representative = entity.get('representative')
-            insertalias = [representative] # ja ņemtu visus, tad te būtu vismaz jāfiltrē entity['aliases'] lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
+            
             # pirms insertošanas personām pieliekam aliasu ar iniciāli, ja tāds tur jau nav
             if entity['type'] == 'person' or entity['type'] == u'person':                
-                if re.match(r'[A-Z]\w+ [A-Z]\w+', representative, re.UNICODE):   #FIXME - šis regexp acīmredzot nestrādās ja sāksies ar lielo garo vai mīksto burtu
-                    extra_alias = re.sub(ur'([A-Z])\w+ ', ur'\1. ', representative, flags=re.UNICODE )
-                    if not extra_alias in insertalias:
-                        insertalias.append(extra_alias)
-
-            if entity['type'] == 'organization' or entity['type'] == u'organization':
-                norm = normalizeOrg(representative)
-                if not norm in insertalias:
-                    insertalias.append(norm)
+                insertalias = personAliases(representative)
+            elif entity['type'] == 'organization' or entity['type'] == u'organization':
+                insertalias = orgAliases(representative)
+                representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
+            else:
+                insertalias = [representative] # ja ņemtu visus, tad te būtu vismaz jāfiltrē entity['aliases'] lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
 
             category = getNETypeCode(entity['type'])
             outerId = [] # Organizācijām un personām pieliekam random UUID
@@ -346,8 +443,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                     inflections = json.dumps(entity.get('inflections'))
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
-                    r = requests.get('http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), representative, entity['type']) ) 
-                    inflections = r.text
+                    inflections = inflectEntity(representative, entity['type'])
                 entity[u'GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections )
                 api.insertMention(entity[u'GlobalID'], documentId)
 
