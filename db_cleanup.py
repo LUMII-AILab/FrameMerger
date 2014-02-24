@@ -41,11 +41,14 @@ orphans = [
 	('Orphan cdc_wordbags',		"delete from cdc_wordbags where not exists (select * from entities where entities.entityid = cdc_wordbags.entityid)"),
 	('Orphan entityouterids',	"delete from entityouterids where not exists (select * from entities where entities.entityid = entityouterids.entityid)"),
 	('Orphan entityothernames',	"delete from entityothernames where not exists (select * from entities where entities.entityid = entityothernames.entityid)"),
-	('Orphan entitymentions',	"delete from entitymentions where not exists (select * from entities where entities.entityid = entitymentions.entityid)"),
+	('Orphan entitymentions1',	"delete from entitymentions where not exists (select * from entities where entities.entityid = entitymentions.entityid)"),
+	('Orphan entitymentions2',	"delete from entitymentions where not exists (select * from documents where documents.documentid = entitymentions.documentid)"),
 	('Orphan dirtyentities', 	"delete from dirtyentities where not exists (select * from entities where entities.entityid = dirtyentities.entityid)"),
 	('Orphan framedata', 		"delete from framedata where not exists (select * from entities where entities.entityid = framedata.entityid)"),
 	('Empty frames', 			"delete from frames where not exists (select * from framedata where framedata.frameid = frames.frameid)"),
 	('Orphan summaryframeroles', "delete from summaryframeroledata where not exists (select * from entities where entities.entityid = summaryframeroledata.entityid)"),
+	('Orphan summaryframedata1', "delete from summaryframedata where not exists (select * from frames where frames.frameid = summaryframedata.frameid)"),
+	('Orphan summaryframedata2', "delete from summaryframedata where not exists (select * from summaryframes where summaryframes.frameid = summaryframedata.summaryframeid)"),
 	('Empty summaryframes', 	"delete from summaryframes where not exists (select * from summaryframeroledata where summaryframeroledata.frameid = summaryframes.frameid)")
 ]
 
