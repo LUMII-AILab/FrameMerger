@@ -11,7 +11,7 @@ from DocumentUpload import personAliases, inflectEntity, orgAliases
 
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 
-conn = PostgresConnection(api_conn_info, dataset=7)
+conn = PostgresConnection(api_conn_info, dataset=3)
 api = SemanticApiPostgres(conn)
 
 # Organizāciju nosaukumu tīrīšana, kas nav vispārīga, bet tieši šim dīvainajam excelim
@@ -141,11 +141,32 @@ def update_preloaded_org_names():
         if realUpload:
             api.updateEntity(entity_id, name, aliases, entity.get('Category'), entity.get('OuterId'), entity.get('NameInflections'))
 
+def update_preloaded_person_names():
+    q = "select entityid from entities where dataset = 3 and category = 3"
+    res = api.api.query(q, None )
+    entity_ids = [x[0] for x in res]
+
+    for counter, entity_id in enumerate(entity_ids):
+        entity = api.entity_data_by_id(entity_id)
+        name = entity.get(u'Name') 
+        aliases = set()
+        for othername in entity.get(u'OtherName'):
+            aliases.add(othername)
+        for newalias in personAliases(name):
+            aliases.add(newalias)
+        inflections = inflectEntity(name, 'person')
+        if realUpload:
+            api.updateEntity(entity_id, name, aliases, entity.get('Category'), entity.get('OuterId'), inflections, commit = False)
+        if counter % 100 == 99:
+            sys.stderr.write('%s\n' % (counter+1,))
+            conn.commit()
+
 def main():
     print sys.stdout.encoding
     print 
     #load_firmas('./input/firmu nosaukumi.xlsx')
     #update_preloaded_org_names()
+    update_preloaded_person_names()
     print 'Done!'
 
 

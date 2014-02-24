@@ -278,7 +278,7 @@ class SemanticApiPostgres(object):
     # category - integer code
     # outerids - list of unicode strings
     # inflections - unicode string
-    def updateEntity(self, entityid, name, othernames, category, outerids=[], inflections = None):
+    def updateEntity(self, entityid, name, othernames, category, outerids=[], inflections = None, commit = True):
         main_sql = "UPDATE Entities SET name = %s, OtherNames = %s, OuterID = %s, category = %s, DataSet = %s, NameInflections = %s where entityid = %s"
         self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, entityid))
 
@@ -290,9 +290,12 @@ class SemanticApiPostgres(object):
         self.api.insert("DELETE FROM EntityOuterIDs where entityid = %s", (entityid,) )
         outerid_sql = "INSERT INTO EntityOuterIDs(EntityID, OuterID) VALUES (%s, %s)"
         for outerid in outerids:
-            self.api.insert(outerid_sql, (entityid, outerid) )       
+            if outerid:
+                self.api.insert(outerid_sql, (entityid, outerid) )       
 
-        self.api.commit()
+        if commit:
+            self.api.commit()
+
 
 	# Inserto jaunu freimu datubāzē
 	# frametype - freima tipa kods kā int
