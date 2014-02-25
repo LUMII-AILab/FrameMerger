@@ -113,6 +113,8 @@ def getNETypeCode (name):
     if name is None: 
         # sys.stderr.write("Prasam NE tipu priekš None...")
         return 0
+    if name == 'organizations':
+        name = 'organization' # TODO - salabo reālu situāciju datos, taču nav skaidrs kurā brīdī tādi bugaini dati tika izveidoti.
     code = NETypeCodes.get(name)
     if code is None:
         sys.stderr.write("Nesaprasts NE tips '"+name+"'\n")

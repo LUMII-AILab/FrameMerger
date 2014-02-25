@@ -246,13 +246,13 @@ class SemanticApiPostgres(object):
 	# category - integer code
 	# outerids - list of unicode strings
 	# inflections - unicode string
-    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, commit = True):
+    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, commit = True):
         # debuginfo
         # if category == 2:
         #     print 'insertojam', category, name
-        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections) VALUES (%s, %s, %s, %s, %s, %s) RETURNING EntityID;"
+        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
-        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections),
+        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden),
                 returning = True,
                 commit = False)
         entityid = res # insertotās rindas id
