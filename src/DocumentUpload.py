@@ -11,10 +11,10 @@ from db_config import api_conn_info, inflection_webservice
 import CDC
 import logging as log
 
-realUpload = False # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
+realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 conn = PostgresConnection(api_conn_info)
 api = SemanticApiPostgres(conn) # TODO - šo te uz uploadJSON.py
@@ -89,7 +89,10 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
     if realUpload: 
         api.insertDocument(document.id, document.date.isoformat())
         for entity in entities.values():
-            if entity.get('hidden') == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
+            hidden = entity.get('hidden')
+            if hidden == None:
+                hidden = hideEntity(entity['representative'], entity['type'])
+            if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
                 api.dirtyEntity(entity.get(u'GlobalID'))
         api.api.commit()
 
@@ -432,6 +435,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
         entity = entities[str(localID)]
         if entity.get('representative')  == u'_NEKONKRĒTS_':
             entity[u'GlobalID'] = 0 # Šādas entītijas datubāzei nederēs
+            entity[u'hidden'] = True
             continue 
 
         matchedEntities = set()
@@ -469,6 +473,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 outerId = ['JP-' + str(uuid.uuid4())]
 
             hidden = hideEntity(representative, entity['type'])
+            entity[u'hidden'] = hidden
             if showInserts or entityCreationDebuginfo:
                 print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity['type'], hidden)
             if realUpload:
