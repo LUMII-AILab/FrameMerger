@@ -413,7 +413,8 @@ def get_frame_text(mentioned_entities, frame):
             return laiks + elem(u'Parādnieks') + u' aizņēmās' + aizdevums + vieniibas + kjiila
         else:
             paraadnieks = u''
-            if elem(u'Ķīla') is not None:
+            # if elem(u'Ķīla') is not None:
+            if elem(u'Parādnieks') is not None:
                 paraadnieks = u' ' + elem(u'Parādnieks', u'Datīvs')
             return laiks + elem(u'Aizdevējs') + u' aizdeva' + paraadnieks + aizdevums + vieniibas + kjiila
 

@@ -72,7 +72,7 @@ def consolidate_frames(entity_list, api):
             except TypeError:
                 log_data = "\n".join([repr(log_item) for log_item in entity.frames])
                 log.exception("Error consolidating frames:\n%s", log_data)
-                api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati
+                api.setEntityProcessingStatus([entity.entity_id for entity in entity_list], processID, 406) # nevalīdi dati
                 raise
 
             entity.set_consolidated_frames(frames)
@@ -95,7 +95,8 @@ def valid_frame(frame):
         except KeyError, e:
             log.error("Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n", element["Value"]["Entity"], frame)
             print "Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n" % (element["Value"]["Entity"], frame)
-            api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati - trūkst entītes
+            # api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati - trūkst entītes
+            api.setEntityProcessingStatus([int(element["Value"]["Entity"])], processID, 406) # nevalīdi dati - trūkst entītes
             continue
 
     if frame_type == 0: # Dzimšana
