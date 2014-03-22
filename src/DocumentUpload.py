@@ -119,9 +119,9 @@ def makeEntity(entities, phrase, namedEntityType):
     if matchingEntity is None:            
         entity = {
             'id': entityID,
-            'type': namedEntityType, #TODO - te varētu nočekot vai NER iedotais tips iederas šajā lomā
-            'representative': phrase, #TODO - tām entītijām kuras nenāca no NER bet izveidotas te, vajadzētu ieintegrēt pārveidošanu uz normālformu no java LVTagger/EntityInflection
-            'source': 'framemarker', # Lai pēc tam debugUI var atšķirt no LVTagger/LVCoref veidotajām entītēm
+            'type': namedEntityType,  # TODO - te varētu nočekot vai NER iedotais tips iederas šajā lomā
+            'representative': phrase, # Te varētu arī nebūt pamatforma; bet to risinās vēlāk - lai freimmarķiera atrastās entītijas apstrādā identiski ar NER atrastajām
+            'source': 'framemarker',  # Lai pēc tam debugUI var atšķirt no LVTagger/LVCoref veidotajām entītēm
             'aliases': [phrase]
         }
         entities[str(entityID)] = entity
@@ -463,7 +463,12 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 insertalias = orgAliases(representative)
                 representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
             else:
-                insertalias = [representative] # ja ņemtu visus, tad te būtu vismaz jāfiltrē entity['aliases'] lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
+                # Šeit ņemam tikai representative, nevis visus aliasus ko koreferences atrod. Ja ņemtu visus, tad te būtu interesanti jāfiltrē lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
+                inflections = inflectEntity(representative, entity['type'])
+                entity['inflections'] = inflections
+                inflections = json.loads(inflections)
+                representative = inflections.get(u'Nominatīvs')
+                insertalias = list(set(inflections.values()))                
 
             category = getNETypeCode(entity['type'])
             outerId = [] # Organizācijām un personām pieliekam random UUID
