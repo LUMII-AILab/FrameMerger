@@ -60,7 +60,16 @@ def get_frame_text(mentioned_entities, frame):
     def elem(role, case=u'Nominatīvs'):
         if not role in roles or roles[role] is None:
             return None
-        return roles[role][case]
+        try:
+            return roles[role][case]
+        except TypeError, e:
+            log.exception("Exception in inflection of element: %s", str(e))
+            log.error("""Error when fetching element name inflection:
+                  - role: %s
+                  - case: %s
+                  - role data: %s
+                  """, role, case, roles)
+            return None
 
     # Fallback, kas uzskaita freima saturu ne teikuma veidā, bet tīri 'loma: entīte'
     def simpleVerbalization():
@@ -102,6 +111,9 @@ def get_frame_text(mentioned_entities, frame):
                 roles[role] = json.loads(entity["NameInflections"])
             except Exception as e:
                 log.exception(u'Slikti inflectioni entītijai %s: "%s"\n%s', element["Value"]["Entity"], entity["NameInflections"], str(e))
+            if not isinstance(roles[role], dict):
+                log.exception(u'Slikti inflectioni entītijai %s: "%s"', element["Value"]["Entity"], entity["NameInflections"])
+                roles[role] = None
 
         # fallback: no inflection info available
         if not roles[role]:
