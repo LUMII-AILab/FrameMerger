@@ -155,6 +155,9 @@ def entityPhraseByTree(tokenIndex, tokens):
     phrase = " ".join(phrase)
     if phrase.endswith(u' un'):
         phrase = phrase[:-3] # noņemam un
+    if phrase.startswith(u', '):
+        phrase = phrase[2:] # 'ziņojuma' entītijas mēdz sākties ar ", ka tas un tas"
+
     if phrase.startswith(u'(') and phrase.endswith(u')'):
         phrase = phrase[1:-1] # noņemam iekavas
 

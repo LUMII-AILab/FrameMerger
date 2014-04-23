@@ -56,6 +56,8 @@ def fetch_all_entities(mentioned_entities, api):
 
 # Izveidot smuku aprakstu freimam
 def get_frame_text(mentioned_entities, frame):
+#     return get_frame_text_bez_targetword(mentioned_entities, frame) + '. (' + frame[u'TargetWord'] + ')'
+# def get_frame_text_bez_targetword(mentioned_entities, frame):
 
     def elem(role, case=u'Nominatīvs'):
         if not role in roles or roles[role] is None:
