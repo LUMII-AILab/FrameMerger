@@ -110,7 +110,10 @@ def get_frame_text(mentioned_entities, frame):
         roles[role] = None
         if entity["NameInflections"] is not None:
             try:
-                roles[role] = json.loads(entity["NameInflections"])
+                nameInflections = json.loads(entity["NameInflections"])
+                if isinstance(nameInflections, basestring):    
+                    nameInflections = json.loads(nameInflections) # Workaround izčakarētiem datiem, kur šis dict ir lieki vēlreiz noeskeipots un ielikts datubāzē kā string
+                roles[role] = nameInflections
             except Exception as e:
                 log.exception(u'Slikti inflectioni entītijai %s: "%s"\n%s', element["Value"]["Entity"], entity["NameInflections"], str(e))
             if not isinstance(roles[role], dict):
@@ -318,6 +321,7 @@ def get_frame_text(mentioned_entities, frame):
         if elem(u'Amats') is not None:
             amats = u' par' + elem(u'Amats', u'Akuzatīvs')
 
+        print laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja ' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs')
         return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja ' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs')
 
     if frame_type == 14: # Atbalsts
