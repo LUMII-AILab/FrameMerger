@@ -468,8 +468,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             else:
                 # Šeit ņemam tikai representative, nevis visus aliasus ko koreferences atrod. Ja ņemtu visus, tad te būtu interesanti jāfiltrē lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
                 inflections = inflectEntity(representative, entity['type'])
-                entity['inflections'] = inflections
                 inflections = json.loads(inflections)
+                entity['inflections'] = inflections
                 representative = inflections.get(u'Nominatīvs')
                 insertalias = list(set(inflections.values()))                
 
@@ -486,7 +486,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity['type'], hidden)
             if realUpload:
                 if entity.get('inflections'):
-                    inflections = json.dumps(entity.get('inflections'))
+                    inflections = json.dumps(entity.get('inflections'), ensure_ascii=False)
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
                     inflections = inflectEntity(representative, entity['type'])
