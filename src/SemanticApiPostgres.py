@@ -6,7 +6,7 @@ import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-import psycopg2, psycopg2.extensions, psycopg2.extras
+import psycopg2, psycopg2.extensions, psycopg2.extras, json
 from psycopg2.extras import Json
 import atexit
 
@@ -358,6 +358,7 @@ class SemanticApiPostgres(object):
         self.api.insert("UPDATE FrameData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
         self.api.insert("UPDATE SummaryFrameRoleData set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
         self.api.insert("UPDATE EntityMentions set EntityID = %s where EntityID = %s", (entityTo, entityFrom))
+        # TODO - ja ieviesīs 'locations' lauku pie EntityMentions, tad tas šeit būtu jāapvieno vienā
 
         self.api.insert("UPDATE Entities set Deleted = True where EntityID = %s", (entityFrom, ))
 
@@ -616,10 +617,14 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.close()
         return r
 
-    def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False):
+    def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False, locations=None):
         cursor = self.api.new_cursor()
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
-        cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear) )
+        locationsstr = None
+        if locations:
+            locationsstr = json.dumps(locations)
+        # print entityID, '->', locationsstr
+        cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear, locationsstr) )
         self.api.commit()
         cursor.close()
 
