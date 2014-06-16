@@ -51,8 +51,9 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 ne['locations'] = locations
 
     for entity in entities.values():
-        if (entity.get('type') == 'person') or (entity.get('type') == 'organization'):
+        if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') or (entity.get('type') == 'organization')):
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
+            entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
 
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
     filterEntityNames(entities, document.date)
@@ -104,6 +105,8 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 hidden = hideEntity(entity['representative'], entity['type'])
             if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
                 api.dirtyEntity(entity.get(u'GlobalID'))
+        api.insertDocument(document.id, document.date.isoformat(), compact_document(document))
+        api.api.commit
 
     # Iztīram krossreferences, lai document objektu var smuki noseivot kā JSON
     for sentence in sentences:
@@ -111,10 +114,6 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
             frame.pop('sentence', None)
     for entity in entities.values():
         entity.pop('frames', None)
-
-    if realUpload:
-        api.insertDocument(document.id, document.date.isoformat(), compact_document(document))
-        api.api.commit
 
 # Uztaisa entītiju ar atbilstošo tekstu un ieliek to entities sarakstā
 def makeEntity(entities, phrase, namedEntityType):
@@ -427,7 +426,7 @@ def inflectEntity(name, category):
     r = requests.get('http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name, category) ) 
     return r.text # TODO - errorchecking
 
-# Vai forma izskatās pēc 'pareizas' - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.
+# Vai forma izskatās pēc 'pareizas' kas būtu rādāma UI - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.
 def hideEntity(name, category):
     if category == u'person':
         return not re.match(ur'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+\.? [A-ZČĒĢĪĶĻŅŠŪŽ]\w+$', name, re.UNICODE) # Personām par normāliem uzskatam vai nu 'Vārds Uzvārds' vai 'V. Uzvārds'
@@ -497,6 +496,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
 
             hidden = hideEntity(representative, entity['type'])
             entity[u'hidden'] = hidden
+            if entity.get('notReallyNeeded'): # override, ja entītijai nav freimu
+                entity[u'hidden'] = True
             if showInserts or entityCreationDebuginfo:
                 print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity['type'], hidden)
             if realUpload:
@@ -751,7 +752,7 @@ def outer_id_score(id):
     if id.startswith("FP-") or id.startswith("JP-"): return -10 # Kamēr nav entītiju blesošana, šādi prioritizējam LETA iepriekšējos profilus (VIP) no automātiski veidotajiem
     return 0
 
-# Izveido dokumenta kompakto reprezentāciju, lai to varētu saglabāt datubāzē
+# Izveido dokumenta kompakto reprezentāciju, lai to varētu saglabāt datubāzē; šo f-ju veidojis Didzis
 def compact_document(document):
     global frameroleids, frametypeids
 
@@ -771,10 +772,7 @@ def compact_document(document):
                 fr.append([frameroleid,element.tokenIndex])
             sent[0].append(fr)
 
-        # for token in sentence.tokens:
-        #     sent.append(token.form)
         sent.append('|'.join(token.form.replace('|','&sp;') for token in sentence.tokens))
-
         sentences.append(sent)
 
     return json.dumps(sentences, indent=None, separators=(',',':'), check_circular=False, ensure_ascii=False)
