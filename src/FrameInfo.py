@@ -23,7 +23,7 @@ class FrameInfo(object):
         self.elem_types = {}
 
         for fr_type_id, elem_list in enumerate(self.matrix.frame_elements):
-            self.elem_types[fr_type_id] = [item for item in elem_list if len(item) > 0]
+            self.elem_types[fr_type_id] = [item for item in elem_list if item]
 
         elem_core = {}
         elem_other = {}
@@ -36,7 +36,7 @@ class FrameInfo(object):
 
             for fr_elem_id, fr_elem_class in enumerate(t_elem_info):
 
-                if len(fr_elem_class) > 0:      # ignore empty elements
+                if fr_elem_class:      # ignore empty elements
                     if fr_elem_class == "Core":
                         elem_core[fr_type_id].append(fr_elem_id)
                     else:
@@ -103,7 +103,7 @@ class FrameMatrix(object):
         Loads FrameMatrix from an XLSX file.
         """
 
-        book = load_workbook(fname)
+        book = load_workbook(fname, data_only = True)
         sheet = book.get_sheet_by_name(name = "FrameMatrix")
       
         # add a check for empty rows in the XLS file (!)
@@ -128,7 +128,7 @@ class FrameMatrix(object):
         rows = sheet.range("B%i:L%i" % (matrix2_pos, matrix2_pos+frame_cnt))
         for (pos, row) in enumerate(rows):
             if row[0].value != self.frame_types[pos]:
-                raise Exception("Frame name mismatch in reading Matrix #2")
+                raise Exception("Frame name mismatch in reading Matrix #2 - '%s' vs '%s' at row %d" % (row[0].value, self.frame_types[pos], pos))
 
             self.elem_class.append([cell.value for cell in row[1:]])
 
