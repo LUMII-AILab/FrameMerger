@@ -617,6 +617,17 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.close()
         return r
 
+    # Pēc entītijas ID atrod tai atbilstošos nestrukturētos/plain text faktus
+    def entity_text_facts(self, entity_id):
+        cursor = self.api.new_cursor()
+        main_sql = "select id, text from entitytextfacts where f.frameid = %s"
+        cursor.execute(main_sql, (entity_id,))
+        r = []
+        for fact in cursor.fetchall():
+            r.append(fact.text)
+        cursor.close()
+        return r
+
     def insertMention(self, entityID, documentID, chosen=True, cos_similarity=None, blessed=False, unclear=False, locations=None):
         cursor = self.api.new_cursor()
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )

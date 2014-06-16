@@ -618,6 +618,8 @@ def buildGlobalEntityBags(globalID):
             if entity['Category'] <= 3 and entityID != globalID: # 1=location 2=organization 3=person
                 mentionbag[entity.get('Name')] += 1
 
+    for fact in api.entity_text_facts(globalID): # Analogs freima tipa #26 datiem, tikai atsevišķa tabula pēc 2014 struktūras izmaiņām
+        contextbag.update(fact.split()) # Pieņemam, ka brīvā teksta apraksti labi korelē ar kontekstu reālajos rakstos
     
     if showDisambiguation: # debuginfo    
         print
