@@ -84,10 +84,8 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 elif globalID in usedEntities: 
                     log.debug('Entītija #%d atkal parādās tai pašā freimā pie vārda %s', globalID, sentence.tokens[element.tokenIndex-1].form)
                     # principā šāds varētu rasties ja koreferences saliek 2 NER-atrastas entītijas kopā, un vienā freimā pieliek pie katru savas lomas (piemēram, amats+personvārds?) - bet īsti labi tas nav
-                else:
-                    # print frame.type, element.name, entityID, entities[str(entityID)]['representative'], '(', sentence.tokens[element.tokenIndex-1].form, ')', globalID
+                elif globalID: # nekonkrētos elementus šajā posmā nometam
                     elements[elementCode] = globalID
-                    #elements.append({'Key':elementCode, 'Value':{'Entity':globalID, 'PlaceInSentence':element.tokenIndex}})
                     filledRoles.add(elementCode)
                     usedEntities.add(globalID)
                     
