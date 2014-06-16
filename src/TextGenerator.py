@@ -319,10 +319,9 @@ def get_frame_text(mentioned_entities, frame):
             return simpleVerbalization()
         amats = u''
         if elem(u'Amats') is not None:
-            amats = u' par' + elem(u'Amats', u'Akuzatīvs')
+            amats = u' par ' + elem(u'Amats', u'Akuzatīvs')
 
-        print laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja ' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs')
-        return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja ' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs')
+        return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs')
 
     if frame_type == 14: # Atbalsts
         if elem(u'Atbalstītājs') is None or elem(u'Saņēmējs') is None:

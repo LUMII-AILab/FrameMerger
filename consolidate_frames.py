@@ -174,7 +174,7 @@ def save_entity_frames_to_api(api, entity_list):
 
             if is_ok["Answer"] == 0:
                 frame_id = is_ok["FrameId"]
-                log.debug("Frame saved OK with id: %s\n", frame_id)
+                # log.debug("Frame saved OK with id: %s\n", frame_id)
 
                 summary_frame_ids.append(frame_id)
 
