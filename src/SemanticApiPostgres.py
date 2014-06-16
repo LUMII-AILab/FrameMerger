@@ -622,7 +622,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
         locationsstr = None
         if locations:
-            locationsstr = json.dumps(locations)
+            locationsstr = json.dumps(locations, separators=(',', ':'))
         # print entityID, '->', locationsstr
         cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear, locationsstr) )
         self.api.commit()
@@ -770,7 +770,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         self.api.commit()        
 
     # Ja šāds dokuments nav dokumentu tabulā, tad to pievieno
-    def insertDocument(self, documentID, timestamp = None):
+    def insertDocument(self, documentID, timestamp = None, compactText):
         cursor = self.api.new_cursor()
         cursor.execute("select documentid from documents where documentid = %s", (documentID, ))
         r = cursor.fetchone()

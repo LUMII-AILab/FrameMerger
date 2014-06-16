@@ -98,14 +98,12 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat())
 
     if realUpload: 
-        api.insertDocument(document.id, document.date.isoformat())
         for entity in entities.values():
             hidden = entity.get('hidden')
             if hidden == None:
                 hidden = hideEntity(entity['representative'], entity['type'])
             if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
                 api.dirtyEntity(entity.get(u'GlobalID'))
-        api.api.commit()
 
     # Iztīram krossreferences, lai document objektu var smuki noseivot kā JSON
     for sentence in sentences:
@@ -114,6 +112,9 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
     for entity in entities.values():
         entity.pop('frames', None)
 
+    if realUpload:
+        api.insertDocument(document.id, document.date.isoformat(), compact_document(document))
+        api.api.commit
 
 # Uztaisa entītiju ar atbilstošo tekstu un ieliek to entities sarakstā
 def makeEntity(entities, phrase, namedEntityType):
@@ -749,3 +750,33 @@ def outer_id_score(id):
     if id is None: return -100 # ja nu ir izvēle starp tādu entītiju kam ir profils un tādu, kam nav - liekam pie 'zināmās'
     if id.startswith("FP-") or id.startswith("JP-"): return -10 # Kamēr nav entītiju blesošana, šādi prioritizējam LETA iepriekšējos profilus (VIP) no automātiski veidotajiem
     return 0
+
+# Izveido dokumenta kompakto reprezentāciju, lai to varētu saglabāt datubāzē
+def compact_document(document):
+    global frameroleids, frametypeids
+
+    sentences = []
+
+    for sentence in document.sentences:
+        sent = [[]]
+        for frame in sentence.frames:
+            if not frame.tokenIndex:
+                continue
+            frametypeid = getFrameType(frame.type)
+            fr = [[frametypeid,frame.tokenIndex]]
+            for element in frame.elements:
+                if not element.tokenIndex:
+                    continue
+                frameroleid = getElementCode(frametypeid,element.name)
+                fr.append([frameroleid,element.tokenIndex])
+            sent[0].append(fr)
+
+        # for token in sentence.tokens:
+        #     sent.append(token.form)
+        sent.append('|'.join(token.form.replace('|','&sp;') for token in sentence.tokens))
+
+        sentences.append(sent)
+
+    return json.dumps(sentences, indent=None, separators=(',',':'), check_circular=False, ensure_ascii=False)
+
+
