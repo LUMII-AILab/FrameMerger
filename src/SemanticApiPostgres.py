@@ -620,7 +620,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
     # Pēc entītijas ID atrod tai atbilstošos nestrukturētos/plain text faktus
     def entity_text_facts(self, entity_id):
         cursor = self.api.new_cursor()
-        main_sql = "select id, text from entitytextfacts where f.frameid = %s"
+        main_sql = "select id, text from entitytextfacts where entityid = %s"
         cursor.execute(main_sql, (entity_id,))
         r = []
         for fact in cursor.fetchall():
@@ -635,7 +635,8 @@ where fr_data.entityid = %s and fr.blessed is null;"
         if locations:
             locationsstr = json.dumps(locations, separators=(',', ':'))
         # print entityID, '->', locationsstr
-        cursor.execute("insert into entitymentions values (%s, %s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear, locationsstr) )
+        cursor.execute("insert into entitymentions (entityid, documentid, chosen, cos_similarity, blessed, unclear, locations)\
+                        values (%s, %s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear, locationsstr) )
         self.api.commit()
         cursor.close()
 
@@ -781,12 +782,12 @@ where fr_data.entityid = %s and fr.blessed is null;"
         self.api.commit()        
 
     # Ja šāds dokuments nav dokumentu tabulā, tad to pievieno
-    def insertDocument(self, documentID, timestamp = None, compactText):
+    def insertDocument(self, documentID, timestamp, compactText):
         cursor = self.api.new_cursor()
         cursor.execute("select documentid from documents where documentid = %s", (documentID, ))
         r = cursor.fetchone()
         if not r: # ja nav tāds atrasts
-            cursor.execute("insert into documents (documentid, i_time) values (%s, %s)", (documentID, timestamp))
+            cursor.execute("insert into documents (documentid, i_time, content) values (%s, %s, %s)", (documentID, timestamp, compactText))
         self.api.commit()
         cursor.close()
 
