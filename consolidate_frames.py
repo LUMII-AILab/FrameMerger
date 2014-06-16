@@ -166,21 +166,14 @@ def save_entity_frames_to_api(api, entity_list):
         to_save = entity.cons_frames
         log.info("Save_entity_frames_to_api - summary frames to save for entity %s: %s", entity.entity_id, len(to_save))
 
-        for frame in to_save:            
-            res = api.insert_summary_frame(frame, commit=False)
-            #log.debug("... return value from saving summary frame:\n%s", repr(res))
-
-            is_ok = res["Answers"][0]
-
-            if is_ok["Answer"] == 0:
-                frame_id = is_ok["FrameId"]
-                # log.debug("Frame saved OK with id: %s\n", frame_id)
-
-                summary_frame_ids.append(frame_id)
-
+        for frame in to_save:     
+            summary_frame_id = frame.get("SummaryFrameID")
+            if summary_frame_id:
+                api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], commit=False)
+                summary_frame_ids.append(summary_frame_id)
             else:
-                log.debug("Error saving frame to the API: (%s, %s)\n", is_ok["Answer"], is_ok["AnswerTypeString"])
-                error_frames.append(frame)
+                frame_id = api.insert_summary_frame(frame, commit=False)
+                summary_frame_ids.append(frame_id)
 
         # commit changes (delete + insert in one transaction)
         api.api.commit()

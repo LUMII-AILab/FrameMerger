@@ -351,6 +351,16 @@ class SemanticApiPostgres(object):
 
         self.api.commit()
 
+    #Apvieno summarizētajam freimam tikai 'apakšfreimu' sarakstu - lieto pie apvienošanas, blesotiem summaryfreimiem
+    def updateSummaryFrameRawFrames(self, frameid, summarizedFrames, commit=True):
+        self.api.insert("DELETE FROM SummaryFrameData where SummaryFrameID = %s", (frameid, ))
+        frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
+        for summarizedFrame in summarizedFrames:
+            self.api.insert(frame_sql, (frameid, summarizedFrame) )       
+
+        if commit:
+            self.api.commit()
+
     # Apvieno 2 entītijas
     # from - integer, entītijas ID, kuras freimi u.c. tiks pievienota otrai entītei un pati entīte izdzēsta
     # to - integer, entītijas ID uz kuru tas tiks pāradresēta
@@ -464,8 +474,6 @@ where fr_data.entityid = %s and fr.blessed is null;"
                          FrameCnt, FrameText, SummaryInfo, Deleted)\
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
-        log.debug("Inserting summary frame:\n %r", frame)
-
         # fix MergeType codes (!) as the API requires Int for now
         merge_type_map = {"O": 0, "M": 2, "E": 1}
 
@@ -506,15 +514,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         if commit:
             self.api.commit()
 
-        # form result report
-        report = {"Answers":[
-            {   
-                "Answer": 0,
-                "FrameId": frameid,
-            },
-        ]}
-
-        return report
+        return frameid
 
     # Pēc entītijas ID, atgriež visus summary freimus par viņu. 
     def summary_frame_data_by_id(self, entityID):

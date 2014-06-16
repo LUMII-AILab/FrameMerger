@@ -87,16 +87,23 @@ class BaseConsolidator(object):
 
         res = []
 
-        # skip when matching blessed/anti-blessed frames found in summary frames list
-        summary_list_keys = frozenset(EF.summary_frame_key(sum_frame) for sum_frame in blessed_summary_list)
+        # Handle blessed and anti-blessed summary frames
+        summary_list_keys = set()
+        for sum_frame in blessed_summary_list:
+            key = EF.summary_frame_key(sum_frame)
+            summary_list_keys.add(key)
+            item = deepcopy(res_buf[key][0])
+            item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+            item["SummaryFrameID"] = sum_frame["FrameId"]
+            res.append(item)
 
         res_buf = {
-                # filter the dictionary
+                # filter those with blessed summaries out from normal processing
                 key: res_buf[key] for key in res_buf
                     if key not in summary_list_keys
                 }
 
-        # handle blessed and anti-blessed
+        # handle blessed and anti-blessed raw frames
         for key in res_buf:
             blessed = [frame for frame in res_buf[key] if frame["IsBlessed"] == True]
             anti_bless = [frame for frame in res_buf[key] if frame["IsBlessed"] == False]  # NOTE: frame["IsBlessed"] can be None
