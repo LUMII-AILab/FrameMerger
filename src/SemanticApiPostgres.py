@@ -257,9 +257,9 @@ class SemanticApiPostgres(object):
                 commit = False)
         entityid = res # insertotās rindas id
 
-        names_sql = "INSERT INTO EntityOtherNames(EntityID, Name) VALUES (%s, %s)"
+        names_sql = "INSERT INTO EntityOtherNames(EntityID, Name, isAuthorative) VALUES (%s, %s, %s)"
         for othername in othernames:
-            self.api.insert(names_sql, (entityid, othername) )
+            self.api.insert(names_sql, (entityid, othername, (othername==name)) )
 
 
         outerid_sql = "INSERT INTO EntityOuterIDs(EntityID, OuterID) VALUES (%s, %s)"
