@@ -66,7 +66,7 @@ frameElements = [
     ["Candidate", "Body", "Role", "New_leader", "Result", "Time", "Place"], 
     ["Donor", "Recipient", "Theme", "Time"],
     ["Created_entity", "Creator", "Manner", "Industry", "Time", "Place"], 
-    ["Participant_1", "Event", "Time", "Place", "Manner", "Insititution"], # NB! typo insitution didža datos
+    ["Participant_1", "Event", "Time", "Place", "Manner", "Institution"], 
     ["Earner", "Earnings", "Goods", "Profit", "Time", "Unit", "Growth"], 
     ["Owner", "Possession", "Time", "Share"],
     ["Borrower", "Lender", "Theme", "Collateral", "Time", "Units"], 
@@ -79,10 +79,13 @@ frameElements = [
     ["Entity","Property","Category"]]
 
 def getElementCode(frameCode, name):
+    if name=="Insititution": 
+        name = "Institution" # NB! typo didža datos
+
     if name in frameElements[frameCode]:
         return frameElements[frameCode].index(name)+1 # +1 jo Freimu lomas numurējas no 1
     else:
-        sys.stderr.write("Freimā '"+frameTypes[frameCode]+"' nesaprasts elements '"+name+"'\n")
+        sys.stderr.write("Freimā '"+str(frameTypes[frameCode])+"' nesaprasts elements '"+str(name)+"'\n")
         return 0
 
 def getElementName(frameCode, elementCode):

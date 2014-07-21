@@ -421,8 +421,12 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
-    r = requests.get('http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name, category) ) 
-    return r.text # TODO - errorchecking
+    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name, category) 
+    r = requests.get(query) 
+    if r.status_code != 200:
+        log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
+        return '{"Nominatīvs":%s}' % json.dumps(name)
+    return r.text # TODO - check if valid JSON ?
 
 # Vai forma izskatās pēc 'pareizas' kas būtu rādāma UI - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.
 def hideEntity(name, category):
@@ -479,7 +483,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
             else:
                 # Šeit ņemam tikai representative, nevis visus aliasus ko koreferences atrod. Ja ņemtu visus, tad te būtu interesanti jāfiltrē lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
-                inflections = inflectEntity(representative, entity['type'])
+                inflections = inflectEntity(representative, entity['type'])                
                 inflections = json.loads(inflections)
                 entity['inflections'] = inflections
                 representative = inflections.get(u'Nominatīvs')
