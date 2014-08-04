@@ -124,7 +124,7 @@ class SemanticApiPostgres(object):
    sourceid         text,
    documentid       text,
    sentenceid       text,
-   approwedtypeid   integer,
+   approwedtypeid   integer,    FIXME- jāpārsauc bez typo
    weight           integer,
    deleted          boolean DEFAULT FALSE,
    dataset          integer DEFAULT 0,
@@ -154,6 +154,7 @@ class SemanticApiPostgres(object):
              u'SentenceId': frame.sentenceid,
              u'SourceId':   frame.sourceid,
              u'TargetWord': frame.targetword,
+             u'ApprovedTypeID': frame.approwedtypeid,
         }
 
         frame_info[u"FrameData"] = self.frame_elements_by_id(fr_id)
@@ -304,12 +305,12 @@ class SemanticApiPostgres(object):
 	# sentenceId - teikuma id
 	# targetword - unicode string
 	# date - freima datums - string ISO datumformātā 
-    def insertFrame(self, frametype, elements, document, source=None, sentenceId=None, targetword = None, date=None):
+    def insertFrame(self, frametype, elements, document, source=None, sentenceId=None, targetword = None, date=None, approvedTypeID=0):
         main_sql = "INSERT INTO Frames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime)\
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
         res = self.api.insert(main_sql,
-                (frametype, source, sentenceId, document, targetword, 0, self.api.dataset, None, False, date),
+                (frametype, source, sentenceId, document, targetword, approvedTypeID, self.api.dataset, None, False, date),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
@@ -781,13 +782,11 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.close()
         self.api.commit()        
 
-    # Ja šāds dokuments nav dokumentu tabulā, tad to pievieno
-    def insertDocument(self, documentID, timestamp, compactText):
+    # Pievieno dokumentu tabulā, ja ir, tad pārraksta
+    def insertDocument(self, documentID, timestamp, type, compactText):
         cursor = self.api.new_cursor()
-        cursor.execute("select documentid from documents where documentid = %s", (documentID, ))
-        r = cursor.fetchone()
-        if not r: # ja nav tāds atrasts
-            cursor.execute("insert into documents (documentid, i_time, content) values (%s, %s, %s)", (documentID, timestamp, compactText))
+        cursor.execute("delete from documents where documentid = %s", (documentID, ))
+        cursor.execute("insert into documents (documentid, i_time, i_type, content) values (%s, %s, %s, %s)", (documentID, timestamp, type, compactText))
         self.api.commit()
         cursor.close()
 

@@ -74,7 +74,10 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
             usedEntities = set()
             for element in frame.elements:
                 elementCode = getElementCode(frameType, element.name)
-                entityID = sentence.tokens[element.tokenIndex-1].namedEntityID  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
+                if element.entityID:
+                    entityID = element.entityID
+                else: 
+                    entityID = sentence.tokens[element.tokenIndex-1].namedEntityID  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
                 globalID = entities[str(entityID)].get(u'GlobalID')
                 if globalID is None and realUpload:
                     log.error('Neatradu globalID entītijai %s', entities[str(entityID)].get('representative'))
@@ -92,18 +95,27 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
             if showInserts:
                 print 'Gribētu insertot freimu', frame.type, elements
             if realUpload:                
-                targetword = sentence.tokens[frame.tokenIndex-1].form
+                if frame.tokenIndex:
+                    targetword = sentence.tokens[frame.tokenIndex-1].form
+                else:
+                    targetword = None
                 source = 'Pipeline parse at '+datetime.datetime.now().isoformat()
-                api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat())
+
+                approvalType = 0 # default
+                if document.get('type') in {'person', 'organization'}: # Personas CV vai organizāciju profilu dokumenti - uzskatam to datus par ticamākiem nekā citus
+                    approvalType = 1
+                    source = 'LETA CV'
+
+                api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat(), approvedTypeID=approvalType)
 
     if realUpload: 
         for entity in entities.values():
             hidden = entity.get('hidden')
             if hidden == None:
-                hidden = hideEntity(entity['representative'], entity['type'])
+                hidden = hideEntity(entity['representative'], entity.get('type'))
             if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
                 api.dirtyEntity(entity.get(u'GlobalID'))
-        api.insertDocument(document.id, document.date.isoformat(), compact_document(document))
+        api.insertDocument(document.id, document.date.isoformat(), document.get('type'), compact_document(document))
         api.api.commit
 
     # Iztīram krossreferences, lai document objektu var smuki noseivot kā JSON
@@ -197,6 +209,10 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
         return 0
     else: 
+        # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
+        if element.entityID:
+            return element.entityID
+
         frameType = getFrameType(frame.type)
         elementCode = getElementCode(frameType, element.name)
         defaultType = getDefaultRole(frameType, elementCode)
@@ -450,7 +466,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
     for localID in neededEntities:
         entity = entities[str(localID)]
         if not entity.get('locations'):
-            print entity
+            log.info("Entity %s without token locations", entity.get('representative'))
 
         if entity.get('representative')  == u'_NEKONKRĒTS_':
             entity[u'GlobalID'] = 0 # Šādas entītijas datubāzei nederēs
@@ -463,7 +479,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             entity['representative'] = representative 
             matchedEntities = api.entity_ids_by_name_list(representative)
 
-        if len(matchedEntities) == 0 and entity['type'] in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
+        if len(matchedEntities) == 0 and entity.get('type') in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(clearOrgName(alias))
@@ -476,38 +492,38 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             representative = entity.get('representative')
             
             # pirms insertošanas personām pieliekam aliasu ar iniciāli, ja tāds tur jau nav
-            if entity['type'] == 'person' or entity['type'] == u'person':                
+            if entity.get('type') in {'person', u'person'}:
                 insertalias = personAliases(representative)
-            elif entity['type'] == 'organization' or entity['type'] == u'organization':
+            elif entity.get('type') in {'organization', u'organization'}:
                 insertalias = orgAliases(representative)
                 representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
             else:
                 # Šeit ņemam tikai representative, nevis visus aliasus ko koreferences atrod. Ja ņemtu visus, tad te būtu interesanti jāfiltrē lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
-                inflections = inflectEntity(representative, entity['type'])                
+                inflections = inflectEntity(representative, entity.get('type'))             
                 inflections = json.loads(inflections)
                 entity['inflections'] = inflections
                 representative = inflections.get(u'Nominatīvs')
                 insertalias = list(set(inflections.values()))                
 
-            category = getNETypeCode(entity['type'])
+            category = getNETypeCode(entity.get('type'))
             outerId = [] # Organizācijām un personām pieliekam random UUID
             if category == 3:
                 outerId = ['FP-' + str(uuid.uuid4())]
             if category == 2:
                 outerId = ['JP-' + str(uuid.uuid4())]
 
-            hidden = hideEntity(representative, entity['type'])
+            hidden = hideEntity(representative, entity.get('type'))
             entity[u'hidden'] = hidden
             if entity.get('notReallyNeeded'): # override, ja entītijai nav freimu
                 entity[u'hidden'] = True
             if showInserts or entityCreationDebuginfo:
-                print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity['type'], hidden)
+                print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity.get('type'), hidden)
             if realUpload:
                 if entity.get('inflections'):
                     inflections = json.dumps(entity.get('inflections'), ensure_ascii=False)
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
-                    inflections = inflectEntity(representative, entity['type'])
+                    inflections = inflectEntity(representative, entity.get('type'))
                 entity[u'GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, commit = False )
                 api.insertMention(entity[u'GlobalID'], documentId, locations=entity.get('locations'))
 
@@ -520,11 +536,11 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             if inWhitelist: # Šajā gadījumā neskatamies kā disambiguēt
                 continue 
 
-            if len(matchedEntities) > 1 and entity['type'] in {'person', u'person', 'organization', u'organization'}: 
+            if len(matchedEntities) > 1 and entity.get('type') in {'person', u'person', 'organization', u'organization'}: 
                 toDisambiguate.append( (entity, matchedEntities) ) # pieglabājam tuple, lai apstrādātu tad kad visām viennozīmīgajām entītijām būs globalid atrasti
             else:
                 entity[u'GlobalID'] = matchedEntities[0] # klasifikatoriem tāpat daudzmaz vienalga, vai pie kautkā piesaista vai veido jaunu
-                if realUpload and entity['type'] in {'person', u'person', 'organization', u'organization'}: 
+                if realUpload and entity.get('type') in {'person', u'person', 'organization', u'organization'}: 
                     api.insertMention(matchedEntities[0], documentId, locations=entity.get('locations'))
 
     mentions = CDC.mentionbag(entities.values()) # TODO - šobrīd mentionbag visiem ir vienāds un tādēļ iekļauj arī pašas disambiguējamās entītijas vārdus
@@ -537,7 +553,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
 def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
     if showDisambiguation: # debuginfo    
         print
-        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity['type'], ')'
+        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')'
         print entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities
         print 'name bag :', CDC.namebag(entity)
         print 'mention bag :', mentions
@@ -651,7 +667,7 @@ def disambiguateEntity(entity, matchedEntities, entities):
         #     print freims["type"], ":", freims["elements"]
 
     if showDisambiguation: # debuginfo
-        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity['type'], ')'
+        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')'
         print entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities
 
         print 'Dokumenta objekts:'

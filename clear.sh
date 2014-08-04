@@ -5,6 +5,7 @@ rm .gitignore
 rm -rf ./output
 rm -rf ./log
 rm -rf ./utils
+rm -rf ./bug
 rm lastlog
 rm db_config.py
 rm src/*.pyc
@@ -13,3 +14,5 @@ rm package_list
 rm *.pyc
 rm src/RdfOutput.py
 rm src/README-RDF_generation
+rm smalltest.txt
+rm constest.txt
