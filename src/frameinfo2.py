@@ -83,7 +83,7 @@ def getElementCode(frameCode, name):
         name = "Institution" # NB! typo didža datos
 
     if name in frameElements[frameCode]:
-        return frameElements[frameCode].index(name)+1 # +1 jo Freimu lomas numurējas no 1
+        return frameElements[frameCode].index(name)+1 # +1 jo Freimu lomas numurējas no 1; 0-tā - targetvārds
     else:
         sys.stderr.write("Freimā '"+str(frameTypes[frameCode])+"' nesaprasts elements '"+str(name)+"'\n")
         return 0

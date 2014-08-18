@@ -92,10 +92,15 @@ class BaseConsolidator(object):
         for sum_frame in blessed_summary_list:
             key = EF.summary_frame_key(sum_frame)
             summary_list_keys.add(key)
-            item = deepcopy(res_buf[key][0])
-            item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
-            item["SummaryFrameID"] = sum_frame["FrameId"]
-            res.append(item)
+            if res_buf.get(key):
+                item = deepcopy(res_buf[key][0])
+                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+                item["SummaryFrameID"] = sum_frame["FrameId"]
+                res.append(item)
+            # else: 
+            #     log.warning("Potentially losing blessed frame")
+            #     log.warning(sum_frame)
+                # FIXME - te vajag laiakm uztaisīt reālu 'frame-veida' objektu no sum_frame, bet viņi būtiski atšķiras            
 
         res_buf = {
                 # filter those with blessed summaries out from normal processing
