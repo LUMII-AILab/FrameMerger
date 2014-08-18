@@ -252,8 +252,19 @@ def main():
     
     entity_list = entity_ids_from_stdin()
 
-    for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
-        process_entities(chunk, out_dir, api=api)
+    if '-single' in sys.argv:
+        # reālā laika apstrāde - pēc katra ID uzreiz apstrādāt
+        while 1:
+            try:
+                line = sys.stdin.readline()
+            except KeyboardInterrupt:
+                break
+            if not line or line == "\n":
+                break
+            process_entities([int(line)], out_dir, api=api)
+    else: # batch processing - dalam visu porcijās
+        for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
+            process_entities(chunk, out_dir, api=api)
 
     log.info('Darbs pabeigts.')
 
