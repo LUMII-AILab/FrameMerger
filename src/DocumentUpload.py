@@ -76,16 +76,18 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 elementCode = getElementCode(frameType, element.name)
                 if element.entityID:
                     entityID = element.entityID
+                    token_str = None # TODO 
                 else: 
                     entityID = sentence.tokens[element.tokenIndex-1].namedEntityID  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
+                    token_str = sentence.tokens[element.tokenIndex-1].form
                 globalID = entities[str(entityID)].get(u'GlobalID')
                 if globalID is None and realUpload:
                     log.error('Neatradu globalID entītijai %s', entities[str(entityID)].get('representative'))                
                 if elementCode in filledRoles: # Freimu analizators nedrīkstētu iedot 2x vienādas lomas, bet ja nu tomēr, tad lai te nenomirst
-                    log.debug('Lomai %s vairāki varianti: %s ir par daudz', element.name, sentence.tokens[element.tokenIndex-1].form )
-                elif globalID in usedEntities: 
-                    
-                    log.debug('Entītija #%d atkal parādās tai pašā freimā pie vārda %s', globalID, sentence.tokens[element.tokenIndex-1].form)
+                    log.debug('Lomai %s vairāki varianti: %s ir par daudz', element.name, token_str )
+                elif globalID in usedEntities:                     
+
+                    log.debug('Entītija #%d atkal parādās tai pašā freimā pie vārda %s', globalID, token_str )
                     # principā šāds varētu rasties ja koreferences saliek 2 NER-atrastas entītijas kopā, un vienā freimā pieliek pie katru savas lomas (piemēram, amats+personvārds?) - bet īsti labi tas nav
                 elif globalID: # nekonkrētos elementus šajā posmā nometam
                     elements[elementCode] = globalID
