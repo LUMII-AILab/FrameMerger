@@ -276,7 +276,7 @@ def fill_other_elements(item, frame_list):
             # throw an exception if there are conflicting values
             try:
                 EF.update_element_if_not_conflicting(item, e_id, value)
-            except EF.ConflictingFramesError, e:
+            except EF.ConflictingFramesError as e:
                 item_value = [v["Value"]["Entity"] for v in item["FrameData"] if v["Key"] == e_id][0]
                 log.error("Conflicting frame element values when merging:\n  frame %s (%s: %s) vs. (%s: %s) [in previous frames]",  
                     f["FrameId"], e_id, value, e_id, item_value)

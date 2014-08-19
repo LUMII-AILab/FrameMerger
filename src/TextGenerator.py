@@ -64,7 +64,7 @@ def get_frame_text(mentioned_entities, frame):
             return None
         try:
             return roles[role][case]
-        except TypeError, e:
+        except TypeError as e:
             log.exception("Exception in inflection of element: %s", str(e))
             log.error("""Error when fetching element name inflection:
                   - role: %s
@@ -80,7 +80,7 @@ def get_frame_text(mentioned_entities, frame):
         for role in roles:
             try:
                 text = text + ' ' + role + ':' + elem(role)
-            except TypeError, e:
+            except TypeError as e:
                 log.exception("Exception in verbalisation: %s", str(e))
                 log.error("""Unicode conversion error when building verbalisation:
   - frame: %r
@@ -102,7 +102,7 @@ def get_frame_text(mentioned_entities, frame):
         #  - when entity does not exist for the e_ID mentioned in the frame
         try:
             entity = mentioned_entities[element["Value"]["Entity"]]
-        except KeyError, e:
+        except KeyError as e:
             log.error("Entity ID %s (used in a frame element) not found! Can not generate frame text. Data:\n%r\n", element["Value"]["Entity"], frame)
             continue
         

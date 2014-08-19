@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # coding=utf-8
+from __future__ import print_function
+from __future__ import unicode_literals
 
 import requests, json, time, datetime, re, copy, uuid, codecs, pylru, urllib
 from collections import Counter
@@ -11,10 +13,10 @@ from db_config import api_conn_info, inflection_webservice
 import CDC
 import logging as log
 
-realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
-showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
+realUpload = False # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
+showInserts = True # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 conn = PostgresConnection(api_conn_info)
 api = SemanticApiPostgres(conn) # TODO - šo te uz uploadJSON.py
@@ -80,7 +82,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                 else: 
                     entityID = sentence.tokens[element.tokenIndex-1].namedEntityID  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
                     token_str = sentence.tokens[element.tokenIndex-1].form
-                globalID = entities[str(entityID)].get(u'GlobalID')
+                globalID = entities[str(entityID)].get('GlobalID')
                 if globalID is None and realUpload:
                     log.error('Neatradu globalID entītijai %s', entities[str(entityID)].get('representative'))                
                 if elementCode in filledRoles: # Freimu analizators nedrīkstētu iedot 2x vienādas lomas, bet ja nu tomēr, tad lai te nenomirst
@@ -95,7 +97,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
                     usedEntities.add(globalID)
                     
             if showInserts:
-                print 'Gribētu insertot freimu', frame.type, elements
+                print('Gribētu insertot freimu', frame.type, elements)
             if realUpload:                
                 if frame.tokenIndex:
                     targetword = sentence.tokens[frame.tokenIndex-1].form
@@ -116,7 +118,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
             if hidden == None:
                 hidden = hideEntity(entity['representative'], entity.get('type'))
             if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
-                api.dirtyEntity(entity.get(u'GlobalID'))
+                api.dirtyEntity(entity.get('GlobalID'))
         api.insertDocument(document.id, document.date.isoformat(), document.get('type'), compact_document(document))
         api.api.commit
 
@@ -148,7 +150,6 @@ def makeEntity(entities, phrase, namedEntityType):
             'aliases': [phrase]
         }
         entities[str(entityID)] = entity
-        # print entity
     else:
         entityID = matchingEntity['id']
     return entityID
@@ -165,7 +166,7 @@ def entityPhraseByTree(tokenIndex, tokens):
         for token in tokens:
             if (token.parentIndex in included) and not (token.index in included): # pievienojam visus bērnus kamēr vairs nav ko pievienot
                 #TODO - vajag pārbaudi lai neiekļautu apakšteikumus
-                if token.lemma in (u'(', u')', u';'):
+                if token.lemma in ('(', ')', ';'):
                     terminator = True
                 dirty = True
                 newincluded.add(token.index) 
@@ -176,12 +177,12 @@ def entityPhraseByTree(tokenIndex, tokens):
         if token.index in included:
             phrase.append(token.form)
     phrase = " ".join(phrase)
-    if phrase.endswith(u' un'):
+    if phrase.endswith(' un'):
         phrase = phrase[:-3] # noņemam un
-    if phrase.startswith(u', '):
+    if phrase.startswith(', '):
         phrase = phrase[2:] # 'ziņojuma' entītijas mēdz sākties ar ", ka tas un tas"
 
-    if phrase.startswith(u'(') and phrase.endswith(u')'):
+    if phrase.startswith('(') and phrase.endswith(')'):
         phrase = phrase[1:-1] # noņemam iekavas
 
     return phrase
@@ -221,26 +222,26 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
 
         headtoken = tokens[tokenIndex-1] 
 
-        if headtoken.namedEntityType is None or headtoken.namedEntityType == u'O':
+        if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O':
             headtoken.namedEntityType = defaultType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
 
         if headtoken['namedEntityType'] == None:
-            sys.stderr.write(u'Entītijai nav tipa :( un defaulttips ir %s', (defaultType, ))
-        if headtoken['namedEntityType'] == u'None': 
-            sys.stderr.write(u'Entītijai tips ir "None" un defaulttips ir %s', (defaultType, ))
+            sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (defaultType, ))
+        if headtoken['namedEntityType'] == 'None': 
+            sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (defaultType, ))
 
         entityID = headtoken.namedEntityID 
 
         # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
-        if entityID is not None and entities[str(entityID)].get(u'type') == u'person' and headtoken.namedEntityType == u'profession':
+        if entityID is not None and entities[str(entityID)].get('type') == 'person' and headtoken.namedEntityType == 'profession':
             phrase = entityPhraseByNER(tokenIndex, tokens)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
 
-        if entityID is None and headtoken.pos == u'p': # vietniekvārds, kas nav ne ar ko savilkts
-            entityID = makeEntity(entities, u'_NEKONKRĒTS_', headtoken['namedEntityType'])
+        if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
+            entityID = makeEntity(entities, '_NEKONKRĒTS_', headtoken['namedEntityType'])
 
         # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
-        if entityID is None or (headtoken.form == u'Rīgas' and headtoken.namedEntityType == u'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
+        if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
             # Pa lielam, ja 'atrastais' vārds ir pareiza tipa entītijas iekšpusē tad ieliekam nevis tagera atrasto bet visu lielo entīti
             parent = tokens[headtoken.parentIndex-1]
             if headtoken.namedEntityType == parent.namedEntityType:
@@ -271,15 +272,15 @@ def addDate(frame, documentdate):
 # Saņem entītiju sarakstu un dokumenta radīšanas datumu; satīra nosaukumus - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos ('viņš').
 def filterEntityNames(entities, documentdate):
     def updateName(name):
-        if name.lower() in {u'šodien', u'patlaban', u'tagad', u'pašlaik', u'šonedēļ'}:
+        if name.lower() in {'šodien', 'patlaban', 'tagad', 'pašlaik', 'šonedēļ'}:
             return documentdate.isoformat()
-        if name.lower() == u'vakar':
+        if name.lower() == 'vakar':
             return (documentdate - datetime.timedelta(days=1)).isoformat()
-        if name.lower() == u'rīt':
+        if name.lower() == 'rīt':
             return (documentdate + datetime.timedelta(days=1)).isoformat()
-        if name.lower() == u'šogad':
+        if name.lower() == 'šogad':
             return str(documentdate.year)
-        if name.lower() in {u'pagājušgad', u'pērn', u'pagājušajā gads', u'pagājušajā gadā'}:
+        if name.lower() in {'pagājušgad', 'pērn', 'pagājušajā gads', 'pagājušajā gadā'}:
             return str(documentdate.year - 1)
         # TODO - šie ir biežākie, bet vēl vajadzētu relatīvos laikus: 'jūlijā' -> pēdējais jūlijs, kas ir bijis (šis vai iepriekšējais gads) utml.
         return name
@@ -287,25 +288,25 @@ def filterEntityNames(entities, documentdate):
     def goodName(name):
         if len(name) <= 2 and not re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]+|\d+$', name, re.UNICODE): # tik īsi drīkst būt tikai cipari vai organizāciju (partiju) saīsinājumi
             return False
-        if name.lower() in {u'viņš', u'viņs', u'viņa', u'viņam', u'viņu', u'viņā', u'viņas', u'viņai', u'viņās', u'viņi', u'viņiem', u'viņām',
-                            u'es', u'mēs', u'man', u'mūs', u'mums', u'tu', u'tev', u'jūs', u'jums', u'jūsu',
-                            u'tas', u'tā', u'tie', u'tās', u'tajā', u'kas', u'kam', u'tam', u'tām', u'ko', u'to', u'tos', u'tai', u'tiem',
-                            u'sava', u'savu', u'savas', u'savus', 
-                            u'kurš', u'kuru', u'kura', u'kuram', u'kuri', u'kuras', u'kurai', u'kuriem', u'kurām', u'kurā', u'kurās',
-                            u'būs', u'arī', u'dr.', u'jau', u'tur'}: 
+        if name.lower() in {'viņš', 'viņs', 'viņa', 'viņam', 'viņu', 'viņā', 'viņas', 'viņai', 'viņās', 'viņi', 'viņiem', 'viņām',
+                            'es', 'mēs', 'man', 'mūs', 'mums', 'tu', 'tev', 'jūs', 'jums', 'jūsu',
+                            'tas', 'tā', 'tie', 'tās', 'tajā', 'kas', 'kam', 'tam', 'tām', 'ko', 'to', 'tos', 'tai', 'tiem',
+                            'sava', 'savu', 'savas', 'savus', 
+                            'kurš', 'kuru', 'kura', 'kuram', 'kuri', 'kuras', 'kurai', 'kuriem', 'kurām', 'kurā', 'kurās',
+                            'būs', 'arī', 'dr.', 'jau', 'tur'}: 
             return False
-        if name in {u'Var', u'gan'}:
+        if name in {'Var', 'gan'}:
             return False
-        if name.lower() in {u'uzņēmums', u'kompānija',  u'firma', u'firmas', u'aģentūra', u'portāls', u'tiesa', u'banka', u'fonds', u'koncerns',
-                            u'komisija', u'partija', u'apvienība', u'frakcija', u'birojs', u'dome', u'organizācija', u'augstskola', u'investori',
-                            u'studentu sabiedrība', u'studija', u'žurnāls', u'sabiedrība', u'iestāde', u'skola',
-                            u'cilvēki', u'personas', u'darbinieki', u'vadība', u'pircēji', u'vīrieši', u'sievietes', u'konkurenti', u'latvija iedzīvotāji',
-                            u'savienība biedrs', u'skolēni', u'studenti', u'personība', u'viesi', u'viesis', u'ieguvējs', u'klients',
-                            u'vide', u'amats', u'amati', u'domas', u'idejas', u'vakars', u'norma', u'elite', u'būtisks', u'tālākie', u'guvēji'}: 
+        if name.lower() in {'uzņēmums', 'kompānija',  'firma', 'firmas', 'aģentūra', 'portāls', 'tiesa', 'banka', 'fonds', 'koncerns',
+                            'komisija', 'partija', 'apvienība', 'frakcija', 'birojs', 'dome', 'organizācija', 'augstskola', 'investori',
+                            'studentu sabiedrība', 'studija', 'žurnāls', 'sabiedrība', 'iestāde', 'skola',
+                            'cilvēki', 'personas', 'darbinieki', 'vadība', 'pircēji', 'vīrieši', 'sievietes', 'konkurenti', 'latvija iedzīvotāji',
+                            'savienība biedrs', 'skolēni', 'studenti', 'personība', 'viesi', 'viesis', 'ieguvējs', 'klients',
+                            'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars', 'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
             return False
-        if name.lower() in {u'gads', u'gada'}: 
+        if name.lower() in {'gads', 'gada'}: 
             return False
-        if name.lower() in {u'a/s', u'sia', u'as'}: # lai nav kā aliasi šie 'noplēstie' prefiksi
+        if name.lower() in {'a/s', 'sia', 'as'}: # lai nav kā aliasi šie 'noplēstie' prefiksi
             return False
         return True
 
@@ -315,61 +316,61 @@ def filterEntityNames(entities, documentdate):
         entity['aliases'] = [updateName(alias) for alias in entity.get('aliases')]
         entity['aliases'] = filter(goodName, entity.get('aliases'))
         if not entity.get('aliases'): # Hmm, tātad nekas nebija labs
-            entity['aliases'] = [u'_NEKONKRĒTS_'] #FIXME - jāsaprot vai nevar labāk to norādīt
-            # entity['representative'] = u'_NEKONKRĒTS_' 
+            entity['aliases'] = ['_NEKONKRĒTS_'] #FIXME - jāsaprot vai nevar labāk to norādīt
+            # entity['representative'] = '_NEKONKRĒTS_' 
         if not goodName(entity.get('representative')):
             entity['representative'] = entity.get('aliases')[0] # Pieņemam, ka gan jau pirmais derēs
         entities[e_id] = entity
     
 # Boolean f-ja - aliasi kas principā pie entītijas ir pieļaujami, bet pēc kuriem nevajag meklēt citas entītijas
 def goodAlias(name):
-    if name.lower() in {u'izglītība', u'karjera'}:  # headingu virsraksti cv importā
+    if name.lower() in {'izglītība', 'karjera'}:  # headingu virsraksti cv importā
         return False
-    if name.lower() in {u'direktors', u'deputāts', u'loceklis', u'ministrs', u'latvietis', u'domnieks', u'sociālists', u'latvietis', u'premjers', u'sportists', u'vietnieks', u'premjerministrs', u'prezidents', u'vīrs', u'sieva', u'māte', u'deputāte'}: 
+    if name.lower() in {'direktors', 'deputāts', 'loceklis', 'ministrs', 'latvietis', 'domnieks', 'sociālists', 'latvietis', 'premjers', 'sportists', 'vietnieks', 'premjerministrs', 'prezidents', 'vīrs', 'sieva', 'māte', 'deputāte'}: 
         # nekonkrētie - TODO: lai LVCoref kad veido sarakstu ar anaforu cluster alternatīvajiem vārdiem, jau uzreiz šos neiekļauj
         return False
-    if name.lower() in {u'dome'}:  # Ja nav atrasts specifiskāk 'Ventspils dome'
+    if name.lower() in {'dome'}:  # Ja nav atrasts specifiskāk 'Ventspils dome'
         return False
     return True
 
 def fixName(name):
-    fixname = re.sub(u'[«»“”„‟‹›〝〞〟＂]', '"', name, re.UNICODE)  # Aizvietojam pēdiņas
-    fixname = re.sub(u"[‘’‚`‛]", "'", fixname, re.UNICODE)
+    fixname = re.sub('[«»“”„‟‹›〝〞〟＂]', '"', name, re.UNICODE)  # Aizvietojam pēdiņas
+    fixname = re.sub("[‘’‚`‛]", "'", fixname, re.UNICODE)
     return fixname
 
 #TODO - varbūt visu šo loģiku labāk SemanticApiPosgres modulī?
 def personAliases(name):
     insertalias = [name] 
-    if re.match(ur'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+ [A-ZČĒĢĪĶĻŅŠŪŽ]\w+$', name, re.UNICODE):
-        extra_alias = re.sub(ur'([A-ZČĒĢĪĶĻŅŠŪŽ])\w+ ', ur'\1. ', name, flags=re.UNICODE )
+    if re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+ [A-ZČĒĢĪĶĻŅŠŪŽ]\w+$', name, re.UNICODE):
+        extra_alias = re.sub(r'([A-ZČĒĢĪĶĻŅŠŪŽ])\w+ ', r'\1. ', name, flags=re.UNICODE )
         if not extra_alias in insertalias:
             insertalias.append(extra_alias)
     return insertalias
 
 orgTypes = [
-    ['SIA', u'Sabiedrība ar ierobežotu atbildību'],
-    ['AS', 'A/S', u'Akciju sabiedrība'],
-    [u'apdrošināšanas AS', u'Apdrošināšanas akciju sabiedrība'],
-    ['ZS', 'Z/S', u'Zemnieka saimniecība'],
-    ['IU', u'Individuālais uzņēmums'],
-    [u'Zvejnieka saimniecība'],
+    ['SIA', 'Sabiedrība ar ierobežotu atbildību'],
+    ['AS', 'A/S', 'Akciju sabiedrība'],
+    ['apdrošināšanas AS', 'Apdrošināšanas akciju sabiedrība'],
+    ['ZS', 'Z/S', 'Zemnieka saimniecība'],
+    ['IU', 'Individuālais uzņēmums'],
+    ['Zvejnieka saimniecība'],
     ['UAB'],
     ['VAS'],
-    [u'valsts aģentūra'],
-    [u'biedrība'],
-    [u'fonds'],
-    [u'mednieku biedrība'],
-    [u'mednieku klubs'],
-    [u'mednieku kolektīvs'],
-    [u'kooperatīvā sabiedrība'],
-    [u'nodibinājums'],
-    [u'komandītsabiedrība'],
-    [u'zvērinātu advokātu birojs'],
-    [u'advokātu birojs'],
+    ['valsts aģentūra'],
+    ['biedrība'],
+    ['fonds'],
+    ['mednieku biedrība'],
+    ['mednieku klubs'],
+    ['mednieku kolektīvs'],
+    ['kooperatīvā sabiedrība'],
+    ['nodibinājums'],
+    ['komandītsabiedrība'],
+    ['zvērinātu advokātu birojs'],
+    ['advokātu birojs'],
     ['partija'],
-    [u'dzīvokļu īpašnieku kooperatīvā sabiedrība'],
-    [u'dzīvokļu īpašnieku biedrība'],
-    [u'Pilnsabiedrība', u'PS']
+    ['dzīvokļu īpašnieku kooperatīvā sabiedrība'],
+    ['dzīvokļu īpašnieku biedrība'],
+    ['Pilnsabiedrība', 'PS']
     ]
 
 def orgAliases(name):
@@ -379,7 +380,7 @@ def orgAliases(name):
 
     fixname = fixName(name)
     aliases.add(fixname)
-    if re.match(ur'^"[^"]+"$', fixname, re.UNICODE):
+    if re.match(r'^"[^"]+"$', fixname, re.UNICODE):
         fixname = fixname[1:-1] # noņemam pirmo/pēdējo simbolu, kas ir pēdiņa
         aliases.add(fixname)
 
@@ -415,10 +416,10 @@ def orgAliases(name):
             break # nemeklējam tālāk
 
     if not understood:
-        if not '"' in fixname and re.search(ur' (partija|pārvalde|dome|iecirknis|aģentūra|augstskola|koledža|vēstniecība|asociācija|apvienība|savienība|centrs|skola|federācija|fonds|institūts|biedrība|teātris|pašvaldība|arodbiedrība|[Šš]ķīrējtiesa)$', fixname, re.UNICODE):
+        if not '"' in fixname and re.search(r' (partija|pārvalde|dome|iecirknis|aģentūra|augstskola|koledža|vēstniecība|asociācija|apvienība|savienība|centrs|skola|federācija|fonds|institūts|biedrība|teātris|pašvaldība|arodbiedrība|[Šš]ķīrējtiesa)$', fixname, re.UNICODE):
             aliases.add( clearOrgName(fixname) )
             understood = True # 'hardkodētie' nosaukumi kuriem bez standartformas citu aliasu nebūs
-        elif re.search(ur'(filiāle Latvijā|Latvijas filiāle|korporācija|biedrība|krājaizdevu sabiedrība|klubs|kopiena|atbalsta centrs|asociācija)$', fixname, re.UNICODE):
+        elif re.search(r'(filiāle Latvijā|Latvijas filiāle|korporācija|biedrība|krājaizdevu sabiedrība|klubs|kopiena|atbalsta centrs|asociācija)$', fixname, re.UNICODE):
             aliases.add( clearOrgName(fixname) )
             understood = True # šādus nevar normāli normalizēt
 
@@ -431,11 +432,11 @@ def orgAliases(name):
 
 # mēģina attīrīt organizāciju nosaukumus no viskautkā
 def clearOrgName(name): 
-    norm = re.sub(u'[«»“”„‟‹›〝〞〟＂"‘’‚‛\']', '', name, re.UNICODE)  # izmetam pēdiņas
-    norm = re.sub(u'(AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība) ', '', norm, re.UNICODE)  # izmetam prefiksus
-    norm = re.sub(u', (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... postfixotie nosaukumi ar komatu
-    norm = re.sub(u' (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... arī beigās šādi reizēm esot bijuši
-    norm = re.sub(u'\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
+    norm = re.sub('[«»“”„‟‹›〝〞〟＂"‘’‚‛\']', '', name, re.UNICODE)  # izmetam pēdiņas
+    norm = re.sub('(AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība) ', '', norm, re.UNICODE)  # izmetam prefiksus
+    norm = re.sub(', (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... postfixotie nosaukumi ar komatu
+    norm = re.sub(' (AS|SIA|A/S|VSIA|VAS|Z/S|Akciju sabiedrība)', '', norm, re.UNICODE)  # ... arī beigās šādi reizēm esot bijuši
+    norm = re.sub('\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
     return norm
 
 def inflectEntity(name, category):
@@ -448,11 +449,11 @@ def inflectEntity(name, category):
 
 # Vai forma izskatās pēc 'pareizas' kas būtu rādāma UI - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.
 def hideEntity(name, category):
-    if category == u'person':
-        return not re.match(ur'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+\.? [A-ZČĒĢĪĶĻŅŠŪŽ]\w+$', name, re.UNICODE) # Personām par normāliem uzskatam vai nu 'Vārds Uzvārds' vai 'V. Uzvārds'
-    if category == u'organization':
+    if category == 'person':
+        return not re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+\.? [A-ZČĒĢĪĶĻŅŠŪŽ]\w+$', name, re.UNICODE) # Personām par normāliem uzskatam vai nu 'Vārds Uzvārds' vai 'V. Uzvārds'
+    if category == 'organization':
         return name == name.lower() # Organizācijām der praktiski jebkas, izņemam sugasvārdu frāzes kas ir all-lowercase
-    if category in {u'location', u'event', u'media', u'product'}:
+    if category in {'location', 'event', 'media', 'product'}:
         return False # Šos nemākam filtrēt
     return True # Citas entītiju kategorijas ir "atribūti nevis klasifikatori" un attiecīgi ir hidden
 
@@ -470,9 +471,9 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
         if not entity.get('locations'):
             log.info("Entity %s without token locations", entity.get('representative'))
 
-        if entity.get('representative')  == u'_NEKONKRĒTS_':
-            entity[u'GlobalID'] = 0 # Šādas entītijas datubāzei nederēs
-            entity[u'hidden'] = True
+        if entity.get('representative')  == '_NEKONKRĒTS_':
+            entity['GlobalID'] = 0 # Šādas entītijas datubāzei nederēs
+            entity['hidden'] = True
             continue 
 
         matchedEntities = set()
@@ -481,7 +482,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             entity['representative'] = representative 
             matchedEntities = api.entity_ids_by_name_list(representative)
 
-        if len(matchedEntities) == 0 and entity.get('type') in {'person', u'person', 'organization', u'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
+        if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
                 matchedEntities = matchedEntities + api.entity_ids_by_name_list(clearOrgName(alias))
@@ -494,9 +495,9 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
             representative = entity.get('representative')
             
             # pirms insertošanas personām pieliekam aliasu ar iniciāli, ja tāds tur jau nav
-            if entity.get('type') in {'person', u'person'}:
+            if entity.get('type') == 'person':
                 insertalias = personAliases(representative)
-            elif entity.get('type') in {'organization', u'organization'}:
+            elif entity.get('type') == 'organization':
                 insertalias = orgAliases(representative)
                 representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
             else:
@@ -504,7 +505,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 inflections = inflectEntity(representative, entity.get('type'))             
                 inflections = json.loads(inflections)
                 entity['inflections'] = inflections
-                representative = inflections.get(u'Nominatīvs')
+                representative = inflections.get('Nominatīvs')
                 insertalias = list(set(inflections.values()))                
 
             category = getNETypeCode(entity.get('type'))
@@ -515,52 +516,52 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
                 outerId = ['JP-' + str(uuid.uuid4())]
 
             hidden = hideEntity(representative, entity.get('type'))
-            entity[u'hidden'] = hidden
+            entity['hidden'] = hidden
             if entity.get('notReallyNeeded'): # override, ja entītijai nav freimu
-                entity[u'hidden'] = True
+                entity['hidden'] = True
             if showInserts or entityCreationDebuginfo:
-                print u'Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity.get('type'), hidden)
+                print('Gribētu insertot entītiju\t%s\t%s\t%r' % (representative, entity.get('type'), hidden))
             if realUpload:
                 if entity.get('inflections'):
                     inflections = json.dumps(entity.get('inflections'), ensure_ascii=False)
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
                     inflections = inflectEntity(representative, entity.get('type'))
-                entity[u'GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, commit = False )
-                api.insertMention(entity[u'GlobalID'], documentId, locations=entity.get('locations'))
+                entity['GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, commit = False )
+                api.insertMention(entity['GlobalID'], documentId, locations=entity.get('locations'))
 
         else: # Ir tāda entītija, piekārtojam globālo ID
             inWhitelist = False
             for candidateID in matchedEntities:
                 if candidateID in disambiguationWhitelist:   # Ja ir blessed norāde, ka tieši šī globālā entītija ir šajā dokumentā
-                    entity[u'GlobalID'] = candidateID
+                    entity['GlobalID'] = candidateID
                     inWhitelist = True
             if inWhitelist: # Šajā gadījumā neskatamies kā disambiguēt
                 continue 
 
-            if len(matchedEntities) > 1 and entity.get('type') in {'person', u'person', 'organization', u'organization'}: 
+            if len(matchedEntities) > 1 and entity.get('type') in {'person', 'organization'}: 
                 toDisambiguate.append( (entity, matchedEntities) ) # pieglabājam tuple, lai apstrādātu tad kad visām viennozīmīgajām entītijām būs globalid atrasti
             else:
-                entity[u'GlobalID'] = matchedEntities[0] # klasifikatoriem tāpat daudzmaz vienalga, vai pie kautkā piesaista vai veido jaunu
-                if realUpload and entity.get('type') in {'person', u'person', 'organization', u'organization'}: 
+                entity['GlobalID'] = matchedEntities[0] # klasifikatoriem tāpat daudzmaz vienalga, vai pie kautkā piesaista vai veido jaunu
+                if realUpload and entity.get('type') in {'person', 'organization'}: 
                     api.insertMention(matchedEntities[0], documentId, locations=entity.get('locations'))
 
     mentions = CDC.mentionbag(entities.values()) # TODO - šobrīd mentionbag visiem ir vienāds un tādēļ iekļauj arī pašas disambiguējamās entītijas vārdus
     for tup in toDisambiguate: # tuples - entity, matchedEntities
         entity = tup[0]
         matchedEntities = tup[1]
-        entity[u'GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId)  
-        # entity[u'GlobalID'] = disambiguateEntity(entity, matchedEntities, entities) # izvēlamies ticamāko atbilstošo no šīm entītijām        
+        entity['GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId)  
+        # entity['GlobalID'] = disambiguateEntity(entity, matchedEntities, entities) # izvēlamies ticamāko atbilstošo no šīm entītijām        
 
 def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
     if showDisambiguation: # debuginfo    
-        print
-        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')'
-        print entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities
-        print 'name bag :', CDC.namebag(entity)
-        print 'mention bag :', mentions
-        print 'context bag :', CDC.contextbag(entity, sentences)
-        print '----'
+        print()
+        print(' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')')
+        print(entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities)
+        print('name bag :', CDC.namebag(entity))
+        print('mention bag :', mentions)
+        print('context bag :', CDC.contextbag(entity, sentences))
+        print('----')
 
     best_k = None
     best_score = -99999
@@ -572,13 +573,13 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
 
         if showDisambiguation: # debuginfo    
             db_info = api.entity_data_by_id(kandidaats)
-            print 'kandidāts', kandidaats, db_info['Name'], db_info['OuterId']            
-            print bags.get('namebag')
-            print 'Name match:', CDC.cosineSimilarity(bags.get('namebag'), CDC.namebag(entity))
-            print bags.get('mentionbag')
-            print 'Mention match:', CDC.cosineSimilarity(bags.get('mentionbag'), mentions)
-            print bags.get('contextbag')
-            print 'Context match:', CDC.cosineSimilarity(bags.get('contextbag'), CDC.contextbag(entity, sentences))
+            print('kandidāts', kandidaats, db_info['Name'], db_info['OuterId'])
+            print(bags.get('namebag'))
+            print('Name match:', CDC.cosineSimilarity(bags.get('namebag'), CDC.namebag(entity)))
+            print(bags.get('mentionbag'))
+            print('Mention match:', CDC.cosineSimilarity(bags.get('mentionbag'), mentions))
+            print(bags.get('contextbag'))
+            print('Context match:', CDC.cosineSimilarity(bags.get('contextbag'), CDC.contextbag(entity, sentences)))
 
         score = CDC.cosineSimilarity(bags.get('namebag'), CDC.namebag(entity)) + CDC.cosineSimilarity(bags.get('mentionbag'), mentions) + CDC.cosineSimilarity(bags.get('contextbag'), CDC.contextbag(entity, sentences))        
         if score > best_score:
@@ -586,9 +587,9 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
             best_k = kandidaats
 
     if showDisambiguation:
-        print 
-        print 'Izvēlējāmies ', best_k
-        print 
+        print()
+        print('Izvēlējāmies ', best_k)
+        print()
 
     api.insertMention(best_k, documentId, True, best_score, locations=entity.get('locations')) # TODO - jāieliek arī ne-labākie mentioni
     return best_k
@@ -642,8 +643,8 @@ def buildGlobalEntityBags(globalID):
         contextbag.update(fact.split()) # Pieņemam, ka brīvā teksta apraksti labi korelē ar kontekstu reālajos rakstos
     
     if showDisambiguation: # debuginfo    
-        print
-        print ' ---  Vācam whitelist datus entītijai', globalID, db_info['Name'], db_info['OuterId']
+        print()
+        print(' ---  Vācam whitelist datus entītijai', globalID, db_info['Name'], db_info['OuterId'])
     return {'namebag':namebag, 'mentionbag':mentionbag, 'contextbag':contextbag}
 
 # NB! Šī ir legacy metode ar heiristikām; kodā šobrīd tiek lietota CDC metode ar bag-of-words cosine similarity principu; bet nākotnē varētu gribēties to kombinēt ar šo pieeju, tāpēc kods paliek
@@ -669,15 +670,15 @@ def disambiguateEntity(entity, matchedEntities, entities):
         #     print freims["type"], ":", freims["elements"]
 
     if showDisambiguation: # debuginfo
-        print ' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')'
-        print entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities
+        print(' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')')
+        print(entity['representative'], entity['aliases'], ": ", len(matchedEntities), " varianti..", matchedEntities)
 
-        print 'Dokumenta objekts:'
+        print('Dokumenta objekts:')
         for amats in amati:
-            print 'Amats:', amats['representative'], '/', amats.get('GlobalID')
+            print('Amats:', amats['representative'], '/', amats.get('GlobalID'))
         for darbavieta in darbavietas:
-            print 'Darbavieta:', darbavieta['representative'], '/', darbavieta.get('GlobalID')
-        print
+            print('Darbavieta:', darbavieta['representative'], '/', darbavieta.get('GlobalID'))
+        print()
 
     best_k = None
     best_score = -99999
@@ -716,18 +717,18 @@ def disambiguateEntity(entity, matchedEntities, entities):
             best_k = k
 
         if showDisambiguation: # debuginfo
-            print 'Kandidāts',i,':',matchedEntities[i],'\tscore:', score
-            print '\t', k
-            print
+            print('Kandidāts',i,':',matchedEntities[i],'\tscore:', score)
+            print('\t', k)
+            print()
 
     result = best_k['globalID'] # Entītijai ar lielāko score
     if showDisambiguation:
-        print 
-        print 'Izvēlējāmies ', result
-        print 
+        print() 
+        print('Izvēlējāmies ', result)
+        print()
     return result
 
-# paņem sarakstu formā [{'tokenIndex': 3, 'name': u'Employer'}, {'tokenIndex': 5, 'name': u'Position'}] un pārveido uz Dict no lomas nosaukuma uz entītiju
+# paņem sarakstu formā [{'tokenIndex': 3, 'name': 'Employer'}, {'tokenIndex': 5, 'name': 'Position'}] un pārveido uz Dict no lomas nosaukuma uz entītiju
 def convert_elements(elements, sentence, entities):
     result = {}
     for element in elements:

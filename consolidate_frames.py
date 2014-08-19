@@ -61,7 +61,7 @@ def consolidate_frames(entity_list, api):
 
                     try:
                         frametext = get_frame_text(mentioned_entities, frame)
-                    except KeyError, e:
+                    except KeyError as e:
                         log.exception("Key error in get_frame_text:\n%s", e)
                         frametext = None
 
@@ -92,9 +92,9 @@ def valid_frame(frame):
     for element in frame["FrameData"]:
         try:
             roles.add(f_info.elem_name_from_id(frame_type,element["Key"]-1))
-        except KeyError, e:
+        except KeyError as e:
             log.error("Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n", element["Value"]["Entity"], frame)
-            print "Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n" % (element["Value"]["Entity"], frame)
+            print("Entity ID %s (used in a frame element) not found! Location: valid_frame() - Data:\n%r\n" % (element["Value"]["Entity"], frame))
             # api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati - trūkst entītes
             api.setEntityProcessingStatus([int(element["Value"]["Entity"])], processID, 406) # nevalīdi dati - trūkst entītes
             continue
@@ -185,14 +185,14 @@ def save_entity_frames_to_api(api, entity_list):
 
         if len(error_frames)>0:
             log.info(" - %s frames could not be saved, returned errors.", len(error_frames))
-            print " - %s frames could not be saved, returned errors." % (len(error_frames))
+            print(" - %s frames could not be saved, returned errors." % (len(error_frames)))
 
             log.debug("list of frames that could not be saved:")
-            print "list of frames that could not be saved:"
+            print("list of frames that could not be saved:")
 
             for fr in error_frames:
                 log.debug("%s", repr(fr))
-                print repr(fr)
+                print(repr(fr))
             api.setEntityProcessingStatus([entity.entity_id], processID, 410) # kaut kas nepatika
 
         if len(error_frames)>0:
@@ -201,7 +201,7 @@ def save_entity_frames_to_api(api, entity_list):
             api.setEntityProcessingStatus([entity.entity_id], processID, 201) # šai entītijai viss ok
             status = "OK"
 
-        print "%s\t%s" % (entity.entity_id, status)
+        print("%s\t%s" % (entity.entity_id, status))
         sys.stdout.flush()
 
 

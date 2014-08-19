@@ -52,7 +52,7 @@ class FrameInfo(object):
         try:
             return self.elem_types[fr_type_id][el_type_id]
         except IndexError:
-            print 'elem_name_from_id bad indexes',fr_type_id, el_type_id
+            print('elem_name_from_id bad indexes',fr_type_id, el_type_id)
             return ""
 
     def get_core_elements(self, fr_type_id):
@@ -66,17 +66,17 @@ class FrameInfo(object):
 
     def print_frame_info(self):
         for fr_type_id in self.frame_types:
-            print "%s\t%s" % (fr_type_id, self.frame_types[fr_type_id])
+            print("%s\t%s" % (fr_type_id, self.frame_types[fr_type_id]))
 
-            print "\tAll:\t" + "\t".join(self.elem_types[fr_type_id])
-            print
+            print("\tAll:\t" + "\t".join(self.elem_types[fr_type_id]))
+            print()
 
-            print "\tCore:\t" + "\t".join(str(item) for item in self.get_core_elements(fr_type_id))
-            print "\t\t" + "\t".join(self.elem_name_from_id(fr_type_id, ind) for ind in self.get_core_elements(fr_type_id))
-            print "\tOther:\t" + "\t".join(str(item) for item in self.get_other_elements(fr_type_id))
-            print "\t\t" + "\t".join(self.elem_name_from_id(fr_type_id, ind) for ind in self.get_other_elements(fr_type_id))
+            print("\tCore:\t" + "\t".join(str(item) for item in self.get_core_elements(fr_type_id)))
+            print("\t\t" + "\t".join(self.elem_name_from_id(fr_type_id, ind) for ind in self.get_core_elements(fr_type_id)))
+            print("\tOther:\t" + "\t".join(str(item) for item in self.get_other_elements(fr_type_id)))
+            print("\t\t" + "\t".join(self.elem_name_from_id(fr_type_id, ind) for ind in self.get_other_elements(fr_type_id)))
 
-            print
+            print()
 
 
 class FrameMatrix(object):
@@ -143,10 +143,10 @@ def test_read_frames():
     fname = XLS_FILE
     fm = FrameMatrix(fname)
 
-    print fm.frame_types[0]
+    print(fm.frame_types[0])
     pprint(fm.frame_elements[0])
     pprint(fm.elem_class[0])
-    print
+    print()
 
 def test_frame_matrix():
     fname = XLS_FILE
@@ -155,18 +155,18 @@ def test_frame_matrix():
     for pos in range(len(fm.frame_types)):
         info = fm.get_frame_info(pos)
 
-        print info[0]
-        print "\t" + "\t".join(info[1])
-        print "\t" + "\t".join(info[2])
-        print "\t" + "\t".join(info[3])
-        print
+        print(info[0])
+        print("\t" + "\t".join(info[1]))
+        print("\t" + "\t".join(info[2]))
+        print("\t" + "\t".join(info[3]))
+        print()
 
 def test_frame_info():
     fname = XLS_FILE
     info = FrameInfo(fname)
 
-    print "-" * 20
-    print
+    print("-" * 20)
+    print()
 
     info.print_frame_info()
 
@@ -174,28 +174,28 @@ def test_frame_info():
 def test_access_cells(sheet):
 
     # access 1 cell
-    print sheet.cell("B2").value
-    print
+    print(sheet.cell("B2").value)
+    print()
 
     # access w. row/column notation
     #   = cell("C2") where row/col numbers are 0-based
-    print sheet.cell("C2").value
-    print sheet.cell(row = 2, column = 1).value
-    print
+    print(sheet.cell("C2").value)
+    print(sheet.cell(row = 2, column = 1).value)
+    print()
 
     # access a cell range
     range = sheet.range("B2:L26")
     for row in range:
-        print "\t".join(cell.value for cell in row)
+        print("\t".join(cell.value for cell in row))
 
-    print
+    print()
 
     # access all rows
     rows = sheet.rows
     for row in rows:
-        print row
+        print(row)
 
-    print
+    print()
 
 def main():
     #test_read_frames()

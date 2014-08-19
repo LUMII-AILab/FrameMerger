@@ -28,7 +28,7 @@ class EntityFrames(object):
         # load entity info
         try:
             self.entity = api.entity_data_by_id(self.entity_id)
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             log.error("Error retrieving entity info for entity %s", self.entity_id)
             self.entity = None
 
@@ -38,7 +38,7 @@ class EntityFrames(object):
                 self.frames = api.entity_frames_by_id(self.entity_id)
                 if len(self.frames)>1000:
                     log.warning( 'Many frames (%d) for entity #%d' % (len(self.frames), self.entity_id))
-            except requests.exceptions.ConnectionError, e:
+            except requests.exceptions.ConnectionError as e:
                 log.error("Error retrieving frames for entity %s", self.entity_id)
                 self.frames = None
 
@@ -75,7 +75,7 @@ class EntitySummaryFrames(object):
         # load entity info
         try:
             self.entity = api.entity_data_by_id(self.entity_id)
-        except requests.exceptions.ConnectionError, e:
+        except requests.exceptions.ConnectionError as e:
             log.error("Error retrieving entity info for entity %s", self.entity_id)
             self.entity = None
 
@@ -83,7 +83,7 @@ class EntitySummaryFrames(object):
         if self.entity is not None:
             try:
                 self.frames = api.entity_frames_by_id(self.entity_id)
-            except requests.exceptions.ConnectionError, e:
+            except requests.exceptions.ConnectionError as e:
                 log.error("Error retrieving frames for entity %s", self.entity_id)
                 self.frames = None
 

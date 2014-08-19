@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #coding=utf-8
 
+from __future__ import print_function
+
 # enable logging, but default to null logger (no output)
 import logging
 log = logging.getLogger(__name__)
@@ -20,7 +22,7 @@ class PostgresConnection(object):
 
     def __init__(self, conn_info=None, dataset=None):
         if conn_info is None or conn_info["host"] is None or len(conn_info["host"])==0:
-            print "Postgres connection error: connection information must be supplied in <conn_info>"
+            print("Postgres connection error: connection information must be supplied in <conn_info>")
             raise Exception("Postgres connection error: connection information must be supplied in <conn_info>")
 
         if dataset is None:
@@ -36,20 +38,10 @@ class PostgresConnection(object):
 
         self.dataset = dataset
 
-        # FIXME - XXX
-        #  - statistika jāpārtaisa - nestrādās kad API operācijas ir iznestas atsevišķā klasē
-        self.cSearchByName = 0  # counteri DB operācijām
-        self.cInsertEntity = 0  
-        self.cInsertFrame = 0  
-
         atexit.register(self.finalize)
 
     # Statistika par DB requestiem to profilēšanai
     def finalize(self):
-        #print 'Kopā Postgres DB darbības:'
-        #print self.cSearchByName, 'searchByName'
-        #print self.cInsertEntity, 'insertEntity'
-        #print self.cInsertFrame, 'insertFrame'
         self.conn.commit()
         self.conn.close()
 
@@ -96,7 +88,6 @@ class SemanticApiPostgres(object):
     def frame_ids_by_entity(self, e_id):
         sql = "select frameid from framedata where entityid = %s"
         res = self.api.query(sql, (e_id,) )
-        #self.cSearchByName += 1
 
         frame_ids = first_col(res)
         return frame_ids
@@ -136,7 +127,6 @@ class SemanticApiPostgres(object):
         sql = "select * from frames where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
         frame = res[0]  #FIXME - te nav pārbaudes vai rezultāts ir atrasts
-        #self.cSearchByName += 1
 
         fdatetime = frame.fdatetime
         if fdatetime is not None:
@@ -171,7 +161,6 @@ class SemanticApiPostgres(object):
 """
         sql = "select * from framedata where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
-        #self.cSearchByName += 1
 
         elem_list = []
 
@@ -248,9 +237,6 @@ class SemanticApiPostgres(object):
 	# outerids - list of unicode strings
 	# inflections - unicode string
     def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, commit = True):
-        # debuginfo
-        # if category == 2:
-        #     print 'insertojam', category, name
         main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
         res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden),
@@ -635,7 +621,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         locationsstr = None
         if locations:
             locationsstr = json.dumps(locations, separators=(',', ':'))
-        # print entityID, '->', locationsstr
+
         cursor.execute("insert into entitymentions (entityid, documentid, chosen, cos_similarity, blessed, unclear, locations)\
                         values (%s, %s, %s, %s, %s, %s, %s)", (entityID, documentID, chosen, cos_similarity, blessed, unclear, locationsstr) )
         self.api.commit()
