@@ -75,6 +75,15 @@ class PostgresConnection(object):
 
         return result
 
+    # Inserto datus formā INSERT INTO t (a, b) VALUES (1, 2), (3, 4), (5, 6); - kur "INSERT INTO t (a, b) VALUES " daļu padod 'sql' parametrā, un tuples atsevišķi
+    def inserttuples(self, sql, tuples, commit=False):
+        cursor = self.new_cursor()
+        args_str = ','.join(cursor.mogrify("%s", (x, )) for x in tuples) 
+        cursor.execute(sql+" "+args_str)
+        if commit:
+            self.commit()
+        cursor.close()
+
 
 def first_col(seq):
     # FIXME change to generators if needed
@@ -244,10 +253,14 @@ class SemanticApiPostgres(object):
                 commit = False)
         entityid = res # insertotās rindas id
 
-        names_sql = "INSERT INTO EntityOtherNames(EntityID, Name, isAuthorative) VALUES (%s, %s, %s)"
+        # names_sql = "INSERT INTO EntityOtherNames(EntityID, Name, isAuthorative) VALUES (%s, %s, %s)"
+        # for othername in othernames:
+        #     self.api.insert(names_sql, (entityid, othername.strip(), (othername==name)) )
+        # Ja ir daudz aliasu (kā firmām) tad šim esot jābūt krietni ātrāk
+        tuples = []
         for othername in othernames:
-            self.api.insert(names_sql, (entityid, othername, (othername==name)) )
-
+            tuples.append( (entityid, othername.strip(), (othername==name)) )
+        self.api.inserttuples("INSERT INTO EntityOtherNames(EntityID, Name, isAuthorative) VALUES", tuples)
 
         outerid_sql = "INSERT INTO EntityOuterIDs(EntityID, OuterID) VALUES (%s, %s)"
         for outerid in outerids:
@@ -301,10 +314,15 @@ class SemanticApiPostgres(object):
                 commit = False)
         frameid = res # insertotā freima id
 
-        element_sql = "INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
+        # element_sql = "INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
+        # for element, entityid in elements.iteritems():
+        #     self.api.insert(element_sql, (frameid, entityid, element) )       
+        # ātrdarbības pēc (netestētas) pārlikts uz inserttuples
+        tuples = []
         for element, entityid in elements.iteritems():
-            self.api.insert(element_sql, (frameid, entityid, element) )       
-            # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
+            tuples.append( (frameid, entityid, element) )
+        self.api.inserttuples("INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES", tuples)
+        # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
 
         self.api.commit() # TODO - priekš dokumentu upload būtu efektīvāk necommitot pēc katras entītijas
 

@@ -91,7 +91,7 @@ def load_firmas(filename):
         else:
             print('\n\t'.join(aliases))
         if counter % 100 == 99:
-            sys.stderr.write('%s\n' % (counter+1,))
+            print('%s\n' % (counter+1,))
             conn.commit()
 
         personas.add(firma.person)

@@ -13,10 +13,10 @@ from db_config import api_conn_info, inflection_webservice
 import CDC
 import logging as log
 
-realUpload = False # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
-showInserts = True # Vai rādīt uz console to, ko mēģina insertot DB
+realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
+showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 conn = PostgresConnection(api_conn_info)
 api = SemanticApiPostgres(conn) # TODO - šo te uz uploadJSON.py
@@ -383,6 +383,10 @@ def orgAliases(name):
     if re.match(r'^"[^"]+"$', fixname, re.UNICODE):
         fixname = fixname[1:-1] # noņemam pirmo/pēdējo simbolu, kas ir pēdiņa
         aliases.add(fixname)
+
+    if re.search(r'vidusskola', fixname, re.UNICODE): # vidusskolu saīsinājumi
+        aliases.add(re.sub('vidusskola', 'vsk.', fixname, re.UNICODE))
+        aliases.add(re.sub('vidusskola', 'vsk', fixname, re.UNICODE))
 
     understood = False
     for orgGroup in orgTypes:
