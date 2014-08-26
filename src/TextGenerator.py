@@ -12,6 +12,9 @@ from pprint import pprint
 import EntityFrames as EF
 from FrameInfo import FrameInfo
 
+import sys
+if sys.version_info >= (3, 0, 0):
+    basestring = str # python3 compatibility...
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 

@@ -1,5 +1,6 @@
 .DS_Store
 db_config.py
+config.py
 log/*
 output/*
 src/*.pyc

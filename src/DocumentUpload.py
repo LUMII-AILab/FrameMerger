@@ -18,11 +18,15 @@ showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
-conn = PostgresConnection(api_conn_info)
-api = SemanticApiPostgres(conn) # TODO - šo te uz uploadJSON.py
+api = None
+
+def connect():
+    global api
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn) # TODO - šo te uz uploadJSON.py
 
 # Ielādē teikumos minētos faktus faktu postgres db; pirms tam atrodot entītiju globālos id vai izveidojot entītijas, uz kurām atsaucas atrastie freimi
-def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu datiem, kāds nāk no Didža Framer vai arī saglabātā JSON formāta
+def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+freimu datiem, kāds nāk no Didža Framer vai arī saglabātā JSON formāta
     if realUpload: 
         api.cleanupDB(document.id) # iztīram šī dokumenta ID agrāk ielasītos raw-frames
 
@@ -61,7 +65,7 @@ def upload2db(document): # document -> dict ar pilniem dokumenta+ner+freimu dati
     filterEntityNames(entities, document.date)
 
     #Katrai entītijai piekārtojam globālo ID
-    fetchGlobalIDs(entities, neededEntities, sentences, document.id) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
+    fetchGlobalIDs(entities, neededEntities, sentences, document.id, api) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
 
     # Tagad vēlreiz apskatam visus freimus, un insertojam tos DB
     requests = []
@@ -464,7 +468,7 @@ def hideEntity(name, category):
 # Veic API requestu par vārdiem atbilstošām entītijām
 # entities - dokumenta entīšu saraksts; neededEntities - kuras no tām parādās freimos un attiecīgi vajag likt globālajā stuff
 # ... un globālo ID pielikt pie NE objekta lai tas pēc tam pieseivojas
-def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
+def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
     insertables = []
     request = []
     toDisambiguate = []
@@ -554,10 +558,10 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId):
     for tup in toDisambiguate: # tuples - entity, matchedEntities
         entity = tup[0]
         matchedEntities = tup[1]
-        entity['GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId)  
-        # entity['GlobalID'] = disambiguateEntity(entity, matchedEntities, entities) # izvēlamies ticamāko atbilstošo no šīm entītijām        
+        entity['GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId, api)  
+        # entity['GlobalID'] = disambiguateEntity(entity, matchedEntities, entities, api) # izvēlamies ticamāko atbilstošo no šīm entītijām        
 
-def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
+def cdcbags(entity, matchedEntities, mentions, sentences, documentId, api=api):
     if showDisambiguation: # debuginfo    
         print()
         print(' ---  Disambiguācija vārdam', entity['representative'], '(', entity.get('type'), ')')
@@ -572,7 +576,7 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
     for kandidaats in matchedEntities:
         bags = api.getCDCWordBags(kandidaats)
         if bags is None: # šai entītijai nekad nav ģenerēti CDC bagi... uzģenerēsim!    TODO - varbūt šo efektīvāk veikt kā batch job kautkur citur, piemēram, pie freimu summarizācijas šai entītei
-            bags = buildGlobalEntityBags(kandidaats)
+            bags = buildGlobalEntityBags(kandidaats, api)
             api.putCDCWordBags(kandidaats, bags)
 
         if showDisambiguation: # debuginfo    
@@ -599,7 +603,7 @@ def cdcbags(entity, matchedEntities, mentions, sentences, documentId):
     return best_k
 
 # Savāc visu vajadzīgo lai uztaisītu globālajai entītijai CDC datus
-def buildGlobalEntityBags(globalID):
+def buildGlobalEntityBags(globalID, api=api):
     db_info = api.entity_data_by_id(globalID)
     namebag = Counter() # namebag liksim aliasus, kā arī amatus/nodarbošanās - jo tie nonāk dokumenta entītijas aliasos
     mentionbag = Counter() # mentionbag liksim visas 'ID-entītes' kas labajos freimos ir saistītas ar šo ID - personas, organizācijas, vietas
@@ -655,7 +659,7 @@ def buildGlobalEntityBags(globalID):
 # entity: objekts
 # matchingEntities: sarasts ar globālajiem id'iem
 # Ja entītijai (personai) ir vairāki objekti ar vienādu vārdu, tad izvēlas, kurš no tiem IDiem atbilst labāk
-def disambiguateEntity(entity, matchedEntities, entities):
+def disambiguateEntity(entity, matchedEntities, entities, api=api):
     freimi = entity.get("frames")
     amati = []
     darbavietas = []

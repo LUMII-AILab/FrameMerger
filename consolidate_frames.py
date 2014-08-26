@@ -48,12 +48,12 @@ def consolidate_frames(entity_list, api):
             blessed_summary_frames = api.blessed_summary_frame_data_by_entity_id(entity.entity_id)
 
             try:
-                frames = filter(lambda x: x["FrameData"] is not None, entity.frames)
+                frames = list(filter(lambda x: x["FrameData"] is not None, entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 
                 frames = c.apply(frames, blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
-                frames = filter(valid_frame, frames) # Izmetam tos kam arī pēc apvienošanas par maz datu
+                frames = list(filter(valid_frame, frames)) # Izmetam tos kam arī pēc apvienošanas par maz datu
                 log.info("Frames after filtering for sparsity: %s\n", len(frames))
 
                 # Building frame descriptions

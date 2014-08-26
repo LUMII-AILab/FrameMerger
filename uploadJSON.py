@@ -5,7 +5,7 @@ import sys, os, glob, fnmatch, json, codecs, traceback, gzip
 from datetime import date, datetime
 
 sys.path.append("./src")
-from DocumentUpload import upload2db, api
+from DocumentUpload import upload2db, api, connect()
 from db_config import instance_name, log_dir
 import logging as log
 
@@ -63,6 +63,8 @@ def main():
 
     processID = instance_name + ' ' + str(os.getpid())
     basedir = os.path.dirname(os.path.realpath(__file__))
+
+    connect()
 
     try:
         for filename in sys.stdin:
