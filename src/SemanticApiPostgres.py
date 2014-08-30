@@ -228,7 +228,6 @@ class SemanticApiPostgres(object):
     # Saņem vārdu, atgriež sarakstu ar ID kas tiem vārdiem atbilst
     # name - unicode string
     # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
-    # LETA powerpointā gribēja saukt šo metodi 'ListEntity'
     def entity_ids_by_name_list(self, name):
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
@@ -239,16 +238,26 @@ class SemanticApiPostgres(object):
 
         return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
+    # Atgriež entītes id pēc tās ārējā id (datos - LETA UQID vai personaskods/uzņēmuma reģistrācijas nr)
+    def entity_id_by_outer_id(self, outer_id):
+        sql = "select entityid from entityouterids where outerid = %s"
+        res = self.api.query(sql, (outer_id,) )
+        if len(res) == 1:
+            return res[0].entityid
+        else:
+            # log.error('Entity ID '+str(e_id)+'not found in entity_data_by_id')
+            return None
+
 	# Inserto jaunu entītiju datubāzē
 	# name - unicode string
 	# othernames - list of unicode strings
 	# category - integer code
 	# outerids - list of unicode strings
 	# inflections - unicode string
-    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, commit = True):
-        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden) VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
+    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, cv_status=0, commit = True):
+        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden, cv_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
-        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden),
+        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden, cv_status),
                 returning = True,
                 commit = False)
         entityid = res # insertotās rindas id
@@ -736,8 +745,8 @@ where fr_data.entityid = %s and fr.blessed is null;"
     def cleanupDB(self, documentID):
         cursor = self.api.new_cursor()
         cursor.execute("delete from framedata where frameid in \
-                            (select A.frameid from frames as A where A.documentid = %s)", (documentID, ))
-        cursor.execute("delete from frames where documentid = %s;", (documentID, ))
+                            (select A.frameid from frames as A where A.documentid = %s and (not A.blessed or A.blessed is null))", (documentID, ))
+        cursor.execute("delete from frames where documentid = %s and (not blessed or blessed is null)", (documentID, ))
         self.api.commit()
         cursor.close()
 

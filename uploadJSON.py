@@ -5,8 +5,9 @@ import sys, os, glob, fnmatch, json, codecs, traceback, gzip
 from datetime import date, datetime
 
 sys.path.append("./src")
-from DocumentUpload import upload2db, api, connect()
-from db_config import instance_name, log_dir
+from DocumentUpload import upload2db
+from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
+from db_config import api_conn_info, instance_name, log_dir
 import logging as log
 
 # JavaScript like dictionary: d.key <=> d[key]
@@ -64,7 +65,8 @@ def main():
     processID = instance_name + ' ' + str(os.getpid())
     basedir = os.path.dirname(os.path.realpath(__file__))
 
-    connect()
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn)
 
     try:
         for filename in sys.stdin:
@@ -96,7 +98,7 @@ def main():
                     document.id = docid
                     document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
-                    upload2db(document)
+                    upload2db(document, api)
                     sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
                     api.setDocProcessingStatus(docid, processID, 201)
                 else:

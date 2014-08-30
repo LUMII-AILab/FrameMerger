@@ -27,6 +27,10 @@ def connect():
 
 # Ielādē teikumos minētos faktus faktu postgres db; pirms tam atrodot entītiju globālos id vai izveidojot entītijas, uz kurām atsaucas atrastie freimi
 def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+freimu datiem, kāds nāk no Didža Framer vai arī saglabātā JSON formāta
+    if not api:
+        log.error('upload2db - nav datubāzes pieslēgums')
+        sys.stderr.write('upload2db - nav datubāzes pieslēgums')                
+
     if realUpload: 
         api.cleanupDB(document.id) # iztīram šī dokumenta ID agrāk ielasītos raw-frames
 
@@ -105,6 +109,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             if realUpload:                
                 if frame.tokenIndex:
                     targetword = sentence.tokens[frame.tokenIndex-1].form
+                elif frame.targetWord:
+                    targetword = frame.targetWord
                 else:
                     targetword = None
                 source = 'Pipeline parse at '+datetime.datetime.now().isoformat()
@@ -476,6 +482,12 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
 
     for localID in neededEntities:
         entity = entities[str(localID)]
+        if entity.get('uqid'): # Ja mums jau izejas datos ir iedots unikālais ārējais ID (leta profila # vai personkods vai kas tāds)
+            globalid = api.entity_id_by_outer_id(entity.get('uqid'))
+            if globalid:
+                entity['GlobalID'] = globalid
+                continue
+
         if not entity.get('locations'):
             log.info("Entity %s without token locations", entity.get('representative'))
 

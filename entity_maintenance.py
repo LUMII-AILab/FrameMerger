@@ -197,7 +197,7 @@ def main():
     # load_cv_entities("entity_fixtures/gold/Personas no LETA.json")
     # load_entities("entity_fixtures/gold/Vietas no LĢIS.json")
     # load_entities("entity_fixtures/gold/Personas no firmu exceļa.json")
-    load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
+    #load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
     fetch_entities()
     print('Done!')
 
