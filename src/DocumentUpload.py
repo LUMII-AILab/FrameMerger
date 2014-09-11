@@ -500,7 +500,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
         if not entity.get('representative') is None: 
             representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
-            matchedEntities = api.entity_ids_by_name_list(representative)
+            matchedEntities = list(api.entity_ids_by_name_list(representative)) # python 3 gadījumā atgirež iterātoru
 
         if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
