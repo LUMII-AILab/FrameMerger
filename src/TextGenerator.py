@@ -177,7 +177,10 @@ def get_frame_text(mentioned_entities, frame):
             return simpleVerbalization()
 
         # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
-        return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2') + laiks
+        if elem(u'Laiks') is None:
+            return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2')
+        else:
+            return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2') + ' no ' + elem(u'Laiks', u'Ģenitīvs')
 
     if frame_type == 4: # Vārds alternatīvais
         if elem(u'Vārds') is None or elem(u'Entītija') is None:
@@ -314,7 +317,7 @@ def get_frame_text(mentioned_entities, frame):
             log.debug("Dalība bez biedra vai organizācijas :( %s", frame)
             return simpleVerbalization()
 
-        return laiks + u' ' + elem(u'Biedrs') + u' ir ' + statuss + elem(u'Organizācija', u'Lokatīvs') 
+        return laiks + u' ' + elem(u'Biedrs') + u' ir ' + statuss + u' ' + elem(u'Organizācija', u'Lokatīvs') 
 
     if frame_type == 13: # Vēlēšanas
         if elem(u'Dalībnieks') is None or elem(u'Vēlēšanas') is None:
