@@ -8,9 +8,27 @@ from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
 from consolidate_frames import consolidate_frames, process_entities
 from DocumentUpload import upload2db
+import json
 
-from bottle import request, Bottle, abort, static_file, response, run
+from bottle import request, Bottle, abort, static_file, response, run, hook
 
+# JavaScript like dictionary: d.key <=> d[key]
+# Elegants risinājums:
+# http://stackoverflow.com/a/14620633
+class Dict(dict):
+    def __init__(self, *args, **kwargs):
+        super(Dict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+    def __getattribute__(self, key):
+        try:
+            return super(Dict, self).__getattribute__(key)
+        except:
+            return
+
+    def __delattr__(self, name):
+        if name in self:
+            del self[name]
 
 # defaults
 
@@ -99,6 +117,17 @@ API: <br/>
 </html>
 """
 
+# # https://gist.github.com/richard-flosi/3789163
+# @app.hook('after_request')
+# def enable_cors():
+#     """
+#     You need to add some headers to each request.
+#     Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+#     """
+#     response.headers['Access-Control-Allow-Origin'] = '*'
+#     response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+#     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
 # def consolidate_frames(entity_list, api):
 # process_entities(entity_list, out_dir, api=api)
 
@@ -145,13 +174,31 @@ def consolidate_entities(name):
 
 
 
-from datetime import date, datetime
+# https://gist.github.com/richard-flosi/3789163
+@app.hook('after_request')
+def enable_cors():
+    """
+    You need to add some headers to each request.
+    Don't use the wildcard '*' for Access-Control-Allow-Origin in production.
+    """
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
-@app.post('/databases/<name>/upload')
+from datetime import date, datetime
+import traceback
+
+@app.route('/databases/<name>/upload', method=['OPTIONS', 'POST'])
 def upload(name):
+    if request.method == 'OPTIONS':
+        return ''
     response.conent_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
-    entityids = request.body.read().decode('utf8', errors='ignore')
+    # response.add_header('access-control-allow-credentials', 'true')
+    # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
+    # response.add_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT')
+    # response.add_header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
     try:
         if not document.date:
             document.date = datetime.now().strftime("%Y-%m-%d")
@@ -163,16 +210,24 @@ def upload(name):
         upload2db(document, api)
     except Exception as e:
         response.code = 500
+        # result = 'Upload error: ' + str(e)
+        response.code = 500
         result = 'Upload error: ' + str(e)
         return result
     response.code = 200
     return 'OK'
 
-@app.post('/databases/<name>/upload/<id>')
+@app.route('/databases/<name>/upload/<id>', method=['OPTIONS', 'POST'])
 def upload_id(name, id):
+    if request.method == 'OPTIONS':
+        return ''
     response.conent_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
-    entityids = request.body.read().decode('utf8', errors='ignore')
+    # response.add_header('access-control-allow-credentials', 'true')
+    # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
+    # response.add_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT')
+    # response.add_header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
     try:
         if not document.date:
             document.date = datetime.now().strftime("%Y-%m-%d")
@@ -185,7 +240,9 @@ def upload_id(name, id):
         upload2db(document, api)
     except Exception as e:
         response.code = 500
-        result = 'Upload error: ' + str(e)
+        # result = 'Upload error: ' + str(e)
+        response.code = 500
+        result = traceback.format_exc()
         return result
     response.code = 200
     return 'OK'
