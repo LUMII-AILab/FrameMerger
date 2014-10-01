@@ -97,10 +97,19 @@ class BaseConsolidator(object):
                 item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
                 item["SummaryFrameID"] = sum_frame["FrameId"]
                 res.append(item)
-            # else: 
-            #     log.warning("Potentially losing blessed frame")
-            #     log.warning(sum_frame)
-                # FIXME - te vajag laiakm uztaisīt reālu 'frame-veida' objektu no sum_frame, bet viņi būtiski atšķiras            
+            else: 
+                # Ieliekam placeholder - te ir summary freims ar 0 avotiem, kuram vienalga ir jāatjaunina info
+                item = deepcopy(sum_frame)
+                elem_list = []
+                for elem in sum_frame.get('FrameData'):  # FIXME - ja beidzot pārtaisīs visu uz normālo formu, tad arī šis nebūs vajadzīgs
+                    elem_list.append({
+                        u'Key': elem.get(u'roleid'), 
+                        u'Value': {u'Entity': elem.get(u'entityid'), u'PlaceInSentence': elem.get(u'wordindex')}
+                    })
+                item["FrameData"] = elem_list
+                item["SummarizedFrames"] = []
+                item["SummaryFrameID"] = sum_frame["FrameId"]
+                res.append(item)
 
         res_buf = {
                 # filter those with blessed summaries out from normal processing

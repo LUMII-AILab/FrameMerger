@@ -38,6 +38,9 @@ class EntityFrames(object):
                 self.frames = api.entity_frames_by_id(self.entity_id)
                 if len(self.frames)>1000:
                     log.warning( 'Many frames (%d) for entity #%d' % (len(self.frames), self.entity_id))
+
+                self.blessed_summary_frames = api.blessed_summary_frame_data_by_entity_id(self.entity_id)
+
             except requests.exceptions.ConnectionError as e:
                 log.error("Error retrieving frames for entity %s", self.entity_id)
                 self.frames = None

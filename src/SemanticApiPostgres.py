@@ -344,7 +344,6 @@ class SemanticApiPostgres(object):
     # sentenceId - teikuma id
     # targetword - unicode string
     # date - freima datums - string ISO datumformātā 
-    # LETA powerpoint gribēja šo f-ju saukt 'UpdateFrame', taču pēc komentāra skaidrs ka runa iet par apkopotajiem freimiem
     def updateSummaryFrame(self, frameid, frametype, elements, document, frameText = None, summarizedFrames = [], source=None, sentenceId=None, targetword = None, date=None, blessed = None, hidden = False):
         main_sql = "UPDATE SummaryFrames SET FrameTypeID = %s, SourceID = %s, SentenceID = %s, DocumentID = %s, TargetWord = %s,\
                      Blessed = %s, Hidden = %s, Fdatetime = %s, FrameText = %s where frameid = %s"
@@ -365,8 +364,9 @@ class SemanticApiPostgres(object):
 
         self.api.commit()
 
-    #Apvieno summarizētajam freimam tikai 'apakšfreimu' sarakstu - lieto pie apvienošanas, blesotiem summaryfreimiem
-    def updateSummaryFrameRawFrames(self, frameid, summarizedFrames, commit=True):
+    #Apvieno summarizētajam freimam 'apakšfreimu' sarakstu, skaitu un arī verbalizāciju - lieto pie apvienošanas, blesotiem summaryfreimiem
+    def updateSummaryFrameRawFrames(self, frameid, summarizedFrames, frametext=None, date=None, start_date=None, commit=True):
+        self.api.insert("UPDATE SummaryFrames SET framecnt = %s, frametext = %s, date=%s, start_date=%s where frameid = %s", (len(summarizedFrames), frametext, date, start_date, frameid))
         self.api.insert("DELETE FROM SummaryFrameData where SummaryFrameID = %s", (frameid, ))
         frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
         for summarizedFrame in summarizedFrames:
@@ -485,8 +485,8 @@ where fr_data.entityid = %s and fr.blessed is null;"
 	# date - freima datums - string ISO datumformātā 
     def insert_summary_frame(self, frame, commit):
         main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
-                         FrameCnt, FrameText, SummaryInfo, Deleted)\
-                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+                         FrameCnt, FrameText, SummaryInfo, Deleted, date, start_date)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
         # fix MergeType codes (!) as the API requires Int for now
         merge_type_map = {"O": 0, "M": 2, "E": 1}
@@ -503,7 +503,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         res = self.api.insert(main_sql,
                 (frame["FrameType"], frame["SourceId"], frame["SentenceId"], frame["DocumentId"], frame["TargetWord"], 
                     merge_type, self.api.dataset, frame["IsBlessed"], frame["IsHidden"], frame["FrameCnt"], frame["FrameText"],
-                    frame["SummaryInfo"], frame["IsDeleted"]),
+                    frame["SummaryInfo"], frame["IsDeleted"], frame.get("Date"), frame.get("StartDate")),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
@@ -574,7 +574,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
             return None # Ja nav atrasts šāds freims
 
         # Sakropļojam freima elementu info lai atbilst vecajam API
-        # TODO - pārrakstīt patērētājfunkcijas, lai visur lieto normālo formu
+        # FIXME TODO - pārrakstīt patērētājfunkcijas, lai visur lieto normālo formu
         elem_list = []
         for item in frame.elements:
             elem_list.append({
@@ -741,7 +741,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         self.api.commit()
         cursor.close()
 
-    # Iztīra rawfreimus no DB, kas atbilst šim dokumenta ID - lai atkārtoti laižot nekrājas dublicēti freimi; un lai laižot pēc uzlabojumiem iztīrās iepriekšējās versijas kļūdas
+    # Iztīra neblesotos rawfreimus no DB, kas atbilst šim dokumenta ID - lai atkārtoti laižot nekrājas dublicēti freimi; un lai laižot pēc uzlabojumiem iztīrās iepriekšējās versijas kļūdas
     def cleanupDB(self, documentID):
         cursor = self.api.new_cursor()
         cursor.execute("delete from framedata where frameid in \
@@ -750,8 +750,15 @@ where fr_data.entityid = %s and fr.blessed is null;"
         self.api.commit()
         cursor.close()
 
+    # Atrod teikumu numurus, kuros DB jau ir šim dokumenta ID blesoti fakti - lai atkārtoti laižot nekrājas dublicēti freimi un lai netiek vēlreiz ieviestas kļūdas, ko jau cilvēks ir izlabojis
+    def doc_blessed_frame_sentences(self, documentID):
+        cursor = self.api.new_cursor()
+        cursor.execute("select sentenceid from frames where documentid = %s and blessed", (documentID, ))
+        r = cursor.fetchall()
+        cursor.close()        
+        return map(lambda x: int(x[0]), r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
-    # LETA powerpoint gribēja saukt par 'ReprocessSummary'
     def dirtyEntity(self, entityID, processID = None):
         if entityID == 0: return
         

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # -*- coding: utf8 -*-
 
 import sys, json
@@ -186,6 +186,21 @@ def load_entities(filename):
     conn.commit()
     print("Entities from file %s loaded!" % filename)
 
+def reinflect_entities():
+    print('Re-inflecting all entities!')
+    #res = api.api.query("select entityid, name from entities e limit 1000", None )
+    res = api.api.query("select entityid, name from entities e where entityid = 2207968", None )
+
+    for counter, entity in enumerate(res):
+        inflections = inflectEntity(entity.name, 'date')
+        api.api.insert("update entities set nameinflections = %s where entityid = %s", (inflections, entity.entityid))
+        if counter % 1000 == 999:
+            print('%s' % (counter+1,))
+            conn.commit()
+
+    conn.commit()
+    print('Entity re-inflection done!')
+
 
 def main():
     print(sys.version)
@@ -197,8 +212,9 @@ def main():
     # load_cv_entities("entity_fixtures/gold/Personas no LETA.json")
     # load_entities("entity_fixtures/gold/Vietas no LĢIS.json")
     # load_entities("entity_fixtures/gold/Personas no firmu exceļa.json")
-    #load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
-    fetch_entities()
+    # load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
+    # fetch_entities()
+    reinflect_entities()
     print('Done!')
 
 if __name__ == "__main__":

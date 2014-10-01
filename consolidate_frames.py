@@ -18,7 +18,7 @@ from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from ConsolidateFrames import BaseConsolidator
 from FrameInfo import FrameInfo
 
-from TextGenerator import get_mentioned_entities, get_frame_text
+from TextGenerator import get_mentioned_entities, get_frame_data
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
@@ -44,25 +44,21 @@ def consolidate_frames(entity_list, api):
 
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
-
-            blessed_summary_frames = api.blessed_summary_frame_data_by_entity_id(entity.entity_id)
-
             try:
                 frames = list(filter(lambda x: x["FrameData"] is not None, entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 
-                frames = c.apply(frames, blessed_summary_frames)
+                frames = c.apply(frames, entity.blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
                 frames = list(filter(valid_frame, frames)) # Izmetam tos kam arī pēc apvienošanas par maz datu
                 log.info("Frames after filtering for sparsity: %s\n", len(frames))
 
                 # Building frame descriptions
                 for frame in frames:
-
                     try:
-                        frametext = get_frame_text(mentioned_entities, frame)
+                        frametext, frame["Date"], frame["StartDate"] = get_frame_data(mentioned_entities, frame)
                     except KeyError as e:
-                        log.exception("Key error in get_frame_text:\n%s", e)
+                        log.exception("Key error in get_frame_data:\n%s", e)
                         frametext = None
 
                     if frametext is not None:
@@ -83,6 +79,9 @@ def invalid_frame(frame):
     return not valid_frame(frame)
 
 def valid_frame(frame):
+    # if frame.get('Blessed') == True:
+    #     return True # Ja jau blesots, tad viss ok
+
     if len(frame["FrameData"]) < 2:
         return False  # Ja tikai 1 elements, tad fakta reāli nav
 
@@ -166,10 +165,11 @@ def save_entity_frames_to_api(api, entity_list):
         to_save = entity.cons_frames
         log.info("Save_entity_frames_to_api - summary frames to save for entity %s: %s", entity.entity_id, len(to_save))
 
-        for frame in to_save:     
+        for frame in to_save:                 
             summary_frame_id = frame.get("SummaryFrameID")
             if summary_frame_id:
-                api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], commit=False)
+                # FIXME - frametext, date un startdate principā te nav jāaiztiek - tas ir tāpēc, lai verbalizācijas utml uzlabojumi nonāktu līdz konsolidētajiem faktiem
+                api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], frame.get('FrameText'), frame.get('Date'), frame.get('StartDate'), commit=False)                
                 summary_frame_ids.append(summary_frame_id)
             else:
                 frame_id = api.insert_summary_frame(frame, commit=False)

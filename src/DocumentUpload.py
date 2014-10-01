@@ -32,7 +32,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
         sys.stderr.write('upload2db - nav datubāzes pieslēgums')                
 
     if realUpload: 
-        api.cleanupDB(document.id) # iztīram šī dokumenta ID agrāk ielasītos raw-frames
+        api.cleanupDB(document.id) # iztīram šī dokumenta ID agrāk ielasītos neblesotos raw-frames
+        blessed_sentences = api.doc_blessed_frame_sentences(document.id) # paskatamies, kas šim dokumenta ID ir blesots bijis
 
     sentences = document.sentences
     entities = document.namedEntities
@@ -106,7 +107,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     
             if showInserts:
                 print('Gribētu insertot freimu', frame.type, elements)
-            if realUpload:                
+            if realUpload:             
                 if frame.tokenIndex:
                     targetword = sentence.tokens[frame.tokenIndex-1].form
                 elif frame.targetWord:
@@ -116,9 +117,13 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                 source = 'Pipeline parse at '+datetime.datetime.now().isoformat()
 
                 approvalType = 0 # default
-                if document.get('type') in {'person', 'organization'}: # Personas CV vai organizāciju profilu dokumenti - uzskatam to datus par ticamākiem nekā citus
+                if document.get('type').lower() in {'person', 'organization'}: # Personas CV vai organizāciju profilu dokumenti - uzskatam to datus par ticamākiem nekā citus
                     approvalType = 1
                     source = 'LETA CV'
+                    if frame.get('ruleID'):
+                        source = source + ' ' + frame.get('ruleID')
+                    if (sentenceID+1) in blessed_sentences:
+                        continue # Ja šajā CV teikumā jau cilvēks ir blesojis faktus, tad to neliekam DB
 
                 api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat(), approvedTypeID=approvalType)
 
