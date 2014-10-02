@@ -117,7 +117,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                 source = 'Pipeline parse at '+datetime.datetime.now().isoformat()
 
                 approvalType = 0 # default
-                if document.get('type').lower() in {'person', 'organization'}: # Personas CV vai organizāciju profilu dokumenti - uzskatam to datus par ticamākiem nekā citus
+                if document.get('type', '').lower() in {'person', 'organization'}: # Personas CV vai organizāciju profilu dokumenti - uzskatam to datus par ticamākiem nekā citus
                     approvalType = 1
                     source = 'LETA CV'
                     if frame.get('ruleID'):
@@ -329,7 +329,7 @@ def filterEntityNames(entities, documentdate):
         entity = entities[e_id]
         entity['representative'] = updateName(entity.get('representative'))
         entity['aliases'] = [updateName(alias) for alias in entity.get('aliases')]
-        entity['aliases'] = filter(goodName, entity.get('aliases'))
+        entity['aliases'] = list(filter(goodName, entity.get('aliases')))
         if not entity.get('aliases'): # Hmm, tātad nekas nebija labs
             entity['aliases'] = ['_NEKONKRĒTS_'] #FIXME - jāsaprot vai nevar labāk to norādīt
             # entity['representative'] = '_NEKONKRĒTS_' 
@@ -505,7 +505,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
         if not entity.get('representative') is None: 
             representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
-            matchedEntities = list(api.entity_ids_by_name_list(representative)) # python 3 gadījumā atgirež iterātoru
+            matchedEntities = api.entity_ids_by_name_list(representative)
 
         if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):

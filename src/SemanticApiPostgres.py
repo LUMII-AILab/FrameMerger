@@ -14,6 +14,7 @@ import atexit
 
 from pprint import pprint
 
+
 # no FAQ - lai simbolus atgriež kā python unicode tipu
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
@@ -78,7 +79,7 @@ class PostgresConnection(object):
     # Inserto datus formā INSERT INTO t (a, b) VALUES (1, 2), (3, 4), (5, 6); - kur "INSERT INTO t (a, b) VALUES " daļu padod 'sql' parametrā, un tuples atsevišķi
     def inserttuples(self, sql, tuples, commit=False):
         cursor = self.new_cursor()
-        args_str = ','.join(cursor.mogrify("%s", (x, )) for x in tuples) 
+        args_str = ','.join(cursor.mogrify("%s", (x, )).decode('utf8', errors='ignore') for x in tuples) 
         cursor.execute(sql+" "+args_str)
         if commit:
             self.commit()
@@ -236,7 +237,7 @@ class SemanticApiPostgres(object):
         sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
         res = self.api.query(sql, (name.lower().strip(),) )
 
-        return map(lambda x: x[0], res) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+        return list(map(lambda x: x[0], res)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
     # Atgriež entītes id pēc tās ārējā id (datos - LETA UQID vai personaskods/uzņēmuma reģistrācijas nr)
     def entity_id_by_outer_id(self, outer_id):
@@ -328,7 +329,8 @@ class SemanticApiPostgres(object):
         #     self.api.insert(element_sql, (frameid, entityid, element) )       
         # ātrdarbības pēc (netestētas) pārlikts uz inserttuples
         tuples = []
-        for element, entityid in elements.iteritems():
+        # for element, entityid in elements.iteritems():    # TODO: atpakaļsavietojamība ar python2
+        for element, entityid in elements.items():
             tuples.append( (frameid, entityid, element) )
         self.api.inserttuples("INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES", tuples)
         # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
@@ -353,7 +355,8 @@ class SemanticApiPostgres(object):
 
         self.api.insert("DELETE FROM SummaryFrameRoleData where FrameID = %s", (frameid, ))
         element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
-        for element, entityid in elements.iteritems():
+        # for element, entityid in elements.iteritems():    # TODO: atpakaļsavietojamība ar python3
+        for element, entityid in elements.items():
             self.api.insert(element_sql, (frameid, entityid, element) )       
             # NB! Te ātrdarbības dēļ nav validācijas par to, vai entītiju un lomu id ir korekti; te arī nevar uzstādīt wordindex lauku (kuru gan šobrīd nekur nelieto)
 
