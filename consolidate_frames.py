@@ -106,7 +106,9 @@ def valid_frame(frame):
     if frame_type == 2: # Miršana
         if u'Mirušais' not in roles: return False
     if frame_type == 3: # Attiecības
-        if (u'Partneris_1' not in roles or u'Partneris_2' not in roles) and u'Partneri' not in roles: return False
+        #if (u'Partneris_1' not in roles or u'Partneris_2' not in roles) and u'Partneri' not in roles: return False
+        # Pielikām abstraktas attiecības ("Jānis ir precējies"), un tad Partneris_2 ir optional
+        if u'Partneris_1' not in roles and u'Partneri' not in roles: return False
         if u'Attiecības' not in roles: return False
     if frame_type == 4: # Vārds alternatīvais
         if u'Vārds' not in roles: return False

@@ -5,3 +5,5 @@ log/*
 output/*
 src/*.pyc
 *.pyc
+entity_fixtures/*
+cv_jsonlist.txt

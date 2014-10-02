@@ -139,15 +139,19 @@ def get_frame_data(mentioned_entities, frame):
             return elem(u'Mirušais') + u" mira" + laiks + vieta + ceelonis
 
         if frame_type == 3: # Attiecības
-            if elem(u'Partneris_1') is None or elem(u'Partneris_2') is None or elem(u'Attiecības') is None:
+            if elem(u'Partneris_1') is None or elem(u'Attiecības') is None:
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
+            laiks = ''
+            if elem(u'Laiks'):
+                laiks = ' no ' + elem(u'Laiks', u'Ģenitīvs')
+
+            if elem(u'Partneris_2') is None:
+                return elem(u'Partneris_1') + u' ir ' + elem(u'Attiecības') + laiks
             # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
-            if elem(u'Laiks') is None:
-                return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2')
             else:
-                return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2') + ' no ' + elem(u'Laiks', u'Ģenitīvs')
+                return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2') + laiks
 
         if frame_type == 4: # Vārds alternatīvais
             if elem(u'Vārds') is None or elem(u'Entītija') is None:
@@ -298,13 +302,13 @@ def get_frame_data(mentioned_entities, frame):
                 saraksts = u' no saraksta ' + elem(u'Uzvarētājs')
 
             if not elem(u'Rezultāts'):
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
+                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
             elif u'evelē' in elem(u'Rezultāts'):
                 return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts 
             elif u'andidē' in elem(u'Rezultāts'):
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' kandidēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
+                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' kandidēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
             else:
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts + u' rezultāts: ' + elem(u'Rezultāts')
+                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts + u' rezultāts: ' + elem(u'Rezultāts')
 
         if frame_type == 14: # Atbalsts
             if elem(u'Atbalstītājs') is None or elem(u'Saņēmējs') is None:
@@ -568,7 +572,6 @@ def formatdate(date):
 
     m = re.match(r'(\d{4})\. gada (\d{1,2})\. (\w*)', date, re.UNICODE)
     if m:
-        print(m.group(3))
         month = {
         'janvāris'  : '01',
         'februāris' : '02',
@@ -581,7 +584,19 @@ def formatdate(date):
         'septembris': '09',
         'oktobris'  : '10',
         'novembris' : '11',
-        'decembris' : '12'
+        'decembris' : '12',
+        'janvārī'   : '01',
+        'februārī'  : '02',
+        'martā'     : '03',
+        'aprīlī'    : '04',
+        'maijā'     : '05',
+        'jūnijā'    : '06',
+        'jūlijā'    : '07',
+        'augustā'   : '08',
+        'septembrī' : '09',
+        'oktobrī'   : '10',
+        'novembrī'  : '11',
+        'decembrī'  : '12'
         }.get(m.group(3), '00')
         day = m.group(2)
         if len(day)==1:
@@ -592,7 +607,7 @@ def formatdate(date):
     if m:
         return m.group(1) + "0000"
 
-    print('Nesaprasts datums %s' % date)
+    log.debug('Nesaprasts datums %s' % date)
     return None
 
 def main():
