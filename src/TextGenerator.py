@@ -556,7 +556,11 @@ def get_frame_data(mentioned_entities, frame):
         if elem(u'Beigas'):
             date = elem(u'Beigas')
     if date and '-' in date:
-        start_date,date = date.split('-')
+        parts = date.split('-')
+        start_date = parts[0]
+        date = '0'.join(parts[1:])
+    if not start_date:
+        start_date = None #Lai nav iespējas par tukšo string vai ko tādu
 
     return (verbalization(), formatdate(date), formatdate(start_date))
 
