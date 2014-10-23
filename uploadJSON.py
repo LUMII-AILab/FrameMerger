@@ -9,6 +9,7 @@ from DocumentUpload import upload2db
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from db_config import api_conn_info, instance_name, log_dir
 import logging as log
+import getopt
 
 # JavaScript like dictionary: d.key <=> d[key]
 # Elegants risinājums:
@@ -46,15 +47,16 @@ def start_logging(log_level = log.ERROR):
 
 def main():
     # komandrindas apstrāde
-    args = list(sys.argv[1:])
-
-    for arg in args:
-        if arg == '--help':
-            print 'JSON document upload to semantic DB'
-            print
-            print 'Usage: pass filenames to be processed through stdin, one filename per line'
-            print
+    options, remainder = getopt.getopt(sys.argv[1:], '', ['help', 'database='])
+    for opt, arg in options:
+        if opt == '--help':
+            print('JSON document upload to semantic DB')
+            print('')
+            print('Usage: pass filenames to be processed through stdin, one filename per line')
+            print('--database=<dbname>   overrides the database name from the one set in db_config.py')
             quit()
+        elif opt == '--database':
+            api_conn_info["dbname"] = arg
 
     start_logging(log.INFO)
     log.info("Starting %s", sys.argv[0])

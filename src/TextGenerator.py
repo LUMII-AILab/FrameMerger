@@ -281,7 +281,7 @@ def get_frame_data(mentioned_entities, frame):
             else:
                 if elem(u'Amats') is not None:
                     amats = elem(u'Amats', u'Ģenitīvs') + u' amatu'
-                return laiks + elem(u'Darbinieks') + veids + u' atstāja ' + amats + darbavieta + vieta + naakamais
+                return laiks + u' ' + elem(u'Darbinieks') + veids + u' atstāja ' + amats + darbavieta + vieta + naakamais
 
         if frame_type == 12: # Dalība
             if elem(u'Biedrs') is None or elem(u'Organizācija') is None:
@@ -503,6 +503,9 @@ def get_frame_data(mentioned_entities, frame):
             else:
                 return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols:' + ziimols
 
+        if frame_type == 26: # Nestrukturēts
+            return elem(u'Īpašība', u'Nelocīts')
+
         # ja nekas nav atrasts
         # log.debug("Nemācējām apstrādāt %s", frame)
         return simpleVerbalization()
@@ -545,6 +548,8 @@ def get_frame_data(mentioned_entities, frame):
                 u'Datīvs': entity[u'Name'],
                 u'Akuzatīvs': entity[u'Name'],
                 u'Lokatīvs': entity[u'Name']}
+
+        roles[role][u'Nelocīts'] = entity[u'Name']
 
 
     #---- datumu atrašana

@@ -28,7 +28,8 @@ class PostgresConnection(object):
 
         if dataset is None:
             dataset = 0 # FIXME - te vajadzētu norādīt info par datu avotu, web-API ņēma lietotāja vārdu kā parametru
-
+            
+        print('Connecting to database %s' % (conn_info["dbname"],))
         self.conn = psycopg2.connect(
                 host = conn_info["host"],
                 port = conn_info["port"],

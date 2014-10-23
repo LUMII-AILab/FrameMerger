@@ -188,11 +188,12 @@ def load_entities(filename):
 
 def reinflect_entities():
     print('Re-inflecting all entities!')
-    #res = api.api.query("select entityid, name from entities e limit 1000", None )
-    res = api.api.query("select entityid, name from entities e where entityid = 2207968", None )
+    #res = api.api.query("select entityid, name from entities e", None )
+    #res = api.api.query("SELECT entityid, NAME, categorynameeng FROM entities e JOIN entitycategories c ON e.category = c.categoryid where name in ('Vjačeslavs Stepaņenko', 'Helga Teni')", None )
+    res = api.api.query("SELECT entityid, NAME, categorynameeng FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 3", None )
 
     for counter, entity in enumerate(res):
-        inflections = inflectEntity(entity.name, 'date')
+        inflections = inflectEntity(entity.name, entity.categorynameeng)
         api.api.insert("update entities set nameinflections = %s where entityid = %s", (inflections, entity.entityid))
         if counter % 1000 == 999:
             print('%s' % (counter+1,))
