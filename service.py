@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+# 
+# © 2013-2014 Institute of Mathematics and Computer Science, University of Latvia
+# (LU aģentūra "Latvijas Universitātes Matemātikas un informātikas institūts")
+#
+# All rights reserved.
 
 import sys
 

@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+# 
+# © 2013-2014 Institute of Mathematics and Computer Science, University of Latvia
+# (LU aģentūra "Latvijas Universitātes Matemātikas un informātikas institūts")
+#
+# All rights reserved.
 
 def relationship_role_to_property_assertion_stardog(relationship_role_name, property_name):
     return '''
