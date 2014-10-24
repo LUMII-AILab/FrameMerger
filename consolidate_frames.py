@@ -13,7 +13,7 @@ from pprint import pprint
 import logging as log
 import os.path
 from datetime import datetime
-import os, itertools
+import os, itertools,getopt
 
 import EntityFrames as EF
 
@@ -254,24 +254,49 @@ def main():
     out_dir = "./output"
     log.info("Output directory: %s\n", out_dir)
 
-    conn = PostgresConnection(api_conn_info)
-    api = SemanticApiPostgres(conn)
-    
-    entity_list = entity_ids_from_stdin()
+    single_load = False
+    load_all_dirty = False
+    options, remainder = getopt.getopt(sys.argv[1:], 's', ['help', 'dirty', 'single', 'database='])
+    for opt, arg in options:
+        if opt == '--help':
+            print('Frame consolidation script')
+            print('')
+            print('Usage: consolidates entities according to an ID list provided over stdin, one ID per line')
+            print('--database=<dbname>   overrides the database name from the one set in db_config.py')
+            print('--single              processes each entity as submitted, instead of waiting for a full batch. Normal batch mode is more efficient.')
+            print('--dirty               instead of waiting for entity IDs, takes all entities marked in the database as "dirty".') 
+            quit()
+        elif opt == '--database':
+            api_conn_info["dbname"] = arg
+        elif opt == '--dirty':
+            load_all_dirty = True
+        elif opt == '--single':
+            single_load = True
 
-    if '-single' in sys.argv:
-        # reālā laika apstrāde - pēc katra ID uzreiz apstrādāt
-        while 1:
-            try:
-                line = sys.stdin.readline()
-            except KeyboardInterrupt:
-                break
-            if not line or line == "\n":
-                break
-            process_entities([int(line)], out_dir, api=api)
-    else: # batch processing - dalam visu porcijās
+    conn = PostgresConnection(api_conn_info)
+    api = SemanticApiPostgres(conn) 
+
+    if load_all_dirty:
+        entity_list = api.get_dirty_entities()
+        print(entity_list)
         for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
             process_entities(chunk, out_dir, api=api)
+        print('All dirty entities processed')
+    else:
+        entity_list = entity_ids_from_stdin()
+        if single_load or '-single' in sys.argv: # -single legacy opcija, jo tas bija vienā Didža webrīkā iekodēts, lai nav jāmaina
+            # reālā laika apstrāde - pēc katra ID uzreiz apstrādāt
+            while 1:
+                try:
+                    line = sys.stdin.readline()
+                except KeyboardInterrupt:
+                    break
+                if not line or line == "\n":
+                    break
+                process_entities([int(line)], out_dir, api=api)
+        else: # batch processing - dalam visu porcijās
+            for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
+                process_entities(chunk, out_dir, api=api)
 
     log.info('Darbs pabeigts.')
 

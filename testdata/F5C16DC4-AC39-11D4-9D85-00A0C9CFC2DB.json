@@ -597,11 +597,11 @@
             },
             {
               "name": "Employment_start",
-              "entityID": 21
+              "entityID": 18
             },
             {
               "name": "Employment_end",
-              "entityID": 22
+              "entityID": 21
             }
           ]
         }
@@ -694,19 +694,19 @@
             },
             {
               "name": "Employer",
-              "entityID": 23
+              "entityID": 22
             },
             {
               "name": "Position",
-              "entityID": 24
+              "entityID": 23
             },
             {
               "name": "Employment_start",
-              "entityID": 25
+              "entityID": 24
             },
             {
               "name": "Employment_end",
-              "entityID": 26
+              "entityID": 25
             }
           ]
         }
@@ -799,19 +799,19 @@
             },
             {
               "name": "Employer",
-              "entityID": 27
+              "entityID": 26
             },
             {
               "name": "Position",
-              "entityID": 28
+              "entityID": 27
             },
             {
               "name": "Employment_start",
-              "entityID": 29
+              "entityID": 28
             },
             {
               "name": "Employment_end",
-              "entityID": 26
+              "entityID": 25
             }
           ]
         }
@@ -928,19 +928,19 @@
             },
             {
               "name": "Employer",
-              "entityID": 30
+              "entityID": 29
             },
             {
               "name": "Position",
-              "entityID": 24
+              "entityID": 23
             },
             {
               "name": "Employment_start",
-              "entityID": 31
+              "entityID": 21
             },
             {
               "name": "Employment_end",
-              "entityID": 26
+              "entityID": 25
             }
           ]
         }
@@ -1042,15 +1042,19 @@
             },
             {
               "name": "Body",
-              "entityID": 34
+              "entityID": 32
+            },
+            {
+              "name": "New_leader",
+              "entityID": 33
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
-              "entityID": 32
+              "entityID": 30
             }
           ]
         }
@@ -1257,19 +1261,19 @@
             },
             {
               "name": "Employer",
-              "entityID": 36
+              "entityID": 35
             },
             {
               "name": "Position",
-              "entityID": 37
+              "entityID": 36
             },
             {
               "name": "Employment_start",
-              "entityID": 38
+              "entityID": 37
             },
             {
               "name": "Employment_end",
-              "entityID": 39
+              "entityID": 38
             }
           ]
         }
@@ -1443,15 +1447,19 @@
             },
             {
               "name": "Body",
-              "entityID": 34
+              "entityID": 32
+            },
+            {
+              "name": "New_leader",
+              "entityID": 33
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
-              "entityID": 40
+              "entityID": 39
             }
           ]
         }
@@ -1548,19 +1556,19 @@
             },
             {
               "name": "Employer",
-              "entityID": 41
+              "entityID": 40
             },
             {
               "name": "Position",
-              "entityID": 42
+              "entityID": 41
             },
             {
               "name": "Employment_start",
-              "entityID": 39
+              "entityID": 38
             },
             {
               "name": "Employment_end",
-              "entityID": 43
+              "entityID": 42
             }
           ]
         }
@@ -1718,15 +1726,19 @@
             },
             {
               "name": "Body",
+              "entityID": 44
+            },
+            {
+              "name": "New_leader",
               "entityID": 45
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
-              "entityID": 44
+              "entityID": 43
             }
           ]
         }
@@ -2225,11 +2237,15 @@
             },
             {
               "name": "Body",
-              "entityID": 34
+              "entityID": 32
+            },
+            {
+              "name": "New_leader",
+              "entityID": 53
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
@@ -2383,15 +2399,15 @@
             },
             {
               "name": "Employer",
-              "entityID": 55
-            },
-            {
-              "name": "Position",
               "entityID": 56
             },
             {
+              "name": "Position",
+              "entityID": 57
+            },
+            {
               "name": "Time",
-              "entityID": 53
+              "entityID": 54
             }
           ]
         }
@@ -2533,11 +2549,15 @@
             },
             {
               "name": "Employer",
-              "entityID": 58
+              "entityID": 60
             },
             {
               "name": "Position",
-              "entityID": 59
+              "entityID": 61
+            },
+            {
+              "name": "Time",
+              "entityID": 58
             }
           ]
         }
@@ -3029,15 +3049,15 @@
             },
             {
               "name": "Employer",
-              "entityID": 62
+              "entityID": 64
             },
             {
               "name": "Position",
-              "entityID": 63
+              "entityID": 65
             },
             {
               "name": "Time",
-              "entityID": 60
+              "entityID": 62
             }
           ]
         }
@@ -3139,15 +3159,15 @@
             },
             {
               "name": "Employer",
-              "entityID": 66
+              "entityID": 68
             },
             {
               "name": "Position",
-              "entityID": 65
+              "entityID": 67
             },
             {
               "name": "Time",
-              "entityID": 64
+              "entityID": 66
             }
           ]
         }
@@ -3196,28 +3216,6 @@
             },
             {
               "name": "Employer",
-              "entityID": 67
-            },
-            {
-              "name": "Position",
-              "entityID": 68
-            },
-            {
-              "name": "Time",
-              "entityID": 69
-            }
-          ]
-        },
-        {
-          "ruleID": "Person-Amats-01",
-          "type": "Being_employed",
-          "elements": [
-            {
-              "name": "Employee",
-              "entityID": 1
-            },
-            {
-              "name": "Employer",
               "entityID": 70
             },
             {
@@ -3245,6 +3243,28 @@
             {
               "name": "Position",
               "entityID": 73
+            },
+            {
+              "name": "Time",
+              "entityID": 69
+            }
+          ]
+        },
+        {
+          "ruleID": "Person-Amats-01",
+          "type": "Being_employed",
+          "elements": [
+            {
+              "name": "Employee",
+              "entityID": 1
+            },
+            {
+              "name": "Employer",
+              "entityID": 74
+            },
+            {
+              "name": "Position",
+              "entityID": 75
             },
             {
               "name": "Time",
@@ -3526,15 +3546,19 @@
             },
             {
               "name": "Body",
-              "entityID": 34
+              "entityID": 32
+            },
+            {
+              "name": "New_leader",
+              "entityID": 77
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
-              "entityID": 74
+              "entityID": 76
             }
           ]
         }
@@ -3735,15 +3759,15 @@
             },
             {
               "name": "Employer",
-              "entityID": 75
+              "entityID": 79
             },
             {
               "name": "Position",
-              "entityID": 76
+              "entityID": 80
             },
             {
               "name": "Time",
-              "entityID": 77
+              "entityID": 78
             }
           ]
         }
@@ -3813,15 +3837,19 @@
             },
             {
               "name": "Body",
-              "entityID": 34
+              "entityID": 32
+            },
+            {
+              "name": "New_leader",
+              "entityID": 82
             },
             {
               "name": "Result",
-              "entityID": 35
+              "entityID": 34
             },
             {
               "name": "Time",
-              "entityID": 78
+              "entityID": 81
             }
           ]
         }
@@ -4948,17 +4976,17 @@
     },
     "11": {
       "id": 11,
-      "representative": "1978.",
+      "representative": "1978",
       "inflections": {
-        "Ģenitīvs": "1978.",
-        "Datīvs": "1978.",
-        "Akuzatīvs": "1978.",
-        "Lokatīvs": "1978.",
-        "Nominatīvs": "1978."
+        "Ģenitīvs": "1978",
+        "Datīvs": "1978",
+        "Akuzatīvs": "1978",
+        "Lokatīvs": "1978",
+        "Nominatīvs": "1978"
       },
       "type": "time",
       "aliases": [
-        "1978."
+        "1978"
       ]
     },
     "12": {
@@ -5007,17 +5035,17 @@
     },
     "15": {
       "id": 15,
-      "representative": "1983.",
+      "representative": "1983",
       "inflections": {
-        "Ģenitīvs": "1983.",
-        "Datīvs": "1983.",
-        "Akuzatīvs": "1983.",
-        "Lokatīvs": "1983.",
-        "Nominatīvs": "1983."
+        "Ģenitīvs": "1983",
+        "Datīvs": "1983",
+        "Akuzatīvs": "1983",
+        "Lokatīvs": "1983",
+        "Nominatīvs": "1983"
       },
       "type": "time",
       "aliases": [
-        "1983."
+        "1983"
       ]
     },
     "17": {
@@ -5067,21 +5095,6 @@
     },
     "18": {
       "id": 18,
-      "representative": "1987.",
-      "inflections": {
-        "Ģenitīvs": "1987.",
-        "Datīvs": "1987.",
-        "Akuzatīvs": "1987.",
-        "Lokatīvs": "1987.",
-        "Nominatīvs": "1987."
-      },
-      "type": "time",
-      "aliases": [
-        "1987."
-      ]
-    },
-    "21": {
-      "id": 21,
       "representative": "1987",
       "inflections": {
         "Ģenitīvs": "1987",
@@ -5093,6 +5106,21 @@
       "type": "time",
       "aliases": [
         "1987"
+      ]
+    },
+    "21": {
+      "id": 21,
+      "representative": "1990",
+      "inflections": {
+        "Ģenitīvs": "1990",
+        "Datīvs": "1990",
+        "Akuzatīvs": "1990",
+        "Lokatīvs": "1990",
+        "Nominatīvs": "1990"
+      },
+      "type": "time",
+      "aliases": [
+        "1990"
       ]
     },
     "20": {
@@ -5112,51 +5140,6 @@
     },
     "23": {
       "id": 23,
-      "representative": "Madonas rajona Valsts valodas atestācijas komisija",
-      "inflections": {
-        "Ģenitīvs": "Madonas rajona Valsts valodas atestācijas komisijas",
-        "Datīvs": "Madonas rajona Valsts valodas atestācijas komisijai",
-        "Akuzatīvs": "Madonas rajona Valsts valodas atestācijas komisiju",
-        "Lokatīvs": "Madonas rajona Valsts valodas atestācijas komisijā",
-        "Nominatīvs": "Madonas rajona Valsts valodas atestācijas komisija"
-      },
-      "type": "organization",
-      "aliases": [
-        "Madonas rajona Valsts valodas atestācijas komisijas"
-      ]
-    },
-    "22": {
-      "id": 22,
-      "representative": "1990.",
-      "inflections": {
-        "Ģenitīvs": "1990.",
-        "Datīvs": "1990.",
-        "Akuzatīvs": "1990.",
-        "Lokatīvs": "1990.",
-        "Nominatīvs": "1990."
-      },
-      "type": "time",
-      "aliases": [
-        "1990."
-      ]
-    },
-    "25": {
-      "id": 25,
-      "representative": "1994.",
-      "inflections": {
-        "Ģenitīvs": "1994.",
-        "Datīvs": "1994.",
-        "Akuzatīvs": "1994.",
-        "Lokatīvs": "1994.",
-        "Nominatīvs": "1994."
-      },
-      "type": "time",
-      "aliases": [
-        "1994."
-      ]
-    },
-    "24": {
-      "id": 24,
       "representative": "priekšsēdētājs",
       "inflections": {
         "Ģenitīvs": "priekšsēdētāja",
@@ -5170,53 +5153,53 @@
         "priekšsēdētājs"
       ]
     },
-    "27": {
-      "id": 27,
-      "representative": "Rīgas pedagoģijas un izglītības vadības augstskola",
+    "22": {
+      "id": 22,
+      "representative": "Madonas rajona Valsts valodas atestācijas komisija",
       "inflections": {
-        "Ģenitīvs": "Rīgas pedagoģijas un izglītības vadības augstskolas",
-        "Datīvs": "Rīgas pedagoģijas un izglītības vadības augstskolai",
-        "Akuzatīvs": "Rīgas pedagoģijas un izglītības vadības augstskolu",
-        "Lokatīvs": "Rīgas pedagoģijas un izglītības vadības augstskolā",
-        "Nominatīvs": "Rīgas pedagoģijas un izglītības vadības augstskola"
+        "Ģenitīvs": "Madonas rajona Valsts valodas atestācijas komisijas",
+        "Datīvs": "Madonas rajona Valsts valodas atestācijas komisijai",
+        "Akuzatīvs": "Madonas rajona Valsts valodas atestācijas komisiju",
+        "Lokatīvs": "Madonas rajona Valsts valodas atestācijas komisijā",
+        "Nominatīvs": "Madonas rajona Valsts valodas atestācijas komisija"
       },
       "type": "organization",
       "aliases": [
-        "Rīgas pedagoģijas un izglītības vadības augstskola"
+        "Madonas rajona Valsts valodas atestācijas komisijas"
       ]
     },
-    "26": {
-      "id": 26,
-      "representative": "1999.",
+    "25": {
+      "id": 25,
+      "representative": "1999",
       "inflections": {
-        "Ģenitīvs": "1999.",
-        "Datīvs": "1999.",
-        "Akuzatīvs": "1999.",
-        "Lokatīvs": "1999.",
-        "Nominatīvs": "1999."
+        "Ģenitīvs": "1999",
+        "Datīvs": "1999",
+        "Akuzatīvs": "1999",
+        "Lokatīvs": "1999",
+        "Nominatīvs": "1999"
       },
       "type": "time",
       "aliases": [
-        "1999."
+        "1999"
       ]
     },
-    "29": {
-      "id": 29,
-      "representative": "1997.",
+    "24": {
+      "id": 24,
+      "representative": "1994",
       "inflections": {
-        "Ģenitīvs": "1997.",
-        "Datīvs": "1997.",
-        "Akuzatīvs": "1997.",
-        "Lokatīvs": "1997.",
-        "Nominatīvs": "1997."
+        "Ģenitīvs": "1994",
+        "Datīvs": "1994",
+        "Akuzatīvs": "1994",
+        "Lokatīvs": "1994",
+        "Nominatīvs": "1994"
       },
       "type": "time",
       "aliases": [
-        "1997."
+        "1994"
       ]
     },
-    "28": {
-      "id": 28,
+    "27": {
+      "id": 27,
       "representative": "uzņēmējdarbības ekonomikas docētājs",
       "inflections": {
         "Ģenitīvs": "uzņēmējdarbības ekonomikas docētāja",
@@ -5230,23 +5213,23 @@
         "uzņēmējdarbības ekonomikas docētājs"
       ]
     },
-    "31": {
-      "id": 31,
-      "representative": "1990",
+    "26": {
+      "id": 26,
+      "representative": "Rīgas pedagoģijas un izglītības vadības augstskola",
       "inflections": {
-        "Ģenitīvs": "1990",
-        "Datīvs": "1990",
-        "Akuzatīvs": "1990",
-        "Lokatīvs": "1990",
-        "Nominatīvs": "1990"
+        "Ģenitīvs": "Rīgas pedagoģijas un izglītības vadības augstskolas",
+        "Datīvs": "Rīgas pedagoģijas un izglītības vadības augstskolai",
+        "Akuzatīvs": "Rīgas pedagoģijas un izglītības vadības augstskolu",
+        "Lokatīvs": "Rīgas pedagoģijas un izglītības vadības augstskolā",
+        "Nominatīvs": "Rīgas pedagoģijas un izglītības vadības augstskola"
       },
-      "type": "time",
+      "type": "organization",
       "aliases": [
-        "1990"
+        "Rīgas pedagoģijas un izglītības vadības augstskola"
       ]
     },
-    "30": {
-      "id": 30,
+    "29": {
+      "id": 29,
       "representative": "Madonas rajona padomes Skolu valde",
       "inflections": {
         "Ģenitīvs": "Madonas rajona padomes Skolu valdes",
@@ -5260,23 +5243,23 @@
         "Madonas rajona padomes Skolu valde"
       ]
     },
-    "34": {
-      "id": 34,
-      "representative": "Saeima",
+    "28": {
+      "id": 28,
+      "representative": "1997",
       "inflections": {
-        "Ģenitīvs": "Saeimas",
-        "Datīvs": "Saeimai",
-        "Akuzatīvs": "Saeimu",
-        "Lokatīvs": "Saeimā",
-        "Nominatīvs": "Saeima"
+        "Ģenitīvs": "1997",
+        "Datīvs": "1997",
+        "Akuzatīvs": "1997",
+        "Lokatīvs": "1997",
+        "Nominatīvs": "1997"
       },
-      "type": "organization",
+      "type": "time",
       "aliases": [
-        "Saeimas"
+        "1997"
       ]
     },
-    "35": {
-      "id": 35,
+    "31": {
+      "id": 31,
       "representative": "kandidējis",
       "inflections": {
         "Ģenitīvs": "kandidējis",
@@ -5285,13 +5268,12 @@
         "Lokatīvs": "kandidējis",
         "Nominatīvs": "kandidējis"
       },
-      "type": "descriptor",
       "aliases": [
         "kandidējis"
       ]
     },
-    "32": {
-      "id": 32,
+    "30": {
+      "id": 30,
       "representative": "1998.10",
       "inflections": {
         "Ģenitīvs": "1998.10",
@@ -5305,8 +5287,8 @@
         "1998.10"
       ]
     },
-    "33": {
-      "id": 33,
+    "34": {
+      "id": 34,
       "representative": "kandidējis",
       "inflections": {
         "Ģenitīvs": "kandidējis",
@@ -5315,42 +5297,13 @@
         "Lokatīvs": "kandidējis",
         "Nominatīvs": "kandidējis"
       },
+      "type": "descriptor",
       "aliases": [
         "kandidējis"
       ]
     },
-    "38": {
-      "id": 38,
-      "representative": "2002",
-      "inflections": {
-        "Ģenitīvs": "2002",
-        "Datīvs": "2002",
-        "Akuzatīvs": "2002",
-        "Lokatīvs": "2002",
-        "Nominatīvs": "2002"
-      },
-      "type": "time",
-      "aliases": [
-        "2002"
-      ]
-    },
-    "39": {
-      "id": 39,
-      "representative": "2003",
-      "inflections": {
-        "Ģenitīvs": "2003",
-        "Datīvs": "2003",
-        "Akuzatīvs": "2003",
-        "Lokatīvs": "2003",
-        "Nominatīvs": "2003"
-      },
-      "type": "time",
-      "aliases": [
-        "2003"
-      ]
-    },
-    "36": {
-      "id": 36,
+    "35": {
+      "id": 35,
       "representative": "Finanšu ministrija",
       "inflections": {
         "Ģenitīvs": "Finanšu ministrijas",
@@ -5364,53 +5317,53 @@
         "Finanšu ministrija"
       ]
     },
-    "37": {
-      "id": 37,
-      "representative": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieks",
+    "32": {
+      "id": 32,
+      "representative": "Saeima",
       "inflections": {
-        "Ģenitīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieka",
-        "Datīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietniekam",
-        "Akuzatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieku",
-        "Lokatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietniekā",
-        "Nominatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieks"
+        "Ģenitīvs": "Saeimas",
+        "Datīvs": "Saeimai",
+        "Akuzatīvs": "Saeimu",
+        "Lokatīvs": "Saeimā",
+        "Nominatīvs": "Saeima"
       },
-      "type": "profession",
+      "type": "organization",
       "aliases": [
-        "Reģionālās politikas un plānošanas pārvalde, Stratēģiskās plānošanas departaments, direktora vietnieks"
+        "Saeimas"
       ]
     },
-    "42": {
-      "id": 42,
-      "representative": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļa",
+    "33": {
+      "id": 33,
+      "representative": "TB / LNNK",
       "inflections": {
-        "Ģenitīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļas",
-        "Datīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļai",
-        "Akuzatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļu",
-        "Lokatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļā",
-        "Nominatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļa"
+        "Ģenitīvs": "TB / LNNK",
+        "Datīvs": "TB / LNNK",
+        "Akuzatīvs": "TB / LNNK",
+        "Lokatīvs": "TB / LNNK",
+        "Nominatīvs": "TB / LNNK"
       },
-      "type": "profession",
+      "type": "organization",
       "aliases": [
-        "Reģionālās politikas departaments, Stratēģiskās plānošanas nodaļa"
+        "TB/LNNK"
       ]
     },
-    "43": {
-      "id": 43,
-      "representative": "2004.",
+    "38": {
+      "id": 38,
+      "representative": "2003",
       "inflections": {
-        "Ģenitīvs": "2004.",
-        "Datīvs": "2004.",
-        "Akuzatīvs": "2004.",
-        "Lokatīvs": "2004.",
-        "Nominatīvs": "2004."
+        "Ģenitīvs": "2003",
+        "Datīvs": "2003",
+        "Akuzatīvs": "2003",
+        "Lokatīvs": "2003",
+        "Nominatīvs": "2003"
       },
       "type": "time",
       "aliases": [
-        "2004."
+        "2003"
       ]
     },
-    "40": {
-      "id": 40,
+    "39": {
+      "id": 39,
       "representative": "2002.10",
       "inflections": {
         "Ģenitīvs": "2002.10",
@@ -5424,8 +5377,68 @@
         "2002.10"
       ]
     },
-    "41": {
-      "id": 41,
+    "36": {
+      "id": 36,
+      "representative": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieks",
+      "inflections": {
+        "Ģenitīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieka",
+        "Datīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietniekam",
+        "Akuzatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieku",
+        "Lokatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietniekā",
+        "Nominatīvs": "Reģionālās politikas un plānošanas pārvalde , Stratēģiskās plānošanas departaments , direktora vietnieks"
+      },
+      "type": "profession",
+      "aliases": [
+        "Reģionālās politikas un plānošanas pārvalde, Stratēģiskās plānošanas departaments, direktora vietnieks"
+      ]
+    },
+    "37": {
+      "id": 37,
+      "representative": "2002",
+      "inflections": {
+        "Ģenitīvs": "2002",
+        "Datīvs": "2002",
+        "Akuzatīvs": "2002",
+        "Lokatīvs": "2002",
+        "Nominatīvs": "2002"
+      },
+      "type": "time",
+      "aliases": [
+        "2002"
+      ]
+    },
+    "42": {
+      "id": 42,
+      "representative": "2004",
+      "inflections": {
+        "Ģenitīvs": "2004",
+        "Datīvs": "2004",
+        "Akuzatīvs": "2004",
+        "Lokatīvs": "2004",
+        "Nominatīvs": "2004"
+      },
+      "type": "time",
+      "aliases": [
+        "2004"
+      ]
+    },
+    "43": {
+      "id": 43,
+      "representative": "2005.3",
+      "inflections": {
+        "Ģenitīvs": "2005.3",
+        "Datīvs": "2005.3",
+        "Akuzatīvs": "2005.3",
+        "Lokatīvs": "2005.3",
+        "Nominatīvs": "2005.3"
+      },
+      "type": "time",
+      "aliases": [
+        "2005.3"
+      ]
+    },
+    "40": {
+      "id": 40,
       "representative": "Reģionālās attīstības un pašvaldību lietu ministrija",
       "inflections": {
         "Ģenitīvs": "Reģionālās attīstības un pašvaldību lietu ministrijas",
@@ -5437,6 +5450,21 @@
       "type": "organization",
       "aliases": [
         "Reģionālās attīstības un pašvaldību lietu ministrija"
+      ]
+    },
+    "41": {
+      "id": 41,
+      "representative": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļa",
+      "inflections": {
+        "Ģenitīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļas",
+        "Datīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļai",
+        "Akuzatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļu",
+        "Lokatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļā",
+        "Nominatīvs": "Reģionālās politikas departaments , Stratēģiskās plānošanas nodaļa"
+      },
+      "type": "profession",
+      "aliases": [
+        "Reģionālās politikas departaments, Stratēģiskās plānošanas nodaļa"
       ]
     },
     "46": {
@@ -5471,21 +5499,6 @@
     },
     "44": {
       "id": 44,
-      "representative": "2005.3",
-      "inflections": {
-        "Ģenitīvs": "2005.3",
-        "Datīvs": "2005.3",
-        "Akuzatīvs": "2005.3",
-        "Lokatīvs": "2005.3",
-        "Nominatīvs": "2005.3"
-      },
-      "type": "time",
-      "aliases": [
-        "2005.3"
-      ]
-    },
-    "45": {
-      "id": 45,
       "representative": "Madonas dome",
       "inflections": {
         "Ģenitīvs": "Madonas domes",
@@ -5497,6 +5510,21 @@
       "type": "organization",
       "aliases": [
         "Madonas domes"
+      ]
+    },
+    "45": {
+      "id": 45,
+      "representative": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK",
+      "inflections": {
+        "Ģenitīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK",
+        "Datīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK",
+        "Akuzatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK",
+        "Lokatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK",
+        "Nominatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK"
+      },
+      "type": "organization",
+      "aliases": [
+        "Apvienības \"Tēvzemei un Brīvībai\"/LNNK"
       ]
     },
     "51": {
@@ -5561,21 +5589,6 @@
     },
     "55": {
       "id": 55,
-      "representative": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītis",
-      "inflections": {
-        "Ģenitīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvīša",
-        "Datīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītim",
-        "Akuzatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvīti",
-        "Lokatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītī",
-        "Nominatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītis"
-      },
-      "type": "organization",
-      "aliases": [
-        "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A.Kalvīša"
-      ]
-    },
-    "54": {
-      "id": 54,
       "representative": "apstiprinājusi",
       "inflections": {
         "Ģenitīvs": "apstiprinājusi",
@@ -5588,8 +5601,8 @@
         "apstiprinājusi"
       ]
     },
-    "53": {
-      "id": 53,
+    "54": {
+      "id": 54,
       "representative": "2006.11",
       "inflections": {
         "Ģenitīvs": "2006.11",
@@ -5601,6 +5614,21 @@
       "type": "time",
       "aliases": [
         "2006.11"
+      ]
+    },
+    "53": {
+      "id": 53,
+      "representative": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \"",
+      "inflections": {
+        "Ģenitīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \"",
+        "Datīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \"",
+        "Akuzatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \"",
+        "Lokatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \"",
+        "Nominatīvs": "Apvienības \" Tēvzemei un Brīvībai \" / LNNK \""
+      },
+      "type": "organization",
+      "aliases": [
+        "Apvienības \"Tēvzemei un Brīvībai\"/LNNK\""
       ]
     },
     "52": {
@@ -5620,36 +5648,6 @@
     },
     "59": {
       "id": 59,
-      "representative": "( 2008.06.",
-      "inflections": {
-        "Ģenitīvs": "( 2008.06.",
-        "Datīvs": "( 2008.06.",
-        "Akuzatīvs": "( 2008.06.",
-        "Lokatīvs": "( 2008.06.",
-        "Nominatīvs": "( 2008.06."
-      },
-      "type": "profession",
-      "aliases": [
-        "(2008.06."
-      ]
-    },
-    "58": {
-      "id": 58,
-      "representative": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdība",
-      "inflections": {
-        "Ģenitīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdības",
-        "Datīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdībai",
-        "Akuzatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdību",
-        "Lokatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdībā",
-        "Nominatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdība"
-      },
-      "type": "organization",
-      "aliases": [
-        "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I.Godmaņa valdībā"
-      ]
-    },
-    "57": {
-      "id": 57,
       "representative": "apstiprināts",
       "inflections": {
         "Ģenitīvs": "apstiprināts",
@@ -5662,8 +5660,23 @@
         "apstiprināts"
       ]
     },
-    "56": {
-      "id": 56,
+    "58": {
+      "id": 58,
+      "representative": "2007.12.20",
+      "inflections": {
+        "Ģenitīvs": "2007.12.20",
+        "Datīvs": "2007.12.20",
+        "Akuzatīvs": "2007.12.20",
+        "Lokatīvs": "2007.12.20",
+        "Nominatīvs": "2007.12.20"
+      },
+      "type": "time",
+      "aliases": [
+        "2007.12.20"
+      ]
+    },
+    "57": {
+      "id": 57,
       "representative": "valdība",
       "inflections": {
         "Ģenitīvs": "valdības",
@@ -5677,38 +5690,23 @@
         "valdībā"
       ]
     },
-    "63": {
-      "id": 63,
-      "representative": "valdes loceklis",
+    "56": {
+      "id": 56,
+      "representative": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītis",
       "inflections": {
-        "Ģenitīvs": "valdes locekļa",
-        "Datīvs": "valdes loceklim",
-        "Akuzatīvs": "valdes locekli",
-        "Lokatīvs": "valdes loceklī",
-        "Nominatīvs": "valdes loceklis"
-      },
-      "type": "profession",
-      "aliases": [
-        "valdes locekli"
-      ]
-    },
-    "62": {
-      "id": 62,
-      "representative": "SIA \" Latvijas standarts \"",
-      "inflections": {
-        "Ģenitīvs": "SIA \" Latvijas standarts \"",
-        "Datīvs": "SIA \" Latvijas standarts \"",
-        "Akuzatīvs": "SIA \" Latvijas standarts \"",
-        "Lokatīvs": "SIA \" Latvijas standarts \"",
-        "Nominatīvs": "SIA \" Latvijas standarts \""
+        "Ģenitīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvīša",
+        "Datīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītim",
+        "Akuzatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvīti",
+        "Lokatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītī",
+        "Nominatīvs": "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A. Kalvītis"
       },
       "type": "organization",
       "aliases": [
-        "SIA \"Latvijas standarts\""
+        "īpašu uzdevumu ministru Eiropas Savienības finanšu pārvaldes lietās A.Kalvīša"
       ]
     },
-    "61": {
-      "id": 61,
+    "63": {
+      "id": 63,
       "representative": "iecelts",
       "inflections": {
         "Ģenitīvs": "iecelts",
@@ -5721,8 +5719,8 @@
         "iecelts"
       ]
     },
-    "60": {
-      "id": 60,
+    "62": {
+      "id": 62,
       "representative": "2009.2",
       "inflections": {
         "Ģenitīvs": "2009.2",
@@ -5736,98 +5734,38 @@
         "2009.2"
       ]
     },
-    "68": {
-      "id": 68,
-      "representative": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
+    "61": {
+      "id": 61,
+      "representative": "( 2008.06.",
       "inflections": {
-        "Ģenitīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
-        "Datīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
-        "Akuzatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
-        "Lokatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
-        "Nominatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis"
+        "Ģenitīvs": "( 2008.06.",
+        "Datīvs": "( 2008.06.",
+        "Akuzatīvs": "( 2008.06.",
+        "Lokatīvs": "( 2008.06.",
+        "Nominatīvs": "( 2008.06."
       },
       "type": "profession",
       "aliases": [
-        "akreditācijas un metroloģijas centrs\", valdes loceklis"
+        "(2008.06."
       ]
     },
-    "69": {
-      "id": 69,
-      "representative": "2010.7.",
+    "60": {
+      "id": 60,
+      "representative": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdība",
       "inflections": {
-        "Ģenitīvs": "2010.7.",
-        "Datīvs": "2010.7.",
-        "Akuzatīvs": "2010.7.",
-        "Lokatīvs": "2010.7.",
-        "Nominatīvs": "2010.7."
-      },
-      "type": "time",
-      "aliases": [
-        "2010.7."
-      ]
-    },
-    "70": {
-      "id": 70,
-      "representative": "SIA \" Latvijas Mobilais Telefons \"",
-      "inflections": {
-        "Ģenitīvs": "SIA \" Latvijas Mobilais Telefons \"",
-        "Datīvs": "SIA \" Latvijas Mobilais Telefons \"",
-        "Akuzatīvs": "SIA \" Latvijas Mobilais Telefons \"",
-        "Lokatīvs": "SIA \" Latvijas Mobilais Telefons \"",
-        "Nominatīvs": "SIA \" Latvijas Mobilais Telefons \""
+        "Ģenitīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdības",
+        "Datīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdībai",
+        "Akuzatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdību",
+        "Lokatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdībā",
+        "Nominatīvs": "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I. Godmaņa valdība"
       },
       "type": "organization",
       "aliases": [
-        "SIA \"Latvijas Mobilais Telefons\""
+        "īpašu uzdevumu ministru Eiropas Savienības līdzekļu apguves lietās I.Godmaņa valdībā"
       ]
     },
-    "71": {
-      "id": 71,
-      "representative": "uzraudzības padomes loceklis",
-      "inflections": {
-        "Ģenitīvs": "uzraudzības padomes locekļa",
-        "Datīvs": "uzraudzības padomes loceklim",
-        "Akuzatīvs": "uzraudzības padomes locekli",
-        "Lokatīvs": "uzraudzības padomes loceklī",
-        "Nominatīvs": "uzraudzības padomes loceklis"
-      },
-      "type": "profession",
-      "aliases": [
-        "uzraudzības padomes loceklis"
-      ]
-    },
-    "64": {
-      "id": 64,
-      "representative": "2009.11",
-      "inflections": {
-        "Ģenitīvs": "2009.11",
-        "Datīvs": "2009.11",
-        "Akuzatīvs": "2009.11",
-        "Lokatīvs": "2009.11",
-        "Nominatīvs": "2009.11"
-      },
-      "type": "time",
-      "aliases": [
-        "2009.11"
-      ]
-    },
-    "65": {
-      "id": 65,
-      "representative": "padome",
-      "inflections": {
-        "Ģenitīvs": "padomes",
-        "Datīvs": "padomei",
-        "Akuzatīvs": "padomi",
-        "Lokatīvs": "padomē",
-        "Nominatīvs": "padome"
-      },
-      "type": "profession",
-      "aliases": [
-        "padomē"
-      ]
-    },
-    "66": {
-      "id": 66,
+    "68": {
+      "id": 68,
       "representative": "LMT",
       "inflections": {
         "Ģenitīvs": "LMT",
@@ -5841,8 +5779,23 @@
         "LMT"
       ]
     },
-    "67": {
-      "id": 67,
+    "69": {
+      "id": 69,
+      "representative": "2010.7",
+      "inflections": {
+        "Ģenitīvs": "2010.7",
+        "Datīvs": "2010.7",
+        "Akuzatīvs": "2010.7",
+        "Lokatīvs": "2010.7",
+        "Nominatīvs": "2010.7"
+      },
+      "type": "time",
+      "aliases": [
+        "2010.7"
+      ]
+    },
+    "70": {
+      "id": 70,
       "representative": "SIA \" Standartizācijas",
       "inflections": {
         "Ģenitīvs": "SIA \" Standartizācijas",
@@ -5856,83 +5809,83 @@
         "SIA \"Standartizācijas"
       ]
     },
-    "76": {
-      "id": 76,
-      "representative": "meklētājs",
+    "71": {
+      "id": 71,
+      "representative": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
       "inflections": {
-        "Ģenitīvs": "meklētāja",
-        "Datīvs": "meklētājam",
-        "Akuzatīvs": "meklētāju",
-        "Lokatīvs": "meklētājā",
-        "Nominatīvs": "meklētājs"
+        "Ģenitīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
+        "Datīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
+        "Akuzatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
+        "Lokatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis",
+        "Nominatīvs": "akreditācijas un metroloģijas centrs \" , valdes loceklis"
       },
       "type": "profession",
       "aliases": [
-        "meklētājs"
+        "akreditācijas un metroloģijas centrs\", valdes loceklis"
       ]
     },
-    "77": {
-      "id": 77,
-      "representative": "2011.8.",
+    "64": {
+      "id": 64,
+      "representative": "SIA \" Latvijas standarts \"",
       "inflections": {
-        "Ģenitīvs": "2011.8.",
-        "Datīvs": "2011.8.",
-        "Akuzatīvs": "2011.8.",
-        "Lokatīvs": "2011.8.",
-        "Nominatīvs": "2011.8."
-      },
-      "type": "time",
-      "aliases": [
-        "2011.8."
-      ]
-    },
-    "78": {
-      "id": 78,
-      "representative": "2011.9",
-      "inflections": {
-        "Ģenitīvs": "2011.9",
-        "Datīvs": "2011.9",
-        "Akuzatīvs": "2011.9",
-        "Lokatīvs": "2011.9",
-        "Nominatīvs": "2011.9"
-      },
-      "type": "time",
-      "aliases": [
-        "2011.9"
-      ]
-    },
-    "72": {
-      "id": 72,
-      "representative": "Madonas novada fonds",
-      "inflections": {
-        "Ģenitīvs": "Madonas novada fonda",
-        "Datīvs": "Madonas novada fondam",
-        "Akuzatīvs": "Madonas novada fondu",
-        "Lokatīvs": "Madonas novada fondā",
-        "Nominatīvs": "Madonas novada fonds"
+        "Ģenitīvs": "SIA \" Latvijas standarts \"",
+        "Datīvs": "SIA \" Latvijas standarts \"",
+        "Akuzatīvs": "SIA \" Latvijas standarts \"",
+        "Lokatīvs": "SIA \" Latvijas standarts \"",
+        "Nominatīvs": "SIA \" Latvijas standarts \""
       },
       "type": "organization",
       "aliases": [
-        "Madonas novada fonds"
+        "SIA \"Latvijas standarts\""
       ]
     },
-    "73": {
-      "id": 73,
-      "representative": "padomes loceklis",
+    "65": {
+      "id": 65,
+      "representative": "valdes loceklis",
       "inflections": {
-        "Ģenitīvs": "padomes locekļa",
-        "Datīvs": "padomes loceklim",
-        "Akuzatīvs": "padomes locekli",
-        "Lokatīvs": "padomes loceklī",
-        "Nominatīvs": "padomes loceklis"
+        "Ģenitīvs": "valdes locekļa",
+        "Datīvs": "valdes loceklim",
+        "Akuzatīvs": "valdes locekli",
+        "Lokatīvs": "valdes loceklī",
+        "Nominatīvs": "valdes loceklis"
       },
       "type": "profession",
       "aliases": [
-        "padomes loceklis"
+        "valdes locekli"
       ]
     },
-    "74": {
-      "id": 74,
+    "66": {
+      "id": 66,
+      "representative": "2009.11",
+      "inflections": {
+        "Ģenitīvs": "2009.11",
+        "Datīvs": "2009.11",
+        "Akuzatīvs": "2009.11",
+        "Lokatīvs": "2009.11",
+        "Nominatīvs": "2009.11"
+      },
+      "type": "time",
+      "aliases": [
+        "2009.11"
+      ]
+    },
+    "67": {
+      "id": 67,
+      "representative": "padome",
+      "inflections": {
+        "Ģenitīvs": "padomes",
+        "Datīvs": "padomei",
+        "Akuzatīvs": "padomi",
+        "Lokatīvs": "padomē",
+        "Nominatīvs": "padome"
+      },
+      "type": "profession",
+      "aliases": [
+        "padomē"
+      ]
+    },
+    "76": {
+      "id": 76,
       "representative": "2010.10",
       "inflections": {
         "Ģenitīvs": "2010.10",
@@ -5946,8 +5899,38 @@
         "2010.10"
       ]
     },
-    "75": {
-      "id": 75,
+    "77": {
+      "id": 77,
+      "representative": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+      "inflections": {
+        "Ģenitīvs": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Datīvs": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Akuzatīvs": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Lokatīvs": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Nominatīvs": "apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \""
+      },
+      "type": "organization",
+      "aliases": [
+        "apvienības \"Visu Latvijai!\" - \"Tēvzemei un brīvīvai/LNNK\""
+      ]
+    },
+    "78": {
+      "id": 78,
+      "representative": "2011.8",
+      "inflections": {
+        "Ģenitīvs": "2011.8",
+        "Datīvs": "2011.8",
+        "Akuzatīvs": "2011.8",
+        "Lokatīvs": "2011.8",
+        "Nominatīvs": "2011.8"
+      },
+      "type": "time",
+      "aliases": [
+        "2011.8"
+      ]
+    },
+    "79": {
+      "id": 79,
       "representative": "darbs",
       "inflections": {
         "Ģenitīvs": "darba",
@@ -5959,6 +5942,111 @@
       "type": "organization",
       "aliases": [
         "darba"
+      ]
+    },
+    "72": {
+      "id": 72,
+      "representative": "SIA \" Latvijas Mobilais Telefons \"",
+      "inflections": {
+        "Ģenitīvs": "SIA \" Latvijas Mobilais Telefons \"",
+        "Datīvs": "SIA \" Latvijas Mobilais Telefons \"",
+        "Akuzatīvs": "SIA \" Latvijas Mobilais Telefons \"",
+        "Lokatīvs": "SIA \" Latvijas Mobilais Telefons \"",
+        "Nominatīvs": "SIA \" Latvijas Mobilais Telefons \""
+      },
+      "type": "organization",
+      "aliases": [
+        "SIA \"Latvijas Mobilais Telefons\""
+      ]
+    },
+    "73": {
+      "id": 73,
+      "representative": "uzraudzības padomes loceklis",
+      "inflections": {
+        "Ģenitīvs": "uzraudzības padomes locekļa",
+        "Datīvs": "uzraudzības padomes loceklim",
+        "Akuzatīvs": "uzraudzības padomes locekli",
+        "Lokatīvs": "uzraudzības padomes loceklī",
+        "Nominatīvs": "uzraudzības padomes loceklis"
+      },
+      "type": "profession",
+      "aliases": [
+        "uzraudzības padomes loceklis"
+      ]
+    },
+    "74": {
+      "id": 74,
+      "representative": "Madonas novada fonds",
+      "inflections": {
+        "Ģenitīvs": "Madonas novada fonda",
+        "Datīvs": "Madonas novada fondam",
+        "Akuzatīvs": "Madonas novada fondu",
+        "Lokatīvs": "Madonas novada fondā",
+        "Nominatīvs": "Madonas novada fonds"
+      },
+      "type": "organization",
+      "aliases": [
+        "Madonas novada fonds"
+      ]
+    },
+    "75": {
+      "id": 75,
+      "representative": "padomes loceklis",
+      "inflections": {
+        "Ģenitīvs": "padomes locekļa",
+        "Datīvs": "padomes loceklim",
+        "Akuzatīvs": "padomes locekli",
+        "Lokatīvs": "padomes loceklī",
+        "Nominatīvs": "padomes loceklis"
+      },
+      "type": "profession",
+      "aliases": [
+        "padomes loceklis"
+      ]
+    },
+    "81": {
+      "id": 81,
+      "representative": "2011.9",
+      "inflections": {
+        "Ģenitīvs": "2011.9",
+        "Datīvs": "2011.9",
+        "Akuzatīvs": "2011.9",
+        "Lokatīvs": "2011.9",
+        "Nominatīvs": "2011.9"
+      },
+      "type": "time",
+      "aliases": [
+        "2011.9"
+      ]
+    },
+    "80": {
+      "id": 80,
+      "representative": "meklētājs",
+      "inflections": {
+        "Ģenitīvs": "meklētāja",
+        "Datīvs": "meklētājam",
+        "Akuzatīvs": "meklētāju",
+        "Lokatīvs": "meklētājā",
+        "Nominatīvs": "meklētājs"
+      },
+      "type": "profession",
+      "aliases": [
+        "meklētājs"
+      ]
+    },
+    "82": {
+      "id": 82,
+      "representative": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+      "inflections": {
+        "Ģenitīvs": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Datīvs": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Akuzatīvs": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Lokatīvs": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \"",
+        "Nominatīvs": "Nacionālās apvienības \" Visu Latvijai ! \" - \" Tēvzemei un brīvīvai / LNNK \""
+      },
+      "type": "organization",
+      "aliases": [
+        "Nacionālās apvienības \"Visu Latvijai!\" - \"Tēvzemei un brīvīvai/LNNK\""
       ]
     }
   }

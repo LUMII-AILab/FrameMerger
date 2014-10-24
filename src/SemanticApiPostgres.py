@@ -767,6 +767,14 @@ where fr_data.entityid = %s and fr.blessed is null;"
         cursor.close()        
         return map(lambda x: int(x[0]), r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
+    # Atrod entītijas, kurām nepieciešama konsolidācija
+    def get_dirty_entities(self):
+        cursor = self.api.new_cursor()
+        cursor.execute("select entityid from dirtyentities where status = 1", None)
+        r = cursor.fetchall()
+        cursor.close()        
+        return map(lambda x: int(x[0]), r) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
+
     # Atzīmē, ka entītei ar šo ID ir papildinājušies dati un pie izdevības būtu jāpārlaiž summarizācija 
     def dirtyEntity(self, entityID, processID = None):
         if entityID == 0: return
