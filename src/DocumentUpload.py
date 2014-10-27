@@ -235,6 +235,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
     else: 
         # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
         if element.entityID:
+            entities[str(element.entityID)]['source'] = 'defined in document'
             return element.entityID
 
         frameType = getFrameType(frame.type)
@@ -252,11 +253,14 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
             sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (defaultType, ))
 
         entityID = headtoken.namedEntityID 
+        if entityID:
+            entities[str(entityID)]['source'] = 'from NER'
 
         # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
         if entityID is not None and entities[str(entityID)].get('type') == 'person' and headtoken.namedEntityType == 'profession':
             phrase = entityPhraseByNER(tokenIndex, tokens)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+            entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
 
         if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
             entityID = makeEntity(entities, '_NEKONKRĒTS_', headtoken['namedEntityType'])
@@ -267,6 +271,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
             parent = tokens[headtoken.parentIndex-1]
             if headtoken.namedEntityType == parent.namedEntityType:
                 entityID = parent.namedEntityID
+                if entityID:
+                    entities[str(entityID)]['source'] = 'workaround #2 - entity from syntactic parent'
 
         # TODO - varbūt pirms koka vajadzētu uz NER robežām paskatīties? jānotestē kas dod labākus rezultātus
         # if entityID is None:
@@ -277,6 +283,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         if entityID is None: 
             phrase = entityPhraseByTree(tokenIndex, tokens)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+            entities[str(entityID)]['source'] = 'entity built from syntactic tree'
 
     headtoken['namedEntityID'] = entityID
     frames = entities[str(entityID)].get("frames")
@@ -332,7 +339,7 @@ def filterEntityNames(entities, documentdate):
         return True
 
     for e_id in entities.keys():
-        entity = entities[e_id]
+        entity = entities[e_id]        
         entity['representative'] = updateName(entity.get('representative'))
         entity['aliases'] = [updateName(alias) for alias in entity.get('aliases')]
         entity['aliases'] = list(filter(goodName, entity.get('aliases')))
@@ -357,6 +364,7 @@ def goodAlias(name):
 def fixName(name):
     fixname = re.sub('[«»“”„‟‹›〝〞〟＂]', '"', name, re.UNICODE)  # Aizvietojam pēdiņas
     fixname = re.sub("[‘’‚`‛]", "'", fixname, re.UNICODE)
+    fixname = re.sub(' /$','', fixname, re.UNICODE) # čakars ar nepareizām entītiju robežām
     return fixname
 
 #TODO - varbūt visu šo loģiku labāk SemanticApiPosgres modulī?
@@ -512,6 +520,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
             representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
             matchedEntities = api.entity_ids_by_name_list(representative)
+            print('%d : %s', len(matchedEntities), representative)
 
         if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
@@ -546,6 +555,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
             if category == 2:
                 outerId = ['JP-' + str(uuid.uuid4())]
 
+            source = 'Upload %s, %s at %s' % (documentId, entity.get('source'), datetime.datetime.now().isoformat())
+
             hidden = hideEntity(representative, entity.get('type'))
             entity['hidden'] = hidden
             if entity.get('notReallyNeeded'): # override, ja entītijai nav freimu
@@ -558,7 +569,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
                     inflections = inflectEntity(representative, entity.get('type'))
-                entity['GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, commit = False )
+                entity['GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, source=source, commit = False )
                 api.insertMention(entity['GlobalID'], documentId, locations=entity.get('locations'))
 
         else: # Ir tāda entītija, piekārtojam globālo ID

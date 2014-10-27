@@ -261,10 +261,10 @@ class SemanticApiPostgres(object):
 	# category - integer code
 	# outerids - list of unicode strings
 	# inflections - unicode string
-    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, cv_status=0, commit = True):
-        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden, cv_status) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
+    def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, cv_status=0, source = None, commit = True):
+        main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden, cv_status, source) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
-        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden, cv_status),
+        res = self.api.insert(main_sql, (name, bool(othernames), bool(outerids), category, self.api.dataset, inflections, hidden, cv_status, source),
                 returning = True,
                 commit = False)
         entityid = res # insertotās rindas id
