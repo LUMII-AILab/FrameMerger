@@ -14,5 +14,9 @@ rm package_list
 rm *.pyc
 rm src/RdfOutput.py
 rm src/README-RDF_generation
-rm smalltest.txt
-rm constest.txt
+rm -rf ./2014octMK_test
+rm cv_jsonlist.txt
+rm octtest*
+rm -rf ./entity_fixtures
+rm .DS_Store 
+rm -rf ./__pycache__

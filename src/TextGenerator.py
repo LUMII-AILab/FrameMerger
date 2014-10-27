@@ -419,13 +419,13 @@ def get_frame_data(mentioned_entities, frame):
                 kjiila = u' (ķīla - ' + elem(u'Ķīla') + u')'
 
             if elem(u'Aizdevējs') is None:
-                return laiks + elem(u'Parādnieks') + u' aizņēmās' + aizdevums + vieniibas + kjiila
+                return laiks + u' ' + elem(u'Parādnieks') + u' aizņēmās' + aizdevums + vieniibas + kjiila
             else:
                 paraadnieks = u''
                 # if elem(u'Ķīla') is not None:
                 if elem(u'Parādnieks') is not None:
                     paraadnieks = u' ' + elem(u'Parādnieks', u'Datīvs')
-                return laiks + elem(u'Aizdevējs') + u' aizdeva' + paraadnieks + aizdevums + vieniibas + kjiila
+                return laiks + u' ' + elem(u'Aizdevējs') + u' aizdeva' + paraadnieks + aizdevums + vieniibas + kjiila
 
         if frame_type == 20: # Tiesvedība
             if elem(u'Apsūdzētais') is None:
