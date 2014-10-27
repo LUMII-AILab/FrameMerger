@@ -572,6 +572,8 @@ def get_frame_data(mentioned_entities, frame):
     if not start_date:
         start_date = None #Lai nav iespējas par tukšo string vai ko tādu
 
+    # print('%s -> %s' % (date, formatdate(date)))
+    # print('%s -> %s' % (start_date, formatdate(start_date)))
     return (verbalization(), formatdate(date), formatdate(start_date))
 
 
@@ -584,38 +586,45 @@ def formatdate(date):
     # if m:
     #     return date
 
+    meeneshi = {
+        u'janvāris'  : '01',
+        u'februāris' : '02',
+        u'marts'     : '03',
+        u'aprīlis'   : '04',
+        u'maijs'     : '05',
+        u'jūnijs'    : '06',
+        u'jūlijs'    : '07',
+        u'augusts'   : '08',
+        u'septembris': '09',
+        u'oktobris'  : '10',
+        u'novembris' : '11',
+        u'decembris' : '12',
+        u'janvārī'   : '01',
+        u'februārī'  : '02',
+        u'martā'     : '03',
+        u'aprīlī'    : '04',
+        u'maijā'     : '05',
+        u'jūnijā'    : '06',
+        u'jūlijā'    : '07',
+        u'augustā'   : '08',
+        u'septembrī' : '09',
+        u'oktobrī'   : '10',
+        u'novembrī'  : '11',
+        u'decembrī'  : '12'
+        }
+
     m = re.match(r'(\d{4})\. gada (\d{1,2})\. (\w*)', date, re.UNICODE)
     if m:
-        month = {
-        'janvāris'  : '01',
-        'februāris' : '02',
-        'marts'     : '03',
-        'aprīlis'   : '04',
-        'maijs'     : '05',
-        'jūnijs'    : '06',
-        'jūlijs'    : '07',
-        'augusts'   : '08',
-        'septembris': '09',
-        'oktobris'  : '10',
-        'novembris' : '11',
-        'decembris' : '12',
-        'janvārī'   : '01',
-        'februārī'  : '02',
-        'martā'     : '03',
-        'aprīlī'    : '04',
-        'maijā'     : '05',
-        'jūnijā'    : '06',
-        'jūlijā'    : '07',
-        'augustā'   : '08',
-        'septembrī' : '09',
-        'oktobrī'   : '10',
-        'novembrī'  : '11',
-        'decembrī'  : '12'
-        }.get(m.group(3), '00')
+        month = meeneshi.get(m.group(3), '00')
         day = m.group(2)
         if len(day)==1:
             day = '0'+day
         return m.group(1) + month + day
+
+    m = re.match(r'(\d{4})\. gada (\w*)', date, re.UNICODE)
+    if m:
+        month = meeneshi.get(m.group(2), '00')
+        return m.group(1) + month + '00'
 
     m = re.match(r'( ?\d{4})', date, re.UNICODE)
     if m:
