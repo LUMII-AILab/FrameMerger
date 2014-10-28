@@ -365,6 +365,7 @@ def fixName(name):
     fixname = re.sub('[«»“”„‟‹›〝〞〟＂]', '"', name, re.UNICODE)  # Aizvietojam pēdiņas
     fixname = re.sub("[‘’‚`‛]", "'", fixname, re.UNICODE)
     fixname = re.sub(' /$','', fixname, re.UNICODE) # čakars ar nepareizām entītiju robežām
+    fixname = re.sub('_',' ', fixname, re.UNICODE) # divvārdu tokeni nāk formā kā_arī
     return fixname
 
 #TODO - varbūt visu šo loģiku labāk SemanticApiPosgres modulī?
@@ -473,7 +474,7 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
-    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name, category) 
+    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name.replace('/','%2F'), category) 
     r = requests.get(query) 
     if r.status_code != 200:
         log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
@@ -520,7 +521,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
             representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
             matchedEntities = api.entity_ids_by_name_list(representative)
-            print('%d : %s', len(matchedEntities), representative)
+            # print('%d : %s' % (len(matchedEntities), representative))
 
         if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
