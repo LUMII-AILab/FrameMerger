@@ -323,7 +323,7 @@ def get_frame_data(mentioned_entities, frame):
             elif u'andidē' in elem(u'Rezultāts'):
                 return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' kandidēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
             else:
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts + u' rezultāts: ' + elem(u'Rezultāts')
+                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts + u', rezultāts: ' + elem(u'Rezultāts')
 
         if frame_type == 14: # Atbalsts
             if elem(u'Atbalstītājs') is None or elem(u'Saņēmējs') is None:
