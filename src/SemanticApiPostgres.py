@@ -542,10 +542,10 @@ where fr_data.entityid = %s and fr.blessed is null;"
     # Pēc entītijas ID, atgriež visus summary freimus par viņu. 
     def summary_frame_data_by_id(self, entityID):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
-                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt"
+                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword"
         cursor.execute(main_sql, (entityID,))
         r = []
 
@@ -562,7 +562,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
                  # u'IsHidden':   frame.hidden,
                  # u'SentenceId': frame.sentenceid,
                  u'SourceId':   frame.sourceid,
-                 # u'TargetWord': frame.targetword,
+                 u'TargetWord': frame.targetword,
                  u'SummaryInfo': frame.summaryinfo,
                  u'FrameCnt': frame.framecnt,
             }
@@ -572,10 +572,10 @@ where fr_data.entityid = %s and fr.blessed is null;"
 
     def summary_frame_by_id(self, fr_id):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid = %s\
-                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt"
+                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword"
         cursor.execute(main_sql, (fr_id,))
         frame = cursor.fetchone()
         cursor.close()
@@ -602,7 +602,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
              # u'IsHidden':   frame.hidden,
              # u'SentenceId': frame.sentenceid,
              u'SourceId':   frame.sourceid,
-             # u'TargetWord': frame.targetword,
+             u'TargetWord': frame.targetword,
              u'SummaryInfo': frame.summaryinfo,
              u'FrameCnt': frame.framecnt,
         }
@@ -611,11 +611,11 @@ where fr_data.entityid = %s and fr.blessed is null;"
     # Pēc entītijas ID, atgriež visus blessed/anti-blessed summary freimus par viņu. 
     def blessed_summary_frame_data_by_entity_id(self, entityID):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
                       and blessed is not NULL\
-                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt"
+                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword"
         cursor.execute(main_sql, (entityID,))
         r = []
 
@@ -632,7 +632,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
                  # u'IsHidden':   frame.hidden,
                  # u'SentenceId': frame.sentenceid,
                  u'SourceId':   frame.sourceid,
-                 # u'TargetWord': frame.targetword,
+                 u'TargetWord': frame.targetword,
                  u'SummaryInfo': frame.summaryinfo,
                  u'FrameCnt': frame.framecnt,
             }

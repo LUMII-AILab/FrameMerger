@@ -138,10 +138,13 @@ def get_frame_data(mentioned_entities, frame):
             if elem(u'Mirušais') is None:
                 log.debug("Miršana bez mirēja :( %s", frame)
                 return simpleVerbalization() 
+            veids = u''
+            if elem(u'Veids') is not None:
+                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
             ceelonis = u''
-            if elem('Cēlonis') is not None:
+            if elem(u'Cēlonis') is not None:
                 ceelonis = u'. Cēlonis - ' + elem(u'Cēlonis')
-            return elem(u'Mirušais') + u" mira" + laiks + vieta + ceelonis
+            return elem(u'Mirušais') + u" mira" + laiks + vieta + veids + ceelonis
 
         if frame_type == 3: # Attiecības
             if elem(u'Partneris_1') is None or elem(u'Attiecības') is None:
@@ -184,18 +187,25 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Izglītība bez studenta :( %s", frame)
                 return simpleVerbalization()
 
-            iestaade = u''    
-            if elem(u'Iestāde') is not None:
-                iestaade = u' ' + elem(u'Iestāde', u'Lokatīvs')    
             nozare = u''    
             if elem(u'Nozare') is not None:
-                nozare = u' ' + elem(u'Nozare', u'Lokatīvs')    
+                nozare = u' nozarē/specialitātē: ' + elem(u'Nozare')    
             graads = u''    
             if elem(u'Grāds') is not None:
-                nozare = u' iegūstot ' + elem(u'Grāds', u'Akuzatīvs')    
+                graads = u' iegūstot ' + elem(u'Grāds', u'Akuzatīvs')    
 
-            # TODO - Laura ieteica šķirot pabaigšanu/nepabeigšanu pēc grāda lauka
-            return laiks + vieta + u' ' + elem(u'Students') + u' mācījās' + iestaade + nozare + graads
+            verbs = u' mācījās'
+            iestaadeslociijums = u'Lokatīvs'
+            targetword = frame.get(u'TargetWord')
+            if targetword and targetword.lower() in [u'beidzis', u'beigusi', u'absolvējis', u'absolvējusi', u'pabeidzis', u'pabeigusi'] :
+                verbs = u' pabeidza'
+                iestaadeslociijums = u'Akuzatīvs'
+
+            iestaade = u''    
+            if elem(u'Iestāde') is not None:
+                iestaade = u' ' + elem(u'Iestāde', iestaadeslociijums)    
+
+            return laiks + vieta + u' ' + elem(u'Students') + verbs + iestaade + graads + nozare
 
         if frame_type == 7: # Nodarbošanās
             if elem(u'Persona') is None or elem(u'Nodarbošanās') is None:
@@ -308,7 +318,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if not elem(u'Rezultāts'):
                 return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
-            elif u'evelē' in elem(u'Rezultāts'):
+            elif u'evēlē' in elem(u'Rezultāts'):
                 return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts 
             elif u'andidē' in elem(u'Rezultāts'):
                 return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' kandidēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
