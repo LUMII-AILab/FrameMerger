@@ -474,7 +474,7 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
-    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), name.replace('/','%2F'), category) 
+    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), urllib.quote(name.encode('utf8')), category) 
     r = requests.get(query) 
     if r.status_code != 200:
         log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
