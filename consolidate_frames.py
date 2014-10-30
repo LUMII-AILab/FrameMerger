@@ -278,7 +278,9 @@ def main():
 
     if load_all_dirty:
         entity_list = api.get_dirty_entities()
-        print(entity_list)
+        print('Consolidating %s dirty entities' % len(entity_list))
+        if len(entity_list)<100:
+            print(entity_list)
         for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
             process_entities(chunk, out_dir, api=api)
         print('All dirty entities processed')
