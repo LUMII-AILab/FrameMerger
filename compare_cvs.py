@@ -39,7 +39,7 @@ def main():
 				for nr, sentence in enumerate(old_doc.sentences):
 					new_nr = new_data.get(sentence.text)
 					if new_nr is None:
-						raise Error('Pazudis teikums %s :(' % sentence.text)
+						raise Exception('Pazudis teikums %s :(' % sentence.text)
 
 					if new_nr != nr:
 						#print('%d -> %d\t%s\n\t\t%s' % (nr, new_nr, sentence.text, new_doc.sentences[nr].text))
