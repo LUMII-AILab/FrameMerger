@@ -42,18 +42,18 @@ def main():
 						raise Exception('Pazudis teikums %s :(' % sentence.text)
 
 					if new_nr != nr:
-						#print('%d -> %d\t%s\n\t\t%s' % (nr, new_nr, sentence.text, new_doc.sentences[nr].text))
-						frameids = api.api.query('SELECT frameid FROM frames WHERE documentid = %s AND sentenceid = %s', (file[:-5], str(nr)))						
+						# print('%d -> %d\t%s\n\t\t%s' % (nr+1, new_nr+1, sentence.text, new_doc.sentences[nr].text))
+						frameids = api.api.query("SELECT f.frameid FROM frames f WHERE documentid = %s AND sentenceid = %s", (file[:-5], str(nr+1)))						
 						for frameid in frameids:
-							frameupdates.append((new_nr, frameid.frameid))
+							frameupdates.append((new_nr+1, frameid.frameid))
 
-						frameids = api.api.query('SELECT frameid FROM summaryframes WHERE documentid = %s AND sentenceid = %s', (file[:-5], str(nr)))						
+						frameids = api.api.query("SELECT f.frameid FROM summaryframes f WHERE documentid = %s AND sentenceid = %s", (file[:-5], str(nr+1)))						
 						for frameid in frameids:
-							summaryframeupdates.append((new_nr, frameid.frameid))
+							summaryframeupdates.append((new_nr+1, frameid.frameid))
 
 				counter += 1
-				# if counter > 5:
-				#  	break
+				if counter % 1000 == 0:
+					print(counter)
 
 	for params in frameupdates:
 		stuff = api.api.insert('update frames set sentenceid = %s where frameid = %s', params)
