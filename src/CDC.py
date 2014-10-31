@@ -5,6 +5,7 @@
 # (LU aģentūra "Latvijas Universitātes Matemātikas un informātikas institūts")
 #
 # All rights reserved.
+from __future__ import unicode_literals
 
 from collections import Counter
 import math
@@ -21,8 +22,8 @@ def mentionbag(entities):
 	bag = Counter()
 	for entity in entities:
 		if (entity.get('type') == 'person') or (entity.get('type') == 'organization') or (entity.get('type') == 'location'):
-			# bag.add(entity.get(u'GlobalID')) # šis ir korektāk, vienkārši uz debug laiku būs vārdi
-			bag[entity.get(u'representative')] += 1
+			# bag.add(entity.get('GlobalID')) # šis ir korektāk, vienkārši uz debug laiku būs vārdi
+			bag[entity.get('representative')] += 1
 	return bag
 
 def contextbag(entity, sentences): #TODO - šeit principā varētu ņemt nevis tikai 'tuvo' kontekstu, bet no visa dokumenta izvilkt vārdus kas raksturo tā tēmu (sports/politika/utml), bet tad vajag izdomāt kā sašķirot vārdus 'tematiskajos' un pārējos
