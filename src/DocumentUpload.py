@@ -9,7 +9,12 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import requests, json, time, datetime, re, copy, uuid, codecs, pylru, urllib
+import requests, json, time, datetime, re, copy, uuid, codecs, pylru
+try:    
+    from urllib.request import quote # For Python 3.0 and later
+except ImportError:    
+    from urllib import quote # Fall back to Python 2's urllib
+
 from collections import Counter
 from frameinfo2 import getFrameType, getElementCode, getNETypeCode, getDefaultRole, getFrameName, getElementName, getNETypeName
 #from FrameInfo import FrameInfo
@@ -474,7 +479,7 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
-    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), urllib.quote(name.encode('utf8')), category) 
+    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), quote(name.encode('utf8')), category) 
     r = requests.get(query) 
     if r.status_code != 200:
         log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
