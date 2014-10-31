@@ -115,14 +115,14 @@ def main():
                 sys.stderr.write('Problem on file: '+filename+' ... \n')
                 log.error('Problem on file: '+filename+' ... \n')
                 traceback.print_exc()
-                print filename, '\tFail:\t', e
+                print(filename, '\tFail:\t', e)
                 api.setDocProcessingStatus(docid, processID, 406)
 
         log.info("Done.")
         sys.stderr.flush()
 
     except KeyboardInterrupt:
-        print 'Interrupted!'
+        print('Interrupted!')
         log.info("Interrupted by user")
 
 # ---------------------------------------- 
