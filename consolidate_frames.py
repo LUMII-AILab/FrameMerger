@@ -278,7 +278,7 @@ def main():
     api = SemanticApiPostgres(conn) 
 
     if load_all_dirty:
-        entity_list = api.get_dirty_entities()
+        entity_list = list(api.get_dirty_entities())
         print('Consolidating %s dirty entities' % len(entity_list))
         if len(entity_list)<100:
             print(entity_list)
