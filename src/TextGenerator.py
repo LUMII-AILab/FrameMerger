@@ -153,7 +153,13 @@ def get_frame_data(mentioned_entities, frame):
 
             laiks = ''
             if elem(u'Laiks'):
-                laiks = ' no ' + elem(u'Laiks', u'Ģenitīvs')
+                laiks = u' kopš ' + elem(u'Laiks', u'Ģenitīvs')
+
+            if elem(u'Attiecības') in (u'šķīries', u'šķīrusies'):
+                text = elem(u'Partneris_1') + u' ir ' + elem(u'Attiecības')
+                if elem(u'Partneris_2'):
+                    text += u' no ' + elem(u'Partneris_2', u'Ģenitīvs')
+                return text + laiks
 
             if elem(u'Partneris_2') is None:
                 return elem(u'Partneris_1') + u' ir ' + elem(u'Attiecības') + laiks
