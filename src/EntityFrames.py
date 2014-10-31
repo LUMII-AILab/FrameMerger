@@ -7,6 +7,8 @@
 # All rights reserved.
 
 # enable logging, but default to null logger (no output)
+from __future__ import unicode_literals
+
 import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -242,10 +244,10 @@ def frame_cnt_by_value(frame_list, sample_frame):
 
 def gen_element(k, v):
     return {
-               u"Key": k,
-               u"Value": {
-                   u"Entity": v,
-                   u"PlaceInSentence": 0
+               'Key': k,
+               'Value': {
+                   'Entity': v,
+                   'PlaceInSentence': 0
                },
            }
 

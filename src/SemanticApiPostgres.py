@@ -164,7 +164,7 @@ class SemanticApiPostgres(object):
              'ApprovedTypeID': frame.approwedtypeid,
         }
 
-        frame_info[u"FrameData"] = self.frame_elements_by_id(fr_id)
+        frame_info['FrameData'] = self.frame_elements_by_id(fr_id)
 
         return frame_info
 
@@ -532,7 +532,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         relation_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
 
         # record info about Summarized raw frames
-        for raw_frame_id in frame[u"SummarizedFrames"]:
+        for raw_frame_id in frame['SummarizedFrames']:
             self.api.insert(relation_sql, (frameid, raw_frame_id) )       
 
         if commit:

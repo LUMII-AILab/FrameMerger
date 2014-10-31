@@ -7,13 +7,14 @@
 # All rights reserved.
 
 # enable logging, but default to null logger (no output)
+from __future__ import unicode_literals
+
 import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 import json, re
 from pprint import pprint
-from __future__ import unicode_literals
 
 import EntityFrames as EF
 from FrameInfo import FrameInfo
