@@ -116,7 +116,7 @@ class FrameMatrix(object):
         # FIXME - šo vajag ņemt no eksceļa pa tiešo kautkā
         frame_cnt = 26      # 0..26 = (total of 27 frames)
 
-        rows = sheet.range("B%i:L%i" % (2, 2+frame_cnt))
+        rows = sheet.iter_rows("B%i:L%i" % (2, 2+frame_cnt))
         for row in rows:
             self.frame_types.append(row[0].value)
             self.frame_elements.append([cell.value for cell in row[1:]])
@@ -125,12 +125,12 @@ class FrameMatrix(object):
         # check that prev. row is empty
         matrix2_pos = 30 # FIXME - šo arī jāņemo no exceļa, savādāk salūzt ar citu datukopu
 
-        empty_line2 = sheet.range("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1))[0]
+        empty_line2 = sheet.iter_rows("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1))[0]
         if not all(cell.value is None for cell in empty_line2):
             raise Exception("Row %i (before the data table) must be empty.")
 
         # read matrix2
-        rows = sheet.range("B%i:L%i" % (matrix2_pos, matrix2_pos+frame_cnt))
+        rows = sheet.iter_rows("B%i:L%i" % (matrix2_pos, matrix2_pos+frame_cnt))
         for (pos, row) in enumerate(rows):
             if row[0].value != self.frame_types[pos]:
                 raise Exception("Frame name mismatch in reading Matrix #2 - '%s' vs '%s' at row %d" % (row[0].value, self.frame_types[pos], pos))
@@ -189,7 +189,7 @@ def test_access_cells(sheet):
     print()
 
     # access a cell range
-    range = sheet.range("B2:L26")
+    range = sheet.iter_rows("B2:L26")
     for row in range:
         print("\t".join(cell.value for cell in row))
 
