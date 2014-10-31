@@ -125,7 +125,7 @@ class FrameMatrix(object):
         # check that prev. row is empty
         matrix2_pos = 30 # FIXME - šo arī jāņemo no exceļa, savādāk salūzt ar citu datukopu
 
-        empty_line2 = sheet.iter_rows("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1))[0]
+        empty_line2 = sheet.iter_rows("B%i:L%i" % (matrix2_pos-1, matrix2_pos-1)).next()
         if not all(cell.value is None for cell in empty_line2):
             raise Exception("Row %i (before the data table) must be empty.")
 
@@ -188,7 +188,7 @@ def test_access_cells(sheet):
     print(sheet.cell(row = 2, column = 1).value)
     print()
 
-    # access a cell range
+    # access a cell rangeF
     range = sheet.iter_rows("B2:L26")
     for row in range:
         print("\t".join(cell.value for cell in row))
