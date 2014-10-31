@@ -229,15 +229,15 @@ def entityPhraseByNER(tokenIndex, tokens):
 # Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id
 # ja tādas entītijas nav, tad pievieno jaunu sarakstam
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
-    if int(tokenIndex) > len(tokens):
+    # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
+    if element.entityID:
+        entities[str(element.entityID)]['source'] = 'defined in document'
+        return element.entityID
+
+    if tokenIndex > len(tokens):
         log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
         return 0
     else: 
-        # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
-        if element.entityID:
-            entities[str(element.entityID)]['source'] = 'defined in document'
-            return element.entityID
-
         frameType = getFrameType(frame.type)
         elementCode = getElementCode(frameType, element.name)
         defaultType = getDefaultRole(frameType, elementCode)
