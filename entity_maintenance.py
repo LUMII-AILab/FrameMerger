@@ -206,9 +206,9 @@ def reinflect_entities():
 
 
 def clear_db():
-    if api_conn_info["dbname"] != 'accept_test':
-        print "Error: clearing allowed only for accept_test"
-        quit()
+    # if api_conn_info["dbname"] != 'accept_test':
+    #     print "Error: clearing allowed only for accept_test"
+    #     quit()
 
     sql = """
 -- Izdzēšam visus neblesotos freimus

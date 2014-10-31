@@ -7,6 +7,7 @@
 # All rights reserved.
 
 from __future__ import print_function
+from __future__ import unicode_literals
 
 # enable logging, but default to null logger (no output)
 import logging
@@ -149,18 +150,18 @@ class SemanticApiPostgres(object):
             fdatetime = fdatetime.isoformat(" ") + "Z"      # fix date format to match JSON API
 
         frame_info = {
-             u'DocumentId': frame.documentid,   
-             u'FrameData':  None,        # no frame element info queried yet
-             u'FrameId':    frame.frameid,
-             u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
-             u'FrameType':  frame.frametypeid,
-             u'IsBlessed':  frame.blessed,
-             u'IsDeleted':  frame.deleted,
-             u'IsHidden':   frame.hidden,
-             u'SentenceId': frame.sentenceid,
-             u'SourceId':   frame.sourceid,
-             u'TargetWord': frame.targetword,
-             u'ApprovedTypeID': frame.approwedtypeid,
+             'DocumentId': frame.documentid,   
+             'FrameData':  None,        # no frame element info queried yet
+             'FrameId':    frame.frameid,
+             'FrameMetadata': [{'Key': 'Fdatetime', 'Value': fdatetime}],
+             'FrameType':  frame.frametypeid,
+             'IsBlessed':  frame.blessed,
+             'IsDeleted':  frame.deleted,
+             'IsHidden':   frame.hidden,
+             'SentenceId': frame.sentenceid,
+             'SourceId':   frame.sourceid,
+             'TargetWord': frame.targetword,
+             'ApprovedTypeID': frame.approwedtypeid,
         }
 
         frame_info[u"FrameData"] = self.frame_elements_by_id(fr_id)
@@ -182,8 +183,8 @@ class SemanticApiPostgres(object):
 
         for item in res:
             elem_list.append({
-                u'Key': item.roleid, 
-                u'Value': {u'Entity': item.entityid, u'PlaceInSentence': item.wordindex}
+                'Key': item.roleid, 
+                'Value': {'Entity': item.entityid, 'PlaceInSentence': item.wordindex}
             })
 
         return elem_list
@@ -219,15 +220,15 @@ class SemanticApiPostgres(object):
             return None
 
         entity_info = {
-            u'Category': res.category,
-            u'EntityId': res.entityid,
-            u'Name': res.name,
+            'Category': res.category,
+            'EntityId': res.entityid,
+            'Name': res.name,
         }
 
         if alldata:
-            entity_info[u'NameInflections'] = res.nameinflections
-            entity_info[u'OtherName'] = [item for item in res.aliases if item != res.name]
-            entity_info[u'OuterId'] = [res.ids,]    # FIXME: vai entītei var būt vairāki ["OuterId"] ? ja jā, change the query
+            entity_info['NameInflections'] = res.nameinflections
+            entity_info['OtherName'] = [item for item in res.aliases if item != res.name]
+            entity_info['OuterId'] = [res.ids,]    # FIXME: vai entītei var būt vairāki ["OuterId"] ? ja jā, change the query
 
         return entity_info 
 
@@ -552,19 +553,19 @@ where fr_data.entityid = %s and fr.blessed is null;"
         for frame in cursor.fetchall():            
 
             frame_info = {
-                 # u'DocumentId': frame.documentid,   
-                 u'FrameData':  frame.elements,
-                 u'FrameId':    frame.frameid,
-                 # u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
-                 u'FrameType':  frame.frametypeid,
-                 u'Blessed':  frame.blessed,
-                 # u'IsDeleted':  frame.deleted,
-                 # u'IsHidden':   frame.hidden,
-                 # u'SentenceId': frame.sentenceid,
-                 u'SourceId':   frame.sourceid,
-                 u'TargetWord': frame.targetword,
-                 u'SummaryInfo': frame.summaryinfo,
-                 u'FrameCnt': frame.framecnt,
+                 # 'DocumentId': frame.documentid,   
+                 'FrameData':  frame.elements,
+                 'FrameId':    frame.frameid,
+                 # 'FrameMetadata': [{'Key': 'Fdatetime', 'Value': fdatetime}],
+                 'FrameType':  frame.frametypeid,
+                 'Blessed':  frame.blessed,
+                 # 'IsDeleted':  frame.deleted,
+                 # 'IsHidden':   frame.hidden,
+                 # 'SentenceId': frame.sentenceid,
+                 'SourceId':   frame.sourceid,
+                 'TargetWord': frame.targetword,
+                 'SummaryInfo': frame.summaryinfo,
+                 'FrameCnt': frame.framecnt,
             }
             r.append(frame_info)
         cursor.close()
@@ -587,24 +588,24 @@ where fr_data.entityid = %s and fr.blessed is null;"
         elem_list = []
         for item in frame.elements:
             elem_list.append({
-                u'Key': item.get(u'roleid'), 
-                u'Value': {u'Entity': item.get(u'entityid'), u'PlaceInSentence': item.get(u'wordindex')}
+                'Key': item.get('roleid'), 
+                'Value': {'Entity': item.get('entityid'), 'PlaceInSentence': item.get('wordindex')}
             })  
 
         return {
-             # u'DocumentId': frame.documentid,   
-             u'FrameData':  elem_list,
-             u'FrameId':    frame.frameid,
-             # u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
-             u'FrameType':  frame.frametypeid,
-             u'Blessed':  frame.blessed,
-             # u'IsDeleted':  frame.deleted,
-             # u'IsHidden':   frame.hidden,
-             # u'SentenceId': frame.sentenceid,
-             u'SourceId':   frame.sourceid,
-             u'TargetWord': frame.targetword,
-             u'SummaryInfo': frame.summaryinfo,
-             u'FrameCnt': frame.framecnt,
+             # 'DocumentId': frame.documentid,   
+             'FrameData':  elem_list,
+             'FrameId':    frame.frameid,
+             # 'FrameMetadata': [{'Key': 'Fdatetime', 'Value': fdatetime}],
+             'FrameType':  frame.frametypeid,
+             'Blessed':  frame.blessed,
+             # 'IsDeleted':  frame.deleted,
+             # 'IsHidden':   frame.hidden,
+             # 'SentenceId': frame.sentenceid,
+             'SourceId':   frame.sourceid,
+             'TargetWord': frame.targetword,
+             'SummaryInfo': frame.summaryinfo,
+             'FrameCnt': frame.framecnt,
         }
 
 
@@ -622,19 +623,19 @@ where fr_data.entityid = %s and fr.blessed is null;"
         for frame in cursor.fetchall():            
 
             frame_info = {
-                 # u'DocumentId': frame.documentid,   
-                 u'FrameData':  frame.elements,
-                 u'FrameId':    frame.frameid,
-                 # u'FrameMetadata': [{u'Key': u'Fdatetime', u'Value': fdatetime}],
-                 u'FrameType':  frame.frametypeid,
-                 u'Blessed':  frame.blessed,
-                 # u'IsDeleted':  frame.deleted,
-                 # u'IsHidden':   frame.hidden,
-                 # u'SentenceId': frame.sentenceid,
-                 u'SourceId':   frame.sourceid,
-                 u'TargetWord': frame.targetword,
-                 u'SummaryInfo': frame.summaryinfo,
-                 u'FrameCnt': frame.framecnt,
+                 # 'DocumentId': frame.documentid,   
+                 'FrameData':  frame.elements,
+                 'FrameId':    frame.frameid,
+                 # 'FrameMetadata': [{'Key': 'Fdatetime', 'Value': fdatetime}],
+                 'FrameType':  frame.frametypeid,
+                 'Blessed':  frame.blessed,
+                 # 'IsDeleted':  frame.deleted,
+                 # 'IsHidden':   frame.hidden,
+                 # 'SentenceId': frame.sentenceid,
+                 'SourceId':   frame.sourceid,
+                 'TargetWord': frame.targetword,
+                 'SummaryInfo': frame.summaryinfo,
+                 'FrameCnt': frame.framecnt,
             }
             r.append(frame_info)
         cursor.close()
