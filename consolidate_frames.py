@@ -24,6 +24,7 @@ from ConsolidateFrames import BaseConsolidator
 from FrameInfo import FrameInfo
 
 from TextGenerator import get_mentioned_entities, get_frame_data
+from __future__ import unicode_literals
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
@@ -104,57 +105,57 @@ def valid_frame(frame):
             continue
 
     if frame_type == 0: # Dzimšana
-        if u'Bērns' not in roles: return False
+        if 'Bērns' not in roles: return False
     if frame_type == 1: # Vecums
-        if u'Persona' not in roles: return False
-        if u'Vecums' not in roles: return False
+        if 'Persona' not in roles: return False
+        if 'Vecums' not in roles: return False
     if frame_type == 2: # Miršana
-        if u'Mirušais' not in roles: return False
+        if 'Mirušais' not in roles: return False
     if frame_type == 3: # Attiecības
-        #if (u'Partneris_1' not in roles or u'Partneris_2' not in roles) and u'Partneri' not in roles: return False
+        #if ('Partneris_1' not in roles or 'Partneris_2' not in roles) and 'Partneri' not in roles: return False
         # Pielikām abstraktas attiecības ("Jānis ir precējies"), un tad Partneris_2 ir optional
-        if u'Partneris_1' not in roles and u'Partneri' not in roles: return False
-        if u'Attiecības' not in roles: return False
+        if 'Partneris_1' not in roles and 'Partneri' not in roles: return False
+        if 'Attiecības' not in roles: return False
     if frame_type == 4: # Vārds alternatīvais
-        if u'Vārds' not in roles: return False
-        if u'Entītija' not in roles: return False
+        if 'Vārds' not in roles: return False
+        if 'Entītija' not in roles: return False
     if frame_type == 5: # Dzīvesvieta
-        if u'Rezidents' not in roles: return False  
-        if u'Vieta' not in roles: return False
+        if 'Rezidents' not in roles: return False  
+        if 'Vieta' not in roles: return False
     if frame_type == 6: # Izglītība    
-        if u'Students' not in roles: return False  
+        if 'Students' not in roles: return False  
     if frame_type == 7: # Nodarbošanās
-        if u'Persona' not in roles: return False  
-        if u'Nodarbošanās' not in roles: return False  
+        if 'Persona' not in roles: return False  
+        if 'Nodarbošanās' not in roles: return False  
     if frame_type == 8: # Izcelsme
-        if u'Persona' not in roles: return False  
+        if 'Persona' not in roles: return False  
     if frame_type in (9,10,11): # Amats, Darba sākums, Darba Beigas
-        if u'Darbinieks' not in roles: return False
+        if 'Darbinieks' not in roles: return False
     if frame_type == 12: # Dalība
-        if u'Biedrs' not in roles: return False  
-        if u'Organizācija' not in roles: return False  
+        if 'Biedrs' not in roles: return False  
+        if 'Organizācija' not in roles: return False  
     if frame_type == 13: # Vēlēšanas
-        if u'Dalībnieks' not in roles: return False  
+        if 'Dalībnieks' not in roles: return False  
     if frame_type == 14: # Atbalsts
-        if u'Atbalstītājs' not in roles: return False  
-        if u'Saņēmējs' not in roles: return False  
+        if 'Atbalstītājs' not in roles: return False  
+        if 'Saņēmējs' not in roles: return False  
     if frame_type == 15: # Dibināšana
-        if u'Organizācija' not in roles: return False  
+        if 'Organizācija' not in roles: return False  
     if frame_type == 16: # Piedalīšanās
-        if u'Notikums' not in roles: return False  
+        if 'Notikums' not in roles: return False  
     if frame_type == 17: # Finanses
-        if u'Organizācija' not in roles: return False  
+        if 'Organizācija' not in roles: return False  
     if frame_type == 18: # Īpašums
-        if u'Īpašums' not in roles: return False  
-        if u'Īpašnieks' not in roles: return False  
+        if 'Īpašums' not in roles: return False  
+        if 'Īpašnieks' not in roles: return False  
     if frame_type == 19: # Parāds
-        if u'Parādnieks' not in roles and u'Aizdevējs' not in roles: return False  
+        if 'Parādnieks' not in roles and 'Aizdevējs' not in roles: return False  
     if frame_type == 22: # Sasniegums
-        if u'Sasniegums' not in roles: return False  
+        if 'Sasniegums' not in roles: return False  
     if frame_type == 23: # Ziņošana
-        if u'Ziņa' not in roles: return False  
+        if 'Ziņa' not in roles: return False  
     if frame_type == 25: # Zīmols
-        if u'Organizācija' not in roles: return False  
+        if 'Organizācija' not in roles: return False  
 
     return True 
 

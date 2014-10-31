@@ -13,6 +13,7 @@ log.addHandler(logging.NullHandler())
 
 import json, re
 from pprint import pprint
+from __future__ import unicode_literals
 
 import EntityFrames as EF
 from FrameInfo import FrameInfo
@@ -68,7 +69,7 @@ def fetch_all_entities(mentioned_entities, api):
 # Izveidot smuku aprakstu freimam
 def get_frame_data(mentioned_entities, frame):
 
-    def elem(role, case=u'Nominatīvs'):
+    def elem(role, case='Nominatīvs'):
         if not role in roles or roles[role] is None:
             return None
         try:
@@ -107,425 +108,425 @@ def get_frame_data(mentioned_entities, frame):
 
         # Tipiskās vispārīgās lomas
         # FIXME - šausmīga atkārtošanās sanāk...
-        laiks = u''
-        if elem(u'Laiks') is not None:
-            laiks = u' ' + elem(u'Laiks',u'Lokatīvs') # ' 2002. gadā'
+        laiks = ''
+        if elem('Laiks') is not None:
+            laiks = ' ' + elem('Laiks','Lokatīvs') # ' 2002. gadā'
 
-        vieta = u''
-        if elem(u'Vieta') is not None:
-            vieta = u' ' + elem(u'Vieta',u'Lokatīvs') # ' Ķemeros'
+        vieta = ''
+        if elem('Vieta') is not None:
+            vieta = ' ' + elem('Vieta','Lokatīvs') # ' Ķemeros'
 
-        statuss = u''
-        if elem(u'Statuss') is not None:
-            statuss = u' ' + elem(u'Statuss')  
+        statuss = ''
+        if elem('Statuss') is not None:
+            statuss = ' ' + elem('Statuss')  
 
         if frame_type == 0: # Dzimšana
-            if elem(u'Bērns') is None:
+            if elem('Bērns') is None:
                 log.debug("Dzimšana bez bērna :( %s", frame)
                 return simpleVerbalization()
-            radinieki = u''    
-            if elem(u'Radinieki') is not None:
-                radinieki = u' ' + elem(u'Radinieki',u'Lokatīvs')
-            return elem(u'Bērns') + u" piedzima" + laiks + vieta + radinieki
+            radinieki = ''    
+            if elem('Radinieki') is not None:
+                radinieki = ' ' + elem('Radinieki','Lokatīvs')
+            return elem('Bērns') + ' piedzima' + laiks + vieta + radinieki
 
         if frame_type == 1: # Vecums
-            if elem(u'Persona') is None or elem(u'Vecums') is None:
+            if elem('Persona') is None or elem('Vecums') is None:
                 log.debug("Vecums bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
-            return elem(u'Persona', u'Ģenitīvs') + u" vecums ir " + elem(u'Vecums')
+            return elem('Persona', 'Ģenitīvs') + ' vecums ir ' + elem('Vecums')
 
         if frame_type == 2: # Miršana
-            if elem(u'Mirušais') is None:
+            if elem('Mirušais') is None:
                 log.debug("Miršana bez mirēja :( %s", frame)
                 return simpleVerbalization() 
-            veids = u''
-            if elem(u'Veids') is not None:
-                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
-            ceelonis = u''
-            if elem(u'Cēlonis') is not None:
-                ceelonis = u'. Cēlonis - ' + elem(u'Cēlonis')
-            return elem(u'Mirušais') + u" mira" + laiks + vieta + veids + ceelonis
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+            ceelonis = ''
+            if elem('Cēlonis') is not None:
+                ceelonis = '. Cēlonis - ' + elem('Cēlonis')
+            return elem('Mirušais') + ' mira' + laiks + vieta + veids + ceelonis
 
         if frame_type == 3: # Attiecības
-            if elem(u'Partneris_1') is None or elem(u'Attiecības') is None:
+            if elem('Partneris_1') is None or elem('Attiecības') is None:
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
             laiks = ''
-            if elem(u'Laiks'):
-                laiks = u' kopš ' + elem(u'Laiks', u'Ģenitīvs')
+            if elem('Laiks'):
+                laiks = ' kopš ' + elem('Laiks', 'Ģenitīvs')
 
-            if elem(u'Attiecības') in (u'šķīries', u'šķīrusies'):
-                text = elem(u'Partneris_1') + u' ir ' + elem(u'Attiecības')
-                if elem(u'Partneris_2'):
-                    text += u' no ' + elem(u'Partneris_2', u'Ģenitīvs')
+            if elem('Attiecības') in ('šķīries', 'šķīrusies'):
+                text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
+                if elem('Partneris_2'):
+                    text += ' no ' + elem('Partneris_2', 'Ģenitīvs')
                 return text + laiks
 
-            if elem(u'Partneris_2') is None:
-                return elem(u'Partneris_1') + u' ir ' + elem(u'Attiecības') + laiks
+            if elem('Partneris_2') is None:
+                return elem('Partneris_1') + ' ir ' + elem('Attiecības') + laiks
             # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
             else:
-                return elem(u'Partneris_1', u'Ģenitīvs') + u' ' + elem(u'Attiecības') + u' ir ' + elem(u'Partneris_2') + laiks
+                return elem('Partneris_1', 'Ģenitīvs') + ' ' + elem('Attiecības') + ' ir ' + elem('Partneris_2') + laiks
 
         if frame_type == 4: # Vārds alternatīvais
-            if elem(u'Vārds') is None or elem(u'Entītija') is None:
+            if elem('Vārds') is None or elem('Entītija') is None:
                 log.debug("Cits nosaukums bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
-            if elem(u'Tips') is None:
-                return elem(u'Entītija') + u" saukts arī par " + elem(u'Vārds')
+            if elem('Tips') is None:
+                return elem('Entītija') + ' saukts arī par ' + elem('Vārds')
             else:
-                return elem(u'Entītija', u'Ģenitīvs') + u" " + elem(u'Tips') + u" ir " + elem(u'Vārds')
+                return elem('Entītija', 'Ģenitīvs') + ' ' + elem('Tips') + ' ir ' + elem('Vārds')
 
         if frame_type == 5: # Dzīvesvieta
-            if elem(u'Rezidents') is None or elem(u'Vieta') is None:
+            if elem('Rezidents') is None or elem('Vieta') is None:
                 log.debug("Dzīvesvieta bez minimālā komplekta :(%s", frame)
                 return simpleVerbalization()
 
-            biezhums = u''
+            biezhums = ''
             if elem('Biežums') is not None:
-                biezhums = u' ' + elem(u'Biežums')
+                biezhums = ' ' + elem('Biežums')
 
-            return laiks + u' ' + elem(u'Rezidents') + biezhums + u' uzturējās' + vieta
+            return laiks + ' ' + elem('Rezidents') + biezhums + ' uzturējās' + vieta
 
         if frame_type == 6: # Izglītība    
-            if elem(u'Students') is None:
+            if elem('Students') is None:
                 log.debug("Izglītība bez studenta :( %s", frame)
                 return simpleVerbalization()
 
-            nozare = u''    
-            if elem(u'Nozare') is not None:
-                nozare = u' nozarē/specialitātē: ' + elem(u'Nozare')    
-            graads = u''    
-            if elem(u'Grāds') is not None:
-                graads = u' iegūstot ' + elem(u'Grāds', u'Akuzatīvs')    
+            nozare = ''    
+            if elem('Nozare') is not None:
+                nozare = ' nozarē/specialitātē: ' + elem('Nozare')    
+            graads = ''    
+            if elem('Grāds') is not None:
+                graads = ' iegūstot ' + elem('Grāds', 'Akuzatīvs')    
 
-            verbs = u' mācījās'
-            iestaadeslociijums = u'Lokatīvs'
-            targetword = frame.get(u'TargetWord')
-            if targetword and targetword.lower() in [u'beidzis', u'beigusi', u'absolvējis', u'absolvējusi', u'pabeidzis', u'pabeigusi'] :
-                verbs = u' pabeidza'
-                iestaadeslociijums = u'Akuzatīvs'
+            verbs = ' mācījās'
+            iestaadeslociijums = 'Lokatīvs'
+            targetword = frame.get('TargetWord')
+            if targetword and targetword.lower() in ['beidzis', 'beigusi', 'absolvējis', 'absolvējusi', 'pabeidzis', 'pabeigusi'] :
+                verbs = ' pabeidza'
+                iestaadeslociijums = 'Akuzatīvs'
 
-            iestaade = u''    
-            if elem(u'Iestāde') is not None:
-                iestaade = u' ' + elem(u'Iestāde', iestaadeslociijums)    
+            iestaade = ''    
+            if elem('Iestāde') is not None:
+                iestaade = ' ' + elem('Iestāde', iestaadeslociijums)    
 
-            return laiks + vieta + u' ' + elem(u'Students') + verbs + iestaade + graads + nozare
+            return laiks + vieta + ' ' + elem('Students') + verbs + iestaade + graads + nozare
 
         if frame_type == 7: # Nodarbošanās
-            if elem(u'Persona') is None or elem(u'Nodarbošanās') is None:
+            if elem('Persona') is None or elem('Nodarbošanās') is None:
                 log.debug("Nodarbošanās bez pašas nodarbošanās vai dalībnieka :( %s", frame)
                 return simpleVerbalization()
 
-            return laiks + u' ' + elem(u'Persona') + u" ir" + statuss + u' ' + elem(u'Nodarbošanās')
+            return laiks + ' ' + elem('Persona') + ' ir' + statuss + ' ' + elem('Nodarbošanās')
 
         if frame_type == 8: # Izcelsme
-            if elem(u'Persona') is None:
+            if elem('Persona') is None:
                 log.debug("Izcelsme bez personas :( %s", frame)
                 return simpleVerbalization()
 
-            if elem(u'Tautība') is not None:
-                return elem(u'Persona') + u' ir ' + elem(u'Tautība')
+            if elem('Tautība') is not None:
+                return elem('Persona') + ' ir ' + elem('Tautība')
 
-            if elem(u'Izcelsme') is not None:
-                return elem(u'Persona') + u' nāk no ' + elem(u'Izcelsme', u'Ģenitīvs') #TODO - jānočeko cik labi iet kopā ar reālajām izcelsmēm
+            if elem('Izcelsme') is not None:
+                return elem('Persona') + ' nāk no ' + elem('Izcelsme', 'Ģenitīvs') #TODO - jānočeko cik labi iet kopā ar reālajām izcelsmēm
 
             log.debug("Izcelsme bez izcelsmes :( %s", frame)
             return simpleVerbalization()
 
         if frame_type == 9: # Amats
-            if elem(u'Darbinieks') is None:
+            if elem('Darbinieks') is None:
                 log.debug("Amats bez darbinieka :( %s", frame)
                 return simpleVerbalization()
 
-            if elem(u'Sākums') is not None:
-                laiks = laiks + u' no ' + elem(u'Sākums', u'Ģenitīvs') # ' 2002. gadā no janvāra'
-            if elem(u'Beigas') is not None:
-                laiks = laiks + u' līdz ' + elem(u'Beigas', u'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
-            darbavieta = u''
-            if elem(u'Darbavieta') is not None:
-                darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
-            amats = u''
-            if elem(u'Amats') is not None:
-                amats = u' ' + elem(u'Amats',u'Ģenitīvs') + u' amatā'
+            if elem('Sākums') is not None:
+                laiks = laiks + ' no ' + elem('Sākums', 'Ģenitīvs') # ' 2002. gadā no janvāra'
+            if elem('Beigas') is not None:
+                laiks = laiks + ' līdz ' + elem('Beigas', 'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
+            darbavieta = ''
+            if elem('Darbavieta') is not None:
+                darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
+            amats = ''
+            if elem('Amats') is not None:
+                amats = ' ' + elem('Amats','Ģenitīvs') + ' amatā'
 
-            return laiks + u' ' + elem(u'Darbinieks') + u' bija' + statuss + amats + darbavieta + vieta
+            return laiks + ' ' + elem('Darbinieks') + ' bija' + statuss + amats + darbavieta + vieta
 
         if frame_type == 10: # Darba sākums
-            if elem(u'Darbinieks') is None:
+            if elem('Darbinieks') is None:
                 log.debug("Darba sākums bez darbinieka :( %s", frame)
                 return simpleVerbalization()
 
-            darbavieta = u''
-            if elem(u'Darbavieta') is not None:
-                darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
-            veids = u''
-            if elem(u'Veids') is not None:
-                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
-            amats = u''
-            ieprieksh = u''
-            if elem(u'Iepriekšējais_darbinieks') is not None:
-                ieprieksh = u'. Iepriekš amatā bija ' + elem(u'Iepriekšējais_darbinieks')
+            darbavieta = ''
+            if elem('Darbavieta') is not None:
+                darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+            amats = ''
+            ieprieksh = ''
+            if elem('Iepriekšējais_darbinieks') is not None:
+                ieprieksh = '. Iepriekš amatā bija ' + elem('Iepriekšējais_darbinieks')
 
-            if elem(u'Darba_devējs') is not None:
-                if elem(u'Amats') is not None:
-                    amats = u' ' + elem(u'Amats', u'Ģenitīvs') + u' amatā'
-                return laiks + u' ' + elem(u'Darba_devējs') + veids + u' iecēla ' + elem(u'Darbinieks', u'Akuzatīvs') + amats + darbavieta + vieta + ieprieksh
+            if elem('Darba_devējs') is not None:
+                if elem('Amats') is not None:
+                    amats = ' ' + elem('Amats', 'Ģenitīvs') + ' amatā'
+                return laiks + ' ' + elem('Darba_devējs') + veids + ' iecēla ' + elem('Darbinieks', 'Akuzatīvs') + amats + darbavieta + vieta + ieprieksh
             else:
-                if elem(u'Amats') is not None:
-                    amats = u' kļuva par ' + elem(u'Amats', u'Akuzatīvs')
+                if elem('Amats') is not None:
+                    amats = ' kļuva par ' + elem('Amats', 'Akuzatīvs')
                 else:
-                    amats = u' sāka strādāt'
-                return laiks + u' ' + elem(u'Darbinieks') + veids + amats + darbavieta + vieta + ieprieksh
+                    amats = ' sāka strādāt'
+                return laiks + ' ' + elem('Darbinieks') + veids + amats + darbavieta + vieta + ieprieksh
 
         if frame_type == 11: # Darba beigas
-            if elem(u'Darbinieks') is None:
+            if elem('Darbinieks') is None:
                 log.debug("Darba beigas bez darbinieka :( %s", frame)
                 return simpleVerbalization()
 
-            darbavieta = u''
-            if elem(u'Darbavieta') is not None:
-                darbavieta = u' ' + elem(u'Darbavieta', u'Lokatīvs')
-            veids = u''
-            if elem(u'Veids') is not None:
-                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
-            amats = u''
-            naakamais = u''
-            if elem(u'Nākamais_darbinieks') is not None:
-                naakamais = u'. Turpmāk šo amatu veiks ' + elem(u'Nākamais_darbinieks')
+            darbavieta = ''
+            if elem('Darbavieta') is not None:
+                darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+            amats = ''
+            naakamais = ''
+            if elem('Nākamais_darbinieks') is not None:
+                naakamais = '. Turpmāk šo amatu veiks ' + elem('Nākamais_darbinieks')
 
-            if elem(u'Darba_devējs') is not None:
-                if elem(u'Amats') is not None:
-                    amats = u' no ' + elem(u'Amats', u'Ģenitīvs') + u' amata'
-                return laiks + u' ' + elem(u'Darba_devējs') + veids + u' atcēla ' + elem(u'Darbinieks', u'Akuzatīvs') + amats + darbavieta + vieta + naakamais
+            if elem('Darba_devējs') is not None:
+                if elem('Amats') is not None:
+                    amats = ' no ' + elem('Amats', 'Ģenitīvs') + ' amata'
+                return laiks + ' ' + elem('Darba_devējs') + veids + ' atcēla ' + elem('Darbinieks', 'Akuzatīvs') + amats + darbavieta + vieta + naakamais
             else:
-                if elem(u'Amats') is not None:
-                    amats = elem(u'Amats', u'Ģenitīvs') + u' amatu'
-                return laiks + u' ' + elem(u'Darbinieks') + veids + u' atstāja ' + amats + darbavieta + vieta + naakamais
+                if elem('Amats') is not None:
+                    amats = elem('Amats', 'Ģenitīvs') + ' amat'
+                return laiks + ' ' + elem('Darbinieks') + veids + ' atstāja ' + amats + darbavieta + vieta + naakamais
 
         if frame_type == 12: # Dalība
-            if elem(u'Biedrs') is None or elem(u'Organizācija') is None:
+            if elem('Biedrs') is None or elem('Organizācija') is None:
                 log.debug("Dalība bez biedra vai organizācijas :( %s", frame)
                 return simpleVerbalization()
 
-            return laiks + u' ' + elem(u'Biedrs') + u' ir ' + statuss + u' ' + elem(u'Organizācija', u'Lokatīvs') 
+            return laiks + ' ' + elem('Biedrs') + ' ir ' + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
 
         if frame_type == 13: # Vēlēšanas
-            if elem(u'Dalībnieks') is None or elem(u'Vēlēšanas') is None:
+            if elem('Dalībnieks') is None or elem('Vēlēšanas') is None:
                 log.debug("Vēlēšanas bez dalībnieka vai vēlēšanām :( %s", frame)
                 return simpleVerbalization()
-            amats = u''
-            if elem(u'Amats') is not None:
-                amats = u' par ' + elem(u'Amats', u'Akuzatīvs')
-            saraksts = u''
-            if elem(u'Uzvarētājs') is not None: # Te mums ir hack - uzvarētāja laukā liek sarakstu
-                saraksts = u' no saraksta ' + elem(u'Uzvarētājs')
+            amats = ''
+            if elem('Amats') is not None:
+                amats = ' par ' + elem('Amats', 'Akuzatīvs')
+            saraksts = ''
+            if elem('Uzvarētājs') is not None: # Te mums ir hack - uzvarētāja laukā liek sarakstu
+                saraksts = ' no saraksta ' + elem('Uzvarētājs')
 
-            if not elem(u'Rezultāts'):
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
-            elif u'evēlē' in elem(u'Rezultāts'):
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Akuzatīvs') + u' ievēlēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts 
-            elif u'andidē' in elem(u'Rezultāts'):
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' kandidēja' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts
+            if not elem('Rezultāts'):
+                return laiks + vieta + ' ' + elem('Dalībnieks', 'Nominatīvs') + ' piedalījās' + amats + ' ' + elem('Vēlēšanas', 'Lokatīvs') + saraksts
+            elif 'evēlē' in elem('Rezultāts'):
+                return laiks + vieta + ' ' + elem('Dalībnieks', 'Akuzatīvs') + ' ievēlēja' + amats + ' ' + elem('Vēlēšanas', 'Lokatīvs') + saraksts 
+            elif 'andidē' in elem('Rezultāts'):
+                return laiks + vieta + ' ' + elem('Dalībnieks', 'Nominatīvs') + ' kandidēja' + amats + ' ' + elem('Vēlēšanas', 'Lokatīvs') + saraksts
             else:
-                return laiks + vieta + u' ' + elem(u'Dalībnieks', u'Nominatīvs') + u' piedalījās' + amats + u' ' + elem(u'Vēlēšanas', u'Lokatīvs') + saraksts + u', rezultāts: ' + elem(u'Rezultāts')
+                return laiks + vieta + ' ' + elem('Dalībnieks', 'Nominatīvs') + ' piedalījās' + amats + ' ' + elem('Vēlēšanas', 'Lokatīvs') + saraksts + ', rezultāts: ' + elem('Rezultāts')
 
         if frame_type == 14: # Atbalsts
-            if elem(u'Atbalstītājs') is None or elem(u'Saņēmējs') is None:
+            if elem('Atbalstītājs') is None or elem('Saņēmējs') is None:
                 log.debug("Atbalsts bez dalībnieka vai saņēmēja :( %s", frame)
                 return simpleVerbalization()
 
-            atbalsts = u''
-            if elem(u'Tēma') is not None:
-                amats = u', atbalsta forma - ' + elem(u'Tēma')
+            atbalsts = ''
+            if elem('Tēma') is not None:
+                amats = ', atbalsta forma - ' + elem('Tēma')
 
-            return atbalsts + elem(u'Atbalstītājs') + u' atbalstīja ' + elem(u'Saņēmējs', u'Akuzatīvs') + atbalsts
+            return atbalsts + elem('Atbalstītājs') + ' atbalstīja ' + elem('Saņēmējs', 'Akuzatīvs') + atbalsts
 
         if frame_type == 15: # Dibināšana
-            if elem(u'Organizācija') is None:
+            if elem('Organizācija') is None:
                 log.debug("Dibināšana bez dibinātā :( %s", frame)
                 return simpleVerbalization()
-            veids = u''
-            if elem(u'Veids') is not None:
-                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
-            nozare = u''
-            if elem(u'Nozare') is not None:
-                nozare = u', kuras nozare ir ' + elem(u'Nozare')
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+            nozare = ''
+            if elem('Nozare') is not None:
+                nozare = ', kuras nozare ir ' + elem('Nozare')
 
-            if elem(u'Dibinātājs') is not None:
-                return laiks + vieta + u' ' + elem(u'Dibinātājs') + veids + u' dibināja ' + elem(u'Organizācija', u'Akuzatīvs') + nozare
+            if elem('Dibinātājs') is not None:
+                return laiks + vieta + ' ' + elem('Dibinātājs') + veids + ' dibināja ' + elem('Organizācija', 'Akuzatīvs') + nozare
             else:
-                return elem(u'Organizācija') + u' ir dibināta ' + laiks + vieta + veids + nozare
+                return elem('Organizācija') + ' ir dibināta ' + laiks + vieta + veids + nozare
 
         if frame_type == 16: # Piedalīšanās
-            if elem(u'Notikums') is None:
+            if elem('Notikums') is None:
                 log.debug("Piedalīšanās bez notikuma :( %s", frame)
                 return simpleVerbalization()
-            veids = u''
-            if elem(u'Veids') is not None:
-                veids = u' ' + elem(u'Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
 
-            if elem(u'Dalībnieks') is not None:
-                org = u''
-                if elem(u'Organizētājs') is not None:
-                    org = u', kuru organizēja ' + elem(u'Organizētājs')
-                return laiks + vieta + elem(u'Dalībnieks') + veids + u' piedalījās' + elem(u'Notikums', u'Akuzatīvs') + org
+            if elem('Dalībnieks') is not None:
+                org = ''
+                if elem('Organizētājs') is not None:
+                    org = ', kuru organizēja ' + elem('Organizētājs')
+                return laiks + vieta + elem('Dalībnieks') + veids + ' piedalījās' + elem('Notikums', 'Akuzatīvs') + org
             else:
-                if elem(u'Organizētājs') is not None:
-                    return laiks + vieta + u' ' + elem(u'Organizētājs') + veids + u' organizēja ' + elem(u'Notikums', u'Akuzatīvs')
+                if elem('Organizētājs') is not None:
+                    return laiks + vieta + ' ' + elem('Organizētājs') + veids + ' organizēja ' + elem('Notikums', 'Akuzatīvs')
                 else:
-                    return laiks + vieta + u' ' + veids + u' notika ' + elem(u'Notikums', u'Akuzatīvs')
+                    return laiks + vieta + ' ' + veids + ' notika ' + elem('Notikums', 'Akuzatīvs')
                 
         if frame_type == 17: # Finanses
-            if elem(u'Organizācija') is None:
+            if elem('Organizācija') is None:
                 log.debug("Finanses bez organizācijas :( %s", frame)
                 return simpleVerbalization()
 
-            avots = u''
-            if elem(u'Avots') is not None:
-                avots = u', ienākumu avots - ' + elem(u'Avots')
+            avots = ''
+            if elem('Avots') is not None:
+                avots = ', ienākumu avots - ' + elem('Avots')
 
-            vieniibas = u''
-            if elem(u'Vienības') is not None:
-                vieniibas = u' ' + elem(u'Vienības')
+            vieniibas = ''
+            if elem('Vienības') is not None:
+                vieniibas = ' ' + elem('Vienības')
 
             #TODO - pieaugumam nav parauga īsti
-            pieaugums = u''
-            if elem(u'Pieaugums') is not None:
-                pieaugums = u', izmainoties par ' + elem(u'Pieaugums', u'Akuzatīvs')
+            pieaugums = ''
+            if elem('Pieaugums') is not None:
+                pieaugums = ', izmainoties par ' + elem('Pieaugums', 'Akuzatīvs')
 
-            if elem(u'Ienākumi') is not None:
-                if elem(u'Peļņa') is not None: # ir abi divi
-                    return laiks + elem(u'Organizācija', u'Ģenitīvs') + u' apgrozījums bija ' + elem(u'Ienākumi') + u', bet peļņa - ' + elem(u'Peļņa') + vieniibas + pieaugums + avots 
+            if elem('Ienākumi') is not None:
+                if elem('Peļņa') is not None: # ir abi divi
+                    return laiks + elem('Organizācija', 'Ģenitīvs') + ' apgrozījums bija ' + elem('Ienākumi') + ', bet peļņa - ' + elem('Peļņa') + vieniibas + pieaugums + avots 
                 else: # tikai ienākumi
-                    return elem(u'Organizācija', u'Ģenitīvs') + u' apgrozījums' + laiks + u' bija ' + elem(u'Ienākumi') + vieniibas + pieaugums + avots 
+                    return elem('Organizācija', 'Ģenitīvs') + ' apgrozījums' + laiks + ' bija ' + elem('Ienākumi') + vieniibas + pieaugums + avots 
             else:
-                if elem(u'Peļņa') is not None: # tikai peļņa
-                    return elem(u'Organizācija', u'Ģenitīvs') + u' peļņa' + laiks + u' bija ' + elem(u'Peļņa') + vieniibas + pieaugums + avots 
+                if elem('Peļņa') is not None: # tikai peļņa
+                    return elem('Organizācija', 'Ģenitīvs') + ' peļņa' + laiks + ' bija ' + elem('Peļņa') + vieniibas + pieaugums + avots 
                 else: #hmm, ne viens ne otrs... FIXME, nezinu vispār vai te ko var darī†
                     log.debug("Finanses bez peļņas vai apgrozījuma ;( %s", frame)
-                    return elem(u'Organizācija', u'Ģenitīvs') + u' finanses' + laiks + u' bija ' + vieniibas + pieaugums + avots 
+                    return elem('Organizācija', 'Ģenitīvs') + ' finanses' + laiks + ' bija ' + vieniibas + pieaugums + avots 
 
         if frame_type == 18: # Īpašums
-            if elem(u'Īpašnieks') is None or elem(u'Īpašums') is None:
+            if elem('Īpašnieks') is None or elem('Īpašums') is None:
                 log.debug("Īpašuma freims bez īpašnieka vai paša īpašuma :( %s", frame)
                 return simpleVerbalization()
 
-            if elem(u'Daļa') is None:
-                return laiks + u' ' + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Īpašums')
+            if elem('Daļa') is None:
+                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Īpašums')
             else:
-                return laiks + u' ' + elem(u'Īpašnieks', u'Datīvs') + u' pieder ' + elem(u'Daļa') + u' no ' + elem(u'Īpašums', u'Ģenitīvs')
+                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Daļa') + ' no ' + elem('Īpašums', 'Ģenitīvs')
 
         if frame_type == 19: # Parāds
-            if elem(u'Parādnieks') is None and elem(u'Aizdevējs') is None:
+            if elem('Parādnieks') is None and elem('Aizdevējs') is None:
                 log.debug("Parādam nav ne aizdevēja ne parādnieka :( %s", frame)
                 return simpleVerbalization()    
 
-            aizdevums = u''
-            if elem(u'Aizdevums') is not None:
-                aizdevums = u' ' + elem(u'Aizdevums', u'Akuzatīvs')
+            aizdevums = ''
+            if elem('Aizdevums') is not None:
+                aizdevums = ' ' + elem('Aizdevums', 'Akuzatīvs')
 
-            vieniibas = u''
-            if elem(u'Vienības') is not None:
-                vieniibas = u' ' + elem(u'Vienības')
+            vieniibas = ''
+            if elem('Vienības') is not None:
+                vieniibas = ' ' + elem('Vienības')
 
-            kjiila = u''
-            if elem(u'Ķīla') is not None:
-                kjiila = u' (ķīla - ' + elem(u'Ķīla') + u')'
+            kjiila = ''
+            if elem('Ķīla') is not None:
+                kjiila = ' (ķīla - ' + elem('Ķīla') + ')'
 
-            if elem(u'Aizdevējs') is None:
-                return laiks + u' ' + elem(u'Parādnieks') + u' aizņēmās' + aizdevums + vieniibas + kjiila
+            if elem('Aizdevējs') is None:
+                return laiks + ' ' + elem('Parādnieks') + ' aizņēmās' + aizdevums + vieniibas + kjiila
             else:
-                paraadnieks = u''
-                # if elem(u'Ķīla') is not None:
-                if elem(u'Parādnieks') is not None:
-                    paraadnieks = u' ' + elem(u'Parādnieks', u'Datīvs')
-                return laiks + u' ' + elem(u'Aizdevējs') + u' aizdeva' + paraadnieks + aizdevums + vieniibas + kjiila
+                paraadnieks = ''
+                # if elem('Ķīla') is not None:
+                if elem('Parādnieks') is not None:
+                    paraadnieks = ' ' + elem('Parādnieks', 'Datīvs')
+                return laiks + ' ' + elem('Aizdevējs') + ' aizdeva' + paraadnieks + aizdevums + vieniibas + kjiila
 
         if frame_type == 20: # Tiesvedība
-            if elem(u'Apsūdzētais') is None:
+            if elem('Apsūdzētais') is None:
                 log.debug("Tiesvedība bez apsūdzētā :( %s", frame)  #FIXME - teorētiski varētu arī būt teikums kur ir tikai prasītājs kas apsūdz kādu nekonkrētu
                 return simpleVerbalization()  
 
-            tiesa = u''
-            if elem(u'Tiesa') is not None:
-                tiesa = u' ' + elem(u'Tiesa', u'Lokatīvs')
-            apsuudziiba = u''
-            if elem(u'Apsūdzība') is not None:
-                apsuudziiba = u', apsūdzība - ' + elem(u'Apsūdzība')
-            advokaats = u''
-            if elem(u'Advokāts') is not None:
-                advokaats = u', advokāts - ' + elem(u'Advokāts')
-            tiesnesis = u''
-            if elem(u'Tiesnesis') is not None:
-                tiesnesis = u', tiesnesis - ' + elem(u'Tiesnesis')
+            tiesa = ''
+            if elem('Tiesa') is not None:
+                tiesa = ' ' + elem('Tiesa', 'Lokatīvs')
+            apsuudziiba = ''
+            if elem('Apsūdzība') is not None:
+                apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība')
+            advokaats = ''
+            if elem('Advokāts') is not None:
+                advokaats = ', advokāts - ' + elem('Advokāts')
+            tiesnesis = ''
+            if elem('Tiesnesis') is not None:
+                tiesnesis = ', tiesnesis - ' + elem('Tiesnesis')
 
-            return laiks + vieta + tiesa + u' lieta pret ' + elem(u'Apsūdzētais', u'Akuzatīvs') + apsuudziiba + advokaats + tiesnesis
+            return laiks + vieta + tiesa + ' lieta pret ' + elem('Apsūdzētais', 'Akuzatīvs') + apsuudziiba + advokaats + tiesnesis
 
         # 21 - uzbrukums... TODO, pagaidām nav sampļu pietiekami
 
         if frame_type == 22: # Sasniegums
-            if elem(u'Sasniegums') is None:
+            if elem('Sasniegums') is None:
                 log.debug("Sasniegums bez sasnieguma :( %s", frame)
                 return simpleVerbalization()
 
-            sacensiibas = u''
-            if elem(u'Sacensības') is not None:
-                sacensiibas = u' ' + elem(u'Sacensības', u'Lokatīvs')
-            org = u''
-            if elem(u'Organizētājs') is not None:
-                org = u', kuru organizēja ' + elem(u'Organizētājs') + ','
-            daliibnieks = u''
-            if elem(u'Dalībnieks') is not None:
-                daliibnieks = u' ' + elem(u'Dalībnieks')
-            rangs = u''
-            if elem(u'Rangs') is not None:
-                rangs = u' par ' + elem(u'Rangs')
-            rezultaats = u''
-            if elem(u'Rezultāts') is not None:
-                rangs = u' ar rezultātu ' + elem(u'Rezultāts')
-            citi = u''
-            if elem(u'Pretinieks') is not None:
-                citi = u'. Citi pretendenti: ' + elem(u'Pretinieks')
+            sacensiibas = ''
+            if elem('Sacensības') is not None:
+                sacensiibas = ' ' + elem('Sacensības', 'Lokatīvs')
+            org = ''
+            if elem('Organizētājs') is not None:
+                org = ', kuru organizēja ' + elem('Organizētājs') + ','
+            daliibnieks = ''
+            if elem('Dalībnieks') is not None:
+                daliibnieks = ' ' + elem('Dalībnieks')
+            rangs = ''
+            if elem('Rangs') is not None:
+                rangs = ' par ' + elem('Rangs')
+            rezultaats = ''
+            if elem('Rezultāts') is not None:
+                rangs = ' ar rezultātu ' + elem('Rezultāts')
+            citi = ''
+            if elem('Pretinieks') is not None:
+                citi = '. Citi pretendenti: ' + elem('Pretinieks')
 
-            return laiks + vieta + sacensiibas + org + daliibnieks + u' ieguva ' + elem(u'Sasniegums', u'Akuzatīvs') + rangs + rezultaats + citi
+            return laiks + vieta + sacensiibas + org + daliibnieks + ' ieguva ' + elem('Sasniegums', 'Akuzatīvs') + rangs + rezultaats + citi
 
         if frame_type == 23: # Ziņošana
-            if elem(u'Ziņa') is None:
+            if elem('Ziņa') is None:
                 log.debug("Ziņošana bez ziņas :( %s", frame)
                 return simpleVerbalization() 
 
-            avots = u''
-            if elem(u'Avots') is not None:
-                avots = u' ' + elem(u'Avots')
-            autors = u''
-            if elem(u'Autors') is not None:
-                autors = u' ' + elem(u'Autors')
+            avots = ''
+            if elem('Avots') is not None:
+                avots = ' ' + elem('Avots')
+            autors = ''
+            if elem('Autors') is not None:
+                autors = ' ' + elem('Autors')
 
-            return laiks + avots + autors + u' informē: ' + elem(u'Ziņa')
+            return laiks + avots + autors + ' informē: ' + elem('Ziņa')
 
         # 24 - Publiskais iepirkums ... TODO, pagaidām nav sampļu pietiekami
 
         if frame_type == 25: # Zīmols
-            if elem(u'Organizācija') is None or (elem(u'Zīmols') is None and elem(u'Produkts') is None):
+            if elem('Organizācija') is None or (elem('Zīmols') is None and elem('Produkts') is None):
                 log.debug("Zīmols bez īpašnieka vai paša zīmola :( %s", frame)
                 return simpleVerbalization() 
 
-            produkts = u''
-            if elem(u'Produkts') is not None:
-                produkts = u' ' + elem(u'Produkts')
-            ziimols = u''
-            if elem(u'Zīmols') is not None:
-                ziimols = u' ' + elem(u'Zīmols')
+            produkts = ''
+            if elem('Produkts') is not None:
+                produkts = ' ' + elem('Produkts')
+            ziimols = ''
+            if elem('Zīmols') is not None:
+                ziimols = ' ' + elem('Zīmols')
 
-            if elem(u'Produkts') is not None:
-                return elem(u'Organizācija') + u' piedāvā:' + produkts + ziimols
+            if elem('Produkts') is not None:
+                return elem('Organizācija') + ' piedāvā:' + produkts + ziimols
             else:
-                return elem(u'Organizācija', u'Ģenitīvs') + u' populārs zīmols:' + ziimols
+                return elem('Organizācija', 'Ģenitīvs') + ' populārs zīmols:' + ziimols
 
         if frame_type == 26: # Nestrukturēts
-            return elem(u'Īpašība', u'Nelocīts')
+            return elem('Īpašība', 'Nelocīts')
 
         # ja nekas nav atrasts
         # log.debug("Nemācējām apstrādāt %s", frame)
@@ -555,32 +556,32 @@ def get_frame_data(mentioned_entities, frame):
                     nameInflections = json.loads(nameInflections) # Workaround izčakarētiem datiem, kur šis dict ir lieki vēlreiz noeskeipots un ielikts datubāzē kā string
                 roles[role] = nameInflections
             except Exception as e:
-                log.exception(u'Slikti inflectioni entītijai %s: "%s"\n%s', element["Value"]["Entity"], entity["NameInflections"], str(e))
+                log.exception('Slikti inflectioni entītijai %s: "%s"\n%s', element["Value"]["Entity"], entity["NameInflections"], str(e))
             if not isinstance(roles[role], dict):
-                log.exception(u'Slikti inflectioni entītijai %s: "%s"', element["Value"]["Entity"], entity["NameInflections"])
+                log.exception('Slikti inflectioni entītijai %s: "%s"', element["Value"]["Entity"], entity["NameInflections"])
                 roles[role] = None
 
         # fallback: no inflection info available
         if not roles[role]:
             # log.debug('Entītija %s bez locījumiem', entity)  # zinam jau ka tādas ir CV datos
             roles[role] = { # Fallback, lai ir vismaz kautkādi apraksti
-                u'Nominatīvs': entity[u'Name'],
-                u'Ģenitīvs': entity[u'Name'],
-                u'Datīvs': entity[u'Name'],
-                u'Akuzatīvs': entity[u'Name'],
-                u'Lokatīvs': entity[u'Name']}
+                'Nominatīvs': entity['Name'],
+                'Ģenitīvs': entity['Name'],
+                'Datīvs': entity['Name'],
+                'Akuzatīvs': entity['Name'],
+                'Lokatīvs': entity['Name']}
 
-        roles[role][u'Nelocīts'] = entity[u'Name']
+        roles[role]['Nelocīts'] = entity['Name']
 
 
     #---- datumu atrašana
-    date = elem(u'Laiks')
+    date = elem('Laiks')
     start_date = None
     if frame_type in [9]: # Amats
-        if elem(u'Sākums'):
-            start_date = elem(u'Sākums')
-        if elem(u'Beigas'):
-            date = elem(u'Beigas')
+        if elem('Sākums'):
+            start_date = elem('Sākums')
+        if elem('Beigas'):
+            date = elem('Beigas')
     if date and '-' in date:
         parts = date.split('-')
         start_date = parts[0]
@@ -603,30 +604,30 @@ def formatdate(date):
     #     return date
 
     meeneshi = {
-        u'janvāris'  : '01',
-        u'februāris' : '02',
-        u'marts'     : '03',
-        u'aprīlis'   : '04',
-        u'maijs'     : '05',
-        u'jūnijs'    : '06',
-        u'jūlijs'    : '07',
-        u'augusts'   : '08',
-        u'septembris': '09',
-        u'oktobris'  : '10',
-        u'novembris' : '11',
-        u'decembris' : '12',
-        u'janvārī'   : '01',
-        u'februārī'  : '02',
-        u'martā'     : '03',
-        u'aprīlī'    : '04',
-        u'maijā'     : '05',
-        u'jūnijā'    : '06',
-        u'jūlijā'    : '07',
-        u'augustā'   : '08',
-        u'septembrī' : '09',
-        u'oktobrī'   : '10',
-        u'novembrī'  : '11',
-        u'decembrī'  : '12'
+        'janvāris'  : '01',
+        'februāris' : '02',
+        'marts'     : '03',
+        'aprīlis'   : '04',
+        'maijs'     : '05',
+        'jūnijs'    : '06',
+        'jūlijs'    : '07',
+        'augusts'   : '08',
+        'septembris': '09',
+        'oktobris'  : '10',
+        'novembris' : '11',
+        'decembris' : '12',
+        'janvārī'   : '01',
+        'februārī'  : '02',
+        'martā'     : '03',
+        'aprīlī'    : '04',
+        'maijā'     : '05',
+        'jūnijā'    : '06',
+        'jūlijā'    : '07',
+        'augustā'   : '08',
+        'septembrī' : '09',
+        'oktobrī'   : '10',
+        'novembrī'  : '11',
+        'decembrī'  : '12'
         }
 
     m = re.match(r'(\d{4})\. gada (\d{1,2})\. (\w*)', date, re.UNICODE)
