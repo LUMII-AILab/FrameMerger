@@ -229,7 +229,7 @@ def entityPhraseByNER(tokenIndex, tokens):
 # Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id
 # ja tādas entītijas nav, tad pievieno jaunu sarakstam
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
-    if tokenIndex > len(tokens):
+    if int(tokenIndex) > len(tokens):
         log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
         return 0
     else: 
