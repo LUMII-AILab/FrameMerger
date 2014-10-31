@@ -5,6 +5,7 @@
 # (LU aģentūra "Latvijas Universitātes Matemātikas un informātikas institūts")
 #
 # All rights reserved.
+from __future__ import unicode_literals
 
 import sys
 sys.path.append("./src")
@@ -24,7 +25,6 @@ from ConsolidateFrames import BaseConsolidator
 from FrameInfo import FrameInfo
 
 from TextGenerator import get_mentioned_entities, get_frame_data
-from __future__ import unicode_literals
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
