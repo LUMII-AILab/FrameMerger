@@ -44,7 +44,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
 
     if realUpload: 
         api.cleanupDB(document.id) # iztīram šī dokumenta ID agrāk ielasītos neblesotos raw-frames
-        blessed_sentences = api.doc_blessed_frame_sentences(document.id) # paskatamies, kas šim dokumenta ID ir blesots bijis
+        blessed_sentences = set(api.doc_blessed_frame_sentences(document.id)) # paskatamies, kas šim dokumenta ID ir blesots bijis
 
     sentences = document.sentences
     entities = document.namedEntities
