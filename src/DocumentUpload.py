@@ -27,7 +27,7 @@ import logging as log
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
