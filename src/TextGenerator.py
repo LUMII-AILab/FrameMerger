@@ -456,6 +456,9 @@ def get_frame_data(mentioned_entities, frame):
             apsuudziiba = ''
             if elem('Apsūdzība') is not None:
                 apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība')
+            prasiitaajs = ''
+            if elem('Prasītājs') is not None:
+                prasiitaajs = ', prasītājs - ' + elem('Prasītājs')
             advokaats = ''
             if elem('Advokāts') is not None:
                 advokaats = ', advokāts - ' + elem('Advokāts')
@@ -463,7 +466,8 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Tiesnesis') is not None:
                 tiesnesis = ', tiesnesis - ' + elem('Tiesnesis')
 
-            return laiks + vieta + tiesa + ' lieta pret ' + elem('Apsūdzētais', 'Akuzatīvs') + apsuudziiba + advokaats + tiesnesis
+
+            return laiks + vieta + tiesa + ' lieta pret ' + elem('Apsūdzētais', 'Akuzatīvs') + apsuudziiba + prasiitaajs + advokaats + tiesnesis
 
         # 21 - uzbrukums... TODO, pagaidām nav sampļu pietiekami
 
