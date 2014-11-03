@@ -551,8 +551,10 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 inflections = inflectEntity(representative, entity.get('type'))             
                 inflections = json.loads(inflections)
                 entity['inflections'] = inflections
-                representative = inflections.get('Nominatīvs')
-                insertalias = list(set(inflections.values()))                
+                insertalias = set(inflections.values())
+                insertalias.add(representative)
+                insertalias = list(insertalias)
+                representative = inflections.get('Nominatīvs')                
 
             category = getNETypeCode(entity.get('type'))
             outerId = [] # Organizācijām un personām pieliekam random UUID
@@ -684,7 +686,7 @@ def buildGlobalEntityBags(globalID, api=api):
             # if (defaultroletype == 'person') or (defaultroletype == 'organization') or (defaultroletype == 'location'):
             #     mentionbag.add(entityID)   
             entity = api.entity_data_by_id(entityID, False)
-            if entity['Category'] <= 3 and entityID != globalID: # 1=location 2=organization 3=person
+            if entity and entity['Category'] <= 3 and entityID != globalID: # 1=location 2=organization 3=person
                 mentionbag[entity.get('Name')] += 1
 
     for fact in api.entity_text_facts(globalID): # Analogs freima tipa #26 datiem, tikai atsevišķa tabula pēc 2014 struktūras izmaiņām
