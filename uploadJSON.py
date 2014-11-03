@@ -80,6 +80,9 @@ def main():
             filename = filename.strip()
             if filename.endswith('.DS_Store'): # ar Mac menedžējot testadatus, vislaik ievazājas :(
                 continue
+            if filename.endswith('.json') and filename.startswith('entities_'): # CV pārveidošanas ģenerētie saraksti ar "core" entītijām
+                log.info('Skipping file %s' % filename)
+                continue                
 
             if not os.path.isabs(filename):
                 filename = os.path.join(basedir, filename)
