@@ -27,7 +27,7 @@ import logging as log
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
@@ -479,7 +479,7 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
-    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), quote(name.encode('utf8')), category) 
+    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), quote(name.encode('utf8')).replace('/','%2F'), category) 
     r = requests.get(query) 
     if r.status_code != 200:
         log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
@@ -553,8 +553,9 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 entity['inflections'] = inflections
                 insertalias = set(inflections.values())
                 insertalias.add(representative)
-                insertalias = list(insertalias)
-                representative = inflections.get('Nominatīvs')                
+                insertalias = list(insertalias)   
+                if entity.get('type') != 'descriptor':              
+                    representative = inflections.get('Nominatīvs')                
 
             category = getNETypeCode(entity.get('type'))
             outerId = [] # Organizācijām un personām pieliekam random UUID
@@ -576,7 +577,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                     inflections = json.dumps(entity.get('inflections'), ensure_ascii=False)
                 else:
                     # Ja NER nav iedevis, tad uzprasam lai webserviss izloka pašu atrasto
-                    inflections = inflectEntity(representative, entity.get('type'))
+                    inflections = inflectEntity(representative, entity.get('type'))                
                 entity['GlobalID'] = api.insertEntity(representative, insertalias, category, outerId, inflections, hidden, source=source, commit = False )
                 api.insertMention(entity['GlobalID'], documentId, locations=entity.get('locations'))
 
