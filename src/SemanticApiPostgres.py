@@ -147,7 +147,7 @@ class SemanticApiPostgres(object):
 
         fdatetime = frame.fdatetime
         if fdatetime is not None:
-            fdatetime = fdatetime.isoformat(" ") + "Z"      # fix date format to match JSON API
+            fdatetime = fdatetime.isoformat(b' ') + "Z"      # fix date format to match JSON API
 
         frame_info = {
              'DocumentId': frame.documentid,   

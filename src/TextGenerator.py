@@ -163,6 +163,12 @@ def get_frame_data(mentioned_entities, frame):
                     text += ' no ' + elem('Partneris_2', 'Ģenitīvs')
                 return text + laiks
 
+            if elem('Attiecības') in ('precējies', 'precējusies'):
+                text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
+                if elem('Partneris_2'):
+                    text += ' ar ' + elem('Partneris_2', 'Akuzatīvs')
+                return text + laiks
+
             if elem('Partneris_2') is None:
                 return elem('Partneris_1') + ' ir ' + elem('Attiecības') + laiks
             # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
