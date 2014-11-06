@@ -85,8 +85,8 @@ def invalid_frame(frame):
     return not valid_frame(frame)
 
 def valid_frame(frame):
-    # if frame.get('Blessed') == True:
-    #     return True # Ja jau blesots, tad viss ok
+    if frame.get('Blessed') == True:
+        return True # Ja jau blesots, tad viss ok
 
     if len(frame["FrameData"]) < 2:
         return False  # Ja tikai 1 elements, tad fakta reāli nav
@@ -103,6 +103,8 @@ def valid_frame(frame):
             # api.setEntityProcessingStatus(entity_list, processID, 406) # nevalīdi dati - trūkst entītes
             api.setEntityProcessingStatus([int(element["Value"]["Entity"])], processID, 406) # nevalīdi dati - trūkst entītes
             continue
+
+    return True # FIXME - Gunta doma, ka šeit nevajag labot, ja jālabo, tad pie datu avota
 
     if frame_type == 0: # Dzimšana
         if 'Bērns' not in roles: return False
