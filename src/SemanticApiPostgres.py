@@ -20,6 +20,8 @@ import atexit
 
 from pprint import pprint
 
+py   = sys.version_info
+py3k = py >= (3, 0, 0)
 
 # no FAQ - lai simbolus atgriež kā python unicode tipu
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
@@ -147,7 +149,7 @@ class SemanticApiPostgres(object):
 
         fdatetime = frame.fdatetime
         if fdatetime is not None:
-            fdatetime = fdatetime.isoformat(b' ') + "Z"      # fix date format to match JSON API
+            fdatetime = fdatetime.isoformat(' ' if py3k else b' ') + "Z"      # fix date format to match JSON API
 
         frame_info = {
              'DocumentId': frame.documentid,   
