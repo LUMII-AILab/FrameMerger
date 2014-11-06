@@ -20,6 +20,7 @@ import atexit
 
 from pprint import pprint
 
+import sys
 py   = sys.version_info
 py3k = py >= (3, 0, 0)
 
