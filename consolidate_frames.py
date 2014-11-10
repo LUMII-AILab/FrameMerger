@@ -152,8 +152,8 @@ def valid_frame(frame):
         if 'Īpašnieks' not in roles: return False  
     if frame_type == 19: # Parāds
         if 'Parādnieks' not in roles and 'Aizdevējs' not in roles: return False  
-    if frame_type == 22: # Sasniegums
-        if 'Sasniegums' not in roles: return False  
+    # if frame_type == 22: # Sasniegums
+    #     if 'Sasniegums' not in roles: return False  
     if frame_type == 23: # Ziņošana
         if 'Ziņa' not in roles: return False  
     if frame_type == 25: # Zīmols

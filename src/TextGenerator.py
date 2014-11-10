@@ -194,6 +194,9 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Biežums') is not None:
                 biezhums = ' ' + elem('Biežums')
 
+            if elem('Rezidents', 'Kategorija') == 2: # Organizācija
+                return laiks + ' ' + elem('Rezidents') + biezhums + ' atrodas' + vieta
+
             return laiks + ' ' + elem('Rezidents') + biezhums + ' uzturējās' + vieta
 
         if frame_type == 6: # Izglītība    
@@ -225,6 +228,9 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Persona') is None or elem('Nodarbošanās') is None:
                 log.debug("Nodarbošanās bez pašas nodarbošanās vai dalībnieka :( %s", frame)
                 return simpleVerbalization()
+
+            if elem('Persona', 'Kategorija') == 2: # Organizācija
+                return laiks + ' ' + elem('Persona') + ' nozare : ' + statuss + ' ' + elem('Nodarbošanās', 'Nelocīts')
 
             return laiks + ' ' + elem('Persona') + ' ir' + statuss + ' ' + elem('Nodarbošanās')
 
@@ -526,7 +532,7 @@ def get_frame_data(mentioned_entities, frame):
 
             produkts = ''
             if elem('Produkts') is not None:
-                produkts = ' ' + elem('Produkts')
+                produkts = ' ' + elem('Produkts', 'Nelocīts')
             ziimols = ''
             if elem('Zīmols') is not None:
                 ziimols = ' ' + elem('Zīmols')
@@ -583,6 +589,7 @@ def get_frame_data(mentioned_entities, frame):
                 'Lokatīvs': entity['Name']}
 
         roles[role]['Nelocīts'] = entity['Name']
+        roles[role]['Kategorija'] = entity['Category']
 
 
     #---- datumu atrašana
