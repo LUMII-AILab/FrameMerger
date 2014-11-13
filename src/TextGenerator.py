@@ -315,7 +315,7 @@ def get_frame_data(mentioned_entities, frame):
                 return laiks + ' ' + elem('Darba_devējs') + veids + ' atcēla ' + elem('Darbinieks', 'Akuzatīvs') + amats + darbavieta + vieta + naakamais
             else:
                 if elem('Amats') is not None:
-                    amats = elem('Amats', 'Ģenitīvs') + ' amat'
+                    amats = elem('Amats', 'Ģenitīvs') + ' amatu'
                 return laiks + ' ' + elem('Darbinieks') + veids + ' atstāja ' + amats + darbavieta + vieta + naakamais
 
         if frame_type == 12: # Dalība
