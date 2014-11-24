@@ -128,6 +128,7 @@ def get_frame_data(mentioned_entities, frame):
             radinieki = ''    
             if elem('Radinieki') is not None:
                 radinieki = ' ' + elem('Radinieki','Lokatīvs')
+
             return elem('Bērns') + ' piedzima' + laiks + vieta + radinieki
 
         if frame_type == 1: # Vecums
@@ -146,6 +147,10 @@ def get_frame_data(mentioned_entities, frame):
             ceelonis = ''
             if elem('Cēlonis') is not None:
                 ceelonis = '. Cēlonis - ' + elem('Cēlonis')
+
+            if elem('Mirušais', 'Kategorija') == 2: # Organizācija
+                return elem('Mirušais') + ' likvidēta' + laiks + vieta + veids + ceelonis
+
             return elem('Mirušais') + ' mira' + laiks + vieta + veids + ceelonis
 
         if frame_type == 3: # Attiecības
@@ -153,27 +158,23 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
-            laiks = ''
-            if elem('Laiks'):
-                laiks = ' kopš ' + elem('Laiks', 'Ģenitīvs')
-
             if elem('Attiecības') in ('šķīries', 'šķīrusies'):
                 text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
                 if elem('Partneris_2'):
                     text += ' no ' + elem('Partneris_2', 'Ģenitīvs')
-                return text + laiks
+                return laiks + ' ' + text
 
             if elem('Attiecības') in ('precējies', 'precējusies'):
                 text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
                 if elem('Partneris_2'):
                     text += ' ar ' + elem('Partneris_2', 'Akuzatīvs')
-                return text + laiks
+                return laiks + ' ' +  text
 
             if elem('Partneris_2') is None:
-                return elem('Partneris_1') + ' ir ' + elem('Attiecības') + laiks
+                return laiks + ' ' +  elem('Partneris_1') + ' ir ' + elem('Attiecības')
             # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
             else:
-                return elem('Partneris_1', 'Ģenitīvs') + ' ' + elem('Attiecības') + ' ir ' + elem('Partneris_2') + laiks
+                return laiks + ' ' +  elem('Partneris_1', 'Ģenitīvs') + ' ' + elem('Attiecības') + ' ir ' + elem('Partneris_2')
 
         if frame_type == 4: # Vārds alternatīvais
             if elem('Vārds') is None or elem('Entītija') is None:
@@ -214,7 +215,7 @@ def get_frame_data(mentioned_entities, frame):
             verbs = ' mācījās'
             iestaadeslociijums = 'Lokatīvs'
             targetword = frame.get('TargetWord')
-            if targetword and targetword.lower() in ['beidzis', 'beigusi', 'absolvējis', 'absolvējusi', 'pabeidzis', 'pabeigusi'] :
+            if targetword and targetword.lower() in ['beidzis', 'beigusi', 'beidza', 'absolvējis', 'absolvējusi', 'pabeidzis', 'pabeigusi'] :
                 verbs = ' pabeidza'
                 iestaadeslociijums = 'Akuzatīvs'
 
@@ -352,9 +353,14 @@ def get_frame_data(mentioned_entities, frame):
 
             atbalsts = ''
             if elem('Tēma') is not None:
-                amats = ', atbalsta forma - ' + elem('Tēma')
+                # atbalsts = ', atbalsta forma - ' + elem('Tēma')
+                atbalsts = ' ar ' + elem('Tēma', 'Akuzatīvs')
 
-            return atbalsts + elem('Atbalstītājs') + ' atbalstīja ' + elem('Saņēmējs', 'Akuzatīvs') + atbalsts
+            laiks = ''
+            if elem('Laiks'):
+                laiks = elem('Laiks', 'Lokatīvs') + ' '
+
+            return laiks +  elem('Atbalstītājs') + ' atbalstīja ' + elem('Saņēmējs', 'Akuzatīvs') + atbalsts
 
         if frame_type == 15: # Dibināšana
             if elem('Organizācija') is None:
@@ -484,30 +490,39 @@ def get_frame_data(mentioned_entities, frame):
         # 21 - uzbrukums... TODO, pagaidām nav sampļu pietiekami
 
         if frame_type == 22: # Sasniegums
-            if elem('Sasniegums') is None:
+            if elem('Sasniegums') is None and elem('Rangs') is None:
                 log.debug("Sasniegums bez sasnieguma :( %s", frame)
                 return simpleVerbalization()
 
             sacensiibas = ''
+            org = ''
+            org2 = ''
             if elem('Sacensības') is not None:
                 sacensiibas = ' ' + elem('Sacensības', 'Lokatīvs')
-            org = ''
-            if elem('Organizētājs') is not None:
-                org = ', kuru organizēja ' + elem('Organizētājs') + ','
+                if elem('Organizētājs') is not None:
+                    org = ', kuru organizēja ' + elem('Organizētājs') + ','
+            else:
+                if elem('Organizētājs') is not None:
+                    org2 = elem('Organizētājs', 'Ģenitīvs') + ' '
+
             daliibnieks = ''
             if elem('Dalībnieks') is not None:
                 daliibnieks = ' ' + elem('Dalībnieks')
+            sasniegums = ''
+            if elem('Sasniegums') is not None:
+                sasniegums = elem('Sasniegums', 'Akuzatīvs')
             rangs = ''
             if elem('Rangs') is not None:
-                rangs = ' par ' + elem('Rangs')
+                rangs = elem('Rangs', 'Akuzatīvs')
+
             rezultaats = ''
             if elem('Rezultāts') is not None:
-                rangs = ' ar rezultātu ' + elem('Rezultāts')
+                rezultaats = ' ar rezultātu ' + elem('Rezultāts')
             citi = ''
             if elem('Pretinieks') is not None:
                 citi = '. Citi pretendenti: ' + elem('Pretinieks')
 
-            return laiks + vieta + sacensiibas + org + daliibnieks + ' ieguva ' + elem('Sasniegums', 'Akuzatīvs') + rangs + rezultaats + citi
+            return laiks + vieta + sacensiibas + org + daliibnieks + ' ieguva ' + org2 + sasniegums + rangs + rezultaats + citi
 
         if frame_type == 23: # Ziņošana
             if elem('Ziņa') is None:
