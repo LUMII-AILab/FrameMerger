@@ -536,7 +536,7 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Autors') is not None:
                 autors = ' ' + elem('Autors')
 
-            return laiks + avots + autors + ' informē: ' + elem('Ziņa')
+            return laiks + avots + autors + ' informē: ' + elem('Ziņa', 'Nelocīts')
 
         # 24 - Publiskais iepirkums ... TODO, pagaidām nav sampļu pietiekami
 
