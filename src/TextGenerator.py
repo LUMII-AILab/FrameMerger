@@ -433,7 +433,7 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             if elem('Daļa') is None:
-                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Īpašums')
+                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Īpašums', 'Nelocīts') # Nav nominatīvs, lai tiek galā ar 'licence veiksmes spēļu organizēšanai pa tālruni'
             else:
                 return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Daļa') + ' no ' + elem('Īpašums', 'Ģenitīvs')
 
