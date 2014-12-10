@@ -51,7 +51,7 @@ def consolidate_frames(entity_list, api):
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
             try:
-                frames = list(filter(lambda x: x["FrameData"] is not None, entity.frames))
+                frames = list(filter(lambda x: x["FrameData"] is not None and not x['IsUnfinished'], entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 
                 frames = c.apply(frames, entity.blessed_summary_frames)

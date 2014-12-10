@@ -161,6 +161,7 @@ class SemanticApiPostgres(object):
              'IsBlessed':  frame.blessed,
              'IsDeleted':  frame.deleted,
              'IsHidden':   frame.hidden,
+             'IsUnfinished':   frame.unfinished,
              'SentenceId': frame.sentenceid,
              'SourceId':   frame.sourceid,
              'TargetWord': frame.targetword,
