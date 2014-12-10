@@ -163,7 +163,8 @@ __roleDefaultNETypes__ = [  # ja NE nav neko ielicis, bet freima elements uz šo
     ['person', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'time', 'location', 'organization', 'person'], 
     ['organization', 'person', 'descriptor', 'time'],
     ['organization', 'descriptor', 'sum', 'descriptor', 'organization', 'descriptor', 'time'], 
-    ['descriptor', 'organization', 'descriptor']]
+    ['descriptor', 'organization', 'descriptor'],
+    ['person','descriptor','descriptor']]
 
 
 def getDefaultRole(frameCode, elementCode):
