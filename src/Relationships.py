@@ -183,7 +183,7 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 	result = []
 	for frame in frames:
 		if frame.get('FrameType') == 3:
-			vaiRelaacijaIrNoMainaamajaam = None
+			relation_ab = None
 			partner1ID = None
 			partner2ID = None
 			for fd in frame.get('FrameData'):
@@ -201,14 +201,15 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 			if partner1ID == entity_a:
 				entity_b = partner2ID
 			else:
-				entity_b = partner1ID			
+				entity_b = partner1ID
 				inverse_relation = inv_relations.get(relation_ab)
-				gender = 'male'
-				inflections = json.loads(mentioned_entities[entity_b].get('NameInflections'))
-				if inflections.get('Dzimte') == 'Sieviešu':
-				    gender = 'female'
-				relation_ab = inverse_relation[gender]
-				ensure_entity(relation_ab, mentioned_entities, api) # FIXME - šis nepieciešams tikai debugam, ātrdardībai var ņemt ārā
+				if inverse_relation: # Ja šī relācija ir invertojama, tad mums vajag otrādo
+					gender = 'male'
+					inflections = json.loads(mentioned_entities[entity_b].get('NameInflections'))
+					if inflections.get('Dzimte') == 'Sieviešu':
+					    gender = 'female'
+					relation_ab = inverse_relation[gender]
+					ensure_entity(relation_ab, mentioned_entities, api) # FIXME - šis nepieciešams tikai debugam, ātrdardībai var ņemt ārā
 
 			next_relations = relations.get(relation_ab)
 			if next_relations:
@@ -216,6 +217,7 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 				frames_b = api.entity_frames_by_id(entity_b)
 				for frame_b in frames_b:
 					if frame_b.get('FrameType') == 3:
+						relation_bc = None
 						partner1ID = None
 						partner2ID = None
 						for fd in frame_b.get('FrameData'):
@@ -241,11 +243,12 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 
 						if entity_c == partner1ID:
 							inverse_relation = inv_relations.get(relation_bc)
-							gender = 'male'
-							inflections = json.loads(mentioned_entities[entity_c].get('NameInflections'))
-							if inflections.get('Dzimte') == 'Sieviešu':
-							    gender = 'female'
-							relation_bc = inverse_relation[gender]
+							if inverse_relation: # Ja šī relācija ir invertojama, tad mums vajag otrādo
+								gender = 'male'
+								inflections = json.loads(mentioned_entities[entity_c].get('NameInflections'))
+								if inflections.get('Dzimte') == 'Sieviešu':
+								    gender = 'female'
+								relation_bc = inverse_relation[gender]
 						ensure_entity(relation_bc, mentioned_entities, api) # FIXME - šis nepieciešams tikai debugam, ātrdardībai var ņemt ārā
 
 						if entity_a == entity_c:
