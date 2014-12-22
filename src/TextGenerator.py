@@ -337,7 +337,12 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Dalība bez biedra vai organizācijas :( %s", frame)
                 return simpleVerbalization()
 
-            return laiks + ' ' + elem('Biedrs') + ' ir ' + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
+            targetword = frame.get('TargetWord')
+            verb = ' ir '
+            if targetword and targetword.lower() in ['izstājies', 'izstājusies', 'iestājies', 'iestājusies']:
+                verb = ' bija '
+
+            return laiks + ' ' + elem('Biedrs') + verb + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
 
         if frame_type == 13: # Vēlēšanas
             if elem('Dalībnieks') is None or elem('Vēlēšanas') is None:
@@ -448,7 +453,7 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Daļa') is None:
                 return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Īpašums', 'Nelocīts') # Nav nominatīvs, lai tiek galā ar 'licence veiksmes spēļu organizēšanai pa tālruni'
             else:
-                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Daļa') + ' no ' + elem('Īpašums', 'Ģenitīvs')
+                return laiks + ' ' + elem('Īpašnieks', 'Datīvs') + ' pieder ' + elem('Daļa', 'Nelocīts') + ' no ' + elem('Īpašums', 'Ģenitīvs')
 
         if frame_type == 19: # Parāds
             if elem('Parādnieks') is None and elem('Aizdevējs') is None:
@@ -500,7 +505,34 @@ def get_frame_data(mentioned_entities, frame):
 
             return laiks + vieta + tiesa + ' lieta pret ' + elem('Apsūdzētais', 'Akuzatīvs') + apsuudziiba + prasiitaajs + advokaats + tiesnesis
 
-        # 21 - uzbrukums... TODO, pagaidām nav sampļu pietiekami
+        if frame_type == 21: # Uzbrukums
+            if elem('Cietušais') is None:
+                log.debug("Uzbrukums bez upura :( %s", frame)  #FIXME - teorētiski varētu arī būt teikums kur ir info par pašu uzbrucēju, nesakot kam uzbruka
+                return simpleVerbalization() 
+
+            apstaaklji = ''
+            if elem('Apstākļi') is not None:
+                apstaaklji = elem('Apstākļi', 'Lokatīvs') + ' '
+
+            veids = ''
+            if elem('Veids') is not None:
+                veids = ' Veids - ' + elem('Veids', 'Nelocīts') + '.'
+            iemesls = ''
+            if elem('Iemesls') is not None:
+                iemesls = ' Iemesls - ' + elem('Iemesls', 'Nelocīts') + '.'
+            sekas = ''
+            if elem('Sekas') is not None:
+                sekas = ' Sekas - ' + elem('Sekas', 'Nelocīts') + '.'
+            ierocis = ''
+            if elem('Ierocis') is not None:
+                ierocis = ' ar ' + elem('Ierocis', 'Akuzatīvs')
+
+            if elem('Uzbrucējs') is not None:
+                # ir gan uzbrucējs, gan upuris: LAIKS VIETA APSTĀKĻI UZBRUCĒJS VEIDS uzbruka UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
+                return laiks + vieta + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
+            else:
+                # ir tikai upuris: LAIKS VIETA APSTĀKĻI notika uzbrukums UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
+                return laiks + vieta + apstaaklji + ' notika uzbrukums ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
 
         if frame_type == 22: # Sasniegums
             core_verb = ' ieguva '
@@ -532,7 +564,7 @@ def get_frame_data(mentioned_entities, frame):
 
             rezultaats = ''
             if elem('Rezultāts') is not None:
-                rezultaats = ' ar rezultātu ' + elem('Rezultāts')
+                rezultaats = '. Rezultāts : ' + elem('Rezultāts', 'Nelocīts')
             citi = ''
             if elem('Pretinieks') is not None:
                 citi = '. Citi pretendenti: ' + elem('Pretinieks')
@@ -565,7 +597,28 @@ def get_frame_data(mentioned_entities, frame):
 
             return laiks + avots + autors + ' informē: ' + elem('Ziņa', 'Nelocīts')
 
-        # 24 - Publiskais iepirkums ... TODO, pagaidām nav sampļu pietiekami
+        if frame_type == 24: # Publiskais iepirkums
+            if elem('Uzvarētājs') is None:
+                log.debug("Iepirkums bez uzvarētāja :( %s", frame)  #FIXME - teorētiski varētu arī būt teikums kur ir info par iepirkuma sludināšanu vai pretendentu, bet to LETA vienojās nelikt
+                return simpleVerbalization() 
+
+            organizators = ''
+            if elem('Iepircējs') is not None:
+                organizators = ' ' + elem('Iepircējs', 'Ģenitīvs') + ' '
+
+            teema = ''
+            if elem('Tēma') is not None:
+                teema = 'par ' + elem('Tēma', 'Akuzatīvs') + ' '
+
+            summa = ''
+            if elem('Paredzētā_Summa') is not None:
+                summa = ' Paredzētā summa - ' + elem('Paredzētā_Summa', 'Nelocīts') + '.'
+            rezultaats = ''
+            if elem('Rezultāts') is not None:
+                rezultaats = ' Rezultāts - ' + elem('Rezultāts', 'Nelocīts') + '.'
+
+            # LAIKĀ (Loc.) ORGANIZĀCIJA (Gen.sg.) iepirkumā par TĒMA (Acc.sg.) uzvarēja UZVARĒTĀJS (Nom.sg.). Paredzētā summa - SUMMA.  Rezultāts - REZULTĀTS.
+            return laiks + organizators + ' iepirkumā ' + teema + 'uzvarēja ' + elem('Uzvarētājs') + '.' + summa + rezultaats
 
         if frame_type == 25: # Zīmols
             if elem('Organizācija') is None or (elem('Zīmols') is None and elem('Produkts') is None):
