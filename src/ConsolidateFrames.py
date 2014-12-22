@@ -99,7 +99,7 @@ class BaseConsolidator(object):
             summary_list_keys.add(key)
             if res_buf.get(key):
                 item = deepcopy(res_buf[key][0])
-                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+                item["SummarizedFrames"] = [f.get('FrameId') for f in res_buf[key]]
                 item["SummaryFrameID"] = sum_frame["FrameId"]
                 res.append(item)
             else: 
@@ -113,6 +113,7 @@ class BaseConsolidator(object):
                     })
                 item["FrameData"] = elem_list
                 item["SummarizedFrames"] = []
+                item["IsBlessed"] = sum_frame["IsHidden"] # FIXME - atšķirīgi blesošanas kodējumi
                 item["SummaryFrameID"] = sum_frame["FrameId"]
                 res.append(item)
 
@@ -143,7 +144,8 @@ class BaseConsolidator(object):
                 item["FrameCnt"] = 1
 
                 item["SummaryInfo"] = get_info_str(self) + " + blessed"
-                item["SummarizedFrames"] = [item["FrameId"],]
+                if (item.get('FrameId')):
+                    item["SummarizedFrames"] = [item["FrameId"],]
 
                 # skip these frames from normal processing
                 res_buf[key] = None
@@ -158,7 +160,8 @@ class BaseConsolidator(object):
                 item["FrameCnt"] = 1
 
                 item["SummaryInfo"] = get_info_str(self) + " + anti_bless"
-                item["SummarizedFrames"] = [item["FrameId"],]
+                if (item.get('FrameId')):
+                    item["SummarizedFrames"] = [item["FrameId"],]
 
                 # skip these frames from normal processing
                 res_buf[key] = None

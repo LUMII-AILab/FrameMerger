@@ -25,6 +25,7 @@ from ConsolidateFrames import BaseConsolidator
 from FrameInfo import FrameInfo
 
 from TextGenerator import get_mentioned_entities, get_frame_data
+import Relationships
 
 f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
@@ -53,6 +54,11 @@ def consolidate_frames(entity_list, api):
             try:
                 frames = list(filter(lambda x: x["FrameData"] is not None and not x['IsUnfinished'], entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
+
+                # Pievienojam sekundāro relāciju freimus
+                frames += Relationships.build_relations(api, entity.entity.get('EntityId'), frames, mentioned_entities)
+
+                EF.normalize_frames(frames, api, mentioned_entities)
 
                 frames = c.apply(frames, entity.blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
@@ -181,9 +187,11 @@ def save_entity_frames_to_api(api, entity_list):
                 # FIXME - frametext, date un startdate principā te nav jāaiztiek - tas ir tāpēc, lai verbalizācijas utml uzlabojumi nonāktu līdz konsolidētajiem faktiem
                 api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], frame.get('FrameText'), frame.get('Date'), frame.get('StartDate'), commit=False)                
                 summary_frame_ids.append(summary_frame_id)
+                # print('apdeitoju')
             else:
                 frame_id = api.insert_summary_frame(frame, commit=False)
                 summary_frame_ids.append(frame_id)
+                # print('insertoju %s' % (frame_id,))
 
         # commit changes (delete + insert in one transaction)
         api.api.commit()

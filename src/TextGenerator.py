@@ -18,6 +18,7 @@ from pprint import pprint
 
 import EntityFrames as EF
 from FrameInfo import FrameInfo
+import Relationships
 
 import sys
 if sys.version_info >= (3, 0, 0):
@@ -74,7 +75,7 @@ def get_frame_data(mentioned_entities, frame):
         if not role in roles or roles[role] is None:
             return None
         try:
-            return roles[role][case]
+            return roles[role].get(case)
         except TypeError as e:
             log.exception("Exception in inflection of element: %s", str(e))
             log.error("""Error when fetching element name inflection:
@@ -158,23 +159,36 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
-            if elem('Attiecības') in ('šķīries', 'šķīrusies'):
-                text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
-                if elem('Partneris_2'):
-                    text += ' no ' + elem('Partneris_2', 'Ģenitīvs')
-                return laiks + ' ' + text
+            gender = 'male'
+            if elem('Partneris_1', 'Dzimte') == 'Sieviešu':
+                gender = 'female'
+            inv_relation = Relationships.inverted_relations_text.get(elem('Attiecības'))
 
-            if elem('Attiecības') in ('precējies', 'precējusies'):
-                text = elem('Partneris_1') + ' ir ' + elem('Attiecības')
-                if elem('Partneris_2'):
-                    text += ' ar ' + elem('Partneris_2', 'Akuzatīvs')
-                return laiks + ' ' +  text
+            def desc_relations(rel, p1, p2):
+                if rel in ('šķīries', 'šķīrusies'):
+                    text = elem(p1) + ' ir ' + rel
+                    if elem(p2):
+                        text += ' no ' + elem(p2, 'Ģenitīvs')
+                    return laiks + ' ' + text
 
-            if elem('Partneris_2') is None:
-                return laiks + ' ' +  elem('Partneris_1') + ' ir ' + elem('Attiecības')
-            # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
+                if rel in ('precējies', 'precējusies'):
+                    text = elem(p1) + ' ir ' + rel
+                    if elem(p2):
+                        text += ' ar ' + elem(p2, 'Akuzatīvs')
+                    return laiks + ' ' +  text
+
+                if elem(p2) is None:
+                    return laiks + ' ' +  elem(p1) + ' ir ' + rel
+                # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
+                else:
+                    return laiks + ' ' +  elem(p1, 'Ģenitīvs') + ' ' + rel + ' ir ' + elem(p2)
+
+            if inv_relation and elem('Partneris_2'):
+                # print('%s -> %s' % (elem('Attiecības'), inv_relation.get(gender)))
+                return json.dumps( { elem('Partneris_1','ID') : desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2'),
+                                     elem('Partneris_2','ID') : desc_relations(inv_relation.get(gender), 'Partneris_2', 'Partneris_1') }, ensure_ascii=False )
             else:
-                return laiks + ' ' +  elem('Partneris_1', 'Ģenitīvs') + ' ' + elem('Attiecības') + ' ir ' + elem('Partneris_2')
+                return desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2')
 
         if frame_type == 4: # Vārds alternatīvais
             if elem('Vārds') is None or elem('Entītija') is None:
@@ -261,11 +275,10 @@ def get_frame_data(mentioned_entities, frame):
             darbavieta = ''
             if elem('Darbavieta') is not None:
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
-            amats = ''
             if elem('Amats') is not None:
-                amats = ' ' + elem('Amats','Ģenitīvs') + ' amatā'
-
-            return laiks + ' ' + elem('Darbinieks') + ' bija' + statuss + amats + darbavieta + vieta
+                return laiks + ' ' + elem('Darbinieks') + ' bija' + statuss + ' ' + elem('Amats','Ģenitīvs') + ' amatā' + darbavieta + vieta
+            else:
+                return laiks + ' ' + elem('Darbinieks') + ' strādāja' + statuss + darbavieta + vieta
 
         if frame_type == 10: # Darba sākums
             if elem('Darbinieks') is None:
@@ -490,9 +503,7 @@ def get_frame_data(mentioned_entities, frame):
         # 21 - uzbrukums... TODO, pagaidām nav sampļu pietiekami
 
         if frame_type == 22: # Sasniegums
-            if elem('Sasniegums') is None and elem('Rangs') is None:
-                log.debug("Sasniegums bez sasnieguma :( %s", frame)
-                return simpleVerbalization()
+            core_verb = ' ieguva '
 
             sacensiibas = ''
             org = ''
@@ -513,7 +524,11 @@ def get_frame_data(mentioned_entities, frame):
                 sasniegums = elem('Sasniegums', 'Akuzatīvs')
             rangs = ''
             if elem('Rangs') is not None:
-                rangs = elem('Rangs', 'Akuzatīvs')
+                if 'viet' not in elem('Rangs'):
+                    core_verb = ' bija '
+                    rangs = elem('Rangs')
+                else:
+                    rangs = elem('Rangs', 'Akuzatīvs')
 
             rezultaats = ''
             if elem('Rezultāts') is not None:
@@ -522,7 +537,19 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Pretinieks') is not None:
                 citi = '. Citi pretendenti: ' + elem('Pretinieks')
 
-            return laiks + vieta + sacensiibas + org + daliibnieks + ' ieguva ' + org2 + sasniegums + rangs + rezultaats + citi
+            if elem('Sasniegums') is None and elem('Rangs') is None:
+                targetword = frame.get('TargetWord')
+                if targetword and targetword.lower() in ['iekļauts', 'iekļauta', 'iekļāvis', 'iekļāvusi', 'minēts', 'minēta', 'minējis', 'minējusi']:
+                    if org.endswith(','):
+                        org = ', kuru organizēja ' + elem('Organizētājs')
+                    if targetword and targetword.lower() in ['minējis', 'minējusi']:
+                        targetword = 'minēts'
+                    return laiks + vieta + daliibnieks + ' ' + targetword + org2 + sacensiibas + org + rezultaats + citi
+                else:
+                    log.debug("Sasniegums bez sasnieguma :( %s", frame)
+                    return simpleVerbalization()
+            else:
+                return laiks + vieta + sacensiibas + org + daliibnieks + core_verb + org2 + sasniegums + rangs + rezultaats + citi
 
         if frame_type == 23: # Ziņošana
             if elem('Ziņa') is None:
@@ -603,8 +630,9 @@ def get_frame_data(mentioned_entities, frame):
                 'Akuzatīvs': entity['Name'],
                 'Lokatīvs': entity['Name']}
 
-        roles[role]['Nelocīts'] = entity['Name']
+        roles[role]['Nelocīts'] = entity['Name']        
         roles[role]['Kategorija'] = entity['Category']
+        roles[role]['ID'] = entity['EntityId']
 
 
     #---- datumu atrašana
@@ -624,6 +652,7 @@ def get_frame_data(mentioned_entities, frame):
 
     # print('%s -> %s' % (date, formatdate(date)))
     # print('%s -> %s' % (start_date, formatdate(start_date)))
+    # print('haha %s' % (verbalization(), ))
     return (verbalization(), formatdate(date), formatdate(start_date))
 
 

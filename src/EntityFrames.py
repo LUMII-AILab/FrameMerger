@@ -5,10 +5,9 @@
 # (LU aģentūra "Latvijas Universitātes Matemātikas un informātikas institūts")
 #
 # All rights reserved.
-
-# enable logging, but default to null logger (no output)
 from __future__ import unicode_literals
 
+# enable logging, but default to null logger (no output)
 import logging
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -16,9 +15,10 @@ log.addHandler(logging.NullHandler())
 import shelve
 from pprint import pprint
 
-import requests
+import requests, json
 
 from FrameInfo import FrameInfo
+import Relationships
 
 # TODO:
 #  - pass the filename in as a parameter
@@ -266,6 +266,45 @@ def create_frame(fr_type, fr_dict, fr_id=0):
     }
 
     return frame
+
+
+def normalize_frames(frames, api, mentioned_entities):
+    # Normalizējam attiecību freimus (sieva <> vīrs), ka 'pareizais' pāris ir ar Partner1 #ID mazāku par Partner2 #ID.
+    relations = Relationships.inverted_relations(api)
+    for frame in frames:                    
+        if frame.get('FrameType') == 3:
+            # FIXME - ja datiem būtu normāla struktūra nevis tas FrameData bullshit, tad kods būtu 5x vienkāršāks
+            vaiRelaacijaIrNoMainaamajaam = False
+            partner1ID = None
+            partner2ID = None
+            for fd in frame.get('FrameData'):
+                if fd.get('Key') == 4:
+                    vaiRelaacijaIrNoMainaamajaam = fd.get('Value').get('Entity') in relations
+                    relation = fd.get('Value').get('Entity')
+                if fd.get('Key') == 1:
+                    partner1ID = fd.get('Value').get('Entity')
+                if fd.get('Key') == 2:
+                    partner2ID = fd.get('Value').get('Entity')
+            if partner1ID and partner2ID and vaiRelaacijaIrNoMainaamajaam and partner2ID < partner1ID:
+                # print('Invertojam %s --[%s]--> %s' % (mentioned_entities[partner1ID]['Name'], mentioned_entities[relation]['Name'], mentioned_entities[partner2ID]['Name']))
+                for fd in frame.get('FrameData'):
+                    if fd.get('Key') == 4:
+                        inverse_relation = relations[fd.get('Value').get('Entity')]
+                        gender = 'male'
+                        inflections = json.loads(mentioned_entities[partner1ID].get('NameInflections'))
+                        # print(inflections)
+                        if inflections.get('Dzimte') == 'Sieviešu':
+                            gender = 'female'
+                        fd.get('Value')['Entity'] = inverse_relation[gender] 
+                        if inverse_relation[gender] not in mentioned_entities:
+                            entity_r_data = api.entity_data_by_id(inverse_relation[gender])
+                            if entity_r_data:
+                                mentioned_entities[inverse_relation[gender]] = entity_r_data
+                        # print('Sanāca %s --[%s]--> %s' % (mentioned_entities[partner2ID]['Name'], mentioned_entities[inverse_relation[gender]]['Name'], mentioned_entities[partner1ID]['Name']))
+                    if fd.get('Key') == 1:
+                        fd.get('Value')['Entity'] = partner2ID
+                    if fd.get('Key') == 2:
+                        fd.get('Value')['Entity'] = partner1ID
 
 def test_frame_fns():
 

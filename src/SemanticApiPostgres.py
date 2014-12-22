@@ -65,6 +65,7 @@ class PostgresConnection(object):
 
     def query(self, sql, parameters):
         cursor = self.new_cursor()
+        # print(cursor.mogrify(sql, parameters))
         cursor.execute(sql, parameters)
         r = cursor.fetchall()
         cursor.close()
@@ -250,6 +251,18 @@ class SemanticApiPostgres(object):
 
         return list(map(lambda x: x[0], res)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
+    # Saņem vārdu sarakstu, atgriež sarakstu ar ID-vārdu pārīšiem
+    # name - iterator of unicode strings
+    # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
+    def entity_id_mapping_by_name_list(self, names):
+        names2=[]
+        for name in names:
+            names2.append(name.lower().strip())
+        sql = "select distinct n.name, e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false"        
+        res = self.api.query(sql, (names2, ) )
+
+        return res
+
     # Atgriež entītes id pēc tās ārējā id (datos - LETA UQID vai personaskods/uzņēmuma reģistrācijas nr)
     def entity_id_by_outer_id(self, outer_id):
         sql = "select entityid from entityouterids where outerid = %s"
@@ -266,6 +279,7 @@ class SemanticApiPostgres(object):
 	# category - integer code
 	# outerids - list of unicode strings
 	# inflections - unicode string
+    # atgriež jaunās entītijas ID
     def insertEntity(self, name, othernames, category, outerids=[], inflections = None, hidden = False, cv_status=0, source = None, commit = True):
         main_sql = "INSERT INTO Entities(Name, OtherNames, OuterID, category, DataSet, NameInflections, Hidden, cv_status, source) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING EntityID;"
 
@@ -384,7 +398,8 @@ class SemanticApiPostgres(object):
         self.api.insert("DELETE FROM SummaryFrameData where SummaryFrameID = %s", (frameid, ))
         frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
         for summarizedFrame in summarizedFrames:
-            self.api.insert(frame_sql, (frameid, summarizedFrame) )       
+            if summarizedFrame:
+                self.api.insert(frame_sql, (frameid, summarizedFrame) )       
 
         if commit:
             self.api.commit()
@@ -432,7 +447,7 @@ class SemanticApiPostgres(object):
 
         sql = "select distinct fr.frameid from SummaryFrameRoleData fr_data \
 join SummaryFrames fr on fr.frameid = fr_data.frameid \
-where fr_data.entityid = %s and fr.blessed is null;"
+where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
 
         res = self.api.query(sql, (e_id,) )
         frame_ids = first_col(res)
@@ -515,9 +530,9 @@ where fr_data.entityid = %s and fr.blessed is null;"
                 frame["IsHidden"] = True
 
         res = self.api.insert(main_sql,
-                (frame["FrameType"], frame["SourceId"], frame["SentenceId"], frame["DocumentId"], frame["TargetWord"], 
-                    merge_type, self.api.dataset, frame["IsBlessed"], frame["IsHidden"], frame["FrameCnt"], frame["FrameText"],
-                    frame["SummaryInfo"], frame["IsDeleted"], frame.get("Date"), frame.get("StartDate")),
+                (frame["FrameType"], frame.get("SourceId"), frame.get('SentenceId'), frame.get('DocumentId'), frame.get('TargetWord'), 
+                    merge_type, self.api.dataset, frame.get('IsBlessed'), frame.get('IsHidden'), frame.get('FrameCnt'), frame["FrameText"],
+                    frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate")),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id
@@ -527,7 +542,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
         # insert frame elements
         for entry in frame["FrameData"]:
             i_entity = entry["Value"]["Entity"]
-            i_word_index = entry["Value"]["PlaceInSentence"]
+            i_word_index = entry["Value"].get('PlaceInSentence')
             i_element = entry["Key"]
 
             self.api.insert(element_sql, (frameid, i_entity, i_element, i_word_index) )       
@@ -536,8 +551,9 @@ where fr_data.entityid = %s and fr.blessed is null;"
         relation_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
 
         # record info about Summarized raw frames
-        for raw_frame_id in frame['SummarizedFrames']:
-            self.api.insert(relation_sql, (frameid, raw_frame_id) )       
+        if frame.get('SummarizedFrames'):
+            for raw_frame_id in frame['SummarizedFrames']:
+                self.api.insert(relation_sql, (frameid, raw_frame_id) )       
 
         if commit:
             self.api.commit()
@@ -577,10 +593,10 @@ where fr_data.entityid = %s and fr.blessed is null;"
 
     def summary_frame_by_id(self, fr_id):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid = %s\
-                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword"
+                    group by f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword"
         cursor.execute(main_sql, (fr_id,))
         frame = cursor.fetchone()
         cursor.close()
@@ -604,7 +620,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
              'FrameType':  frame.frametypeid,
              'Blessed':  frame.blessed,
              # 'IsDeleted':  frame.deleted,
-             # 'IsHidden':   frame.hidden,
+             'IsHidden':   frame.hidden,
              # 'SentenceId': frame.sentenceid,
              'SourceId':   frame.sourceid,
              'TargetWord': frame.targetword,
@@ -616,11 +632,11 @@ where fr_data.entityid = %s and fr.blessed is null;"
     # Pēc entītijas ID, atgriež visus blessed/anti-blessed summary freimus par viņu. 
     def blessed_summary_frame_data_by_entity_id(self, entityID):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
+        main_sql = "select f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
                     join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
                     where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
-                      and blessed is not NULL\
-                    group by f.frameid, blessed, sourceid, frametypeid, summaryinfo, framecnt, targetword"
+                      and blessed is true\
+                    group by f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword"
         cursor.execute(main_sql, (entityID,))
         r = []
 
@@ -634,7 +650,7 @@ where fr_data.entityid = %s and fr.blessed is null;"
                  'FrameType':  frame.frametypeid,
                  'Blessed':  frame.blessed,
                  # 'IsDeleted':  frame.deleted,
-                 # 'IsHidden':   frame.hidden,
+                 'IsHidden':   frame.hidden,
                  # 'SentenceId': frame.sentenceid,
                  'SourceId':   frame.sourceid,
                  'TargetWord': frame.targetword,
