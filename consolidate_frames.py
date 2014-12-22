@@ -267,7 +267,7 @@ def main():
 
     single_load = False
     load_all_dirty = False
-    options, remainder = getopt.getopt(sys.argv[1:], 's', ['help', 'dirty', 'single', 'database='])
+    options, remainder = getopt.getopt(sys.argv[1:], 's', ['help', 'dirty', 'single', 'allpersons', 'database='])
     for opt, arg in options:
         if opt == '--help':
             print('Frame consolidation script')
@@ -276,6 +276,7 @@ def main():
             print('--database=<dbname>   overrides the database name from the one set in db_config.py')
             print('--single              processes each entity as submitted, instead of waiting for a full batch. Normal batch mode is more efficient.')
             print('--dirty               instead of waiting for entity IDs, takes all entities marked in the database as "dirty".') 
+            print('--allpersons          fetches a list of all persons in database and consolidates them.') 
             quit()
         elif opt == '--database':
             api_conn_info["dbname"] = arg
@@ -283,17 +284,26 @@ def main():
             load_all_dirty = True
         elif opt == '--single':
             single_load = True
+        elif opt == '--allpersons':
+            load_all_persons = True
 
     conn = PostgresConnection(api_conn_info)
     api = SemanticApiPostgres(conn) 
 
-    if load_all_dirty:
-        entity_list = list(api.get_dirty_entities())
+    if load_all_dirty or load_all_persons:
+        if load_all_dirty:
+            entity_list = list(api.get_dirty_entities())
+        elif load_all_persons:
+            persons = api.api.query('select entityid from entities where deleted is false and category = 3', None)
+            entity_list = list(map(lambda x: int(x[0]), persons)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem)
+
         print('Consolidating %s dirty entities' % len(entity_list))
         if len(entity_list)<100:
             print(entity_list)
-        for chunk in split_seq(entity_list, 30): # TODO - čunka izmērs 30 var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
+        for nr, chunk in enumerate(split_seq(entity_list, 50)): # TODO - čunka izmērs var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
             process_entities(chunk, out_dir, api=api)
+            if nr % 20 == 19:
+                print(nr*len(chunk))
         print('All dirty entities processed')
     else:
         entity_list = entity_ids_from_stdin()
