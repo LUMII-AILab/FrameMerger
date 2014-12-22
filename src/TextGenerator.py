@@ -275,7 +275,7 @@ def get_frame_data(mentioned_entities, frame):
             darbavieta = ''
             if elem('Darbavieta') is not None:
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
-            if elem('Amats') is not None:
+            if elem('Amats', 'Ģenitīvs') is not None:
                 return laiks + ' ' + elem('Darbinieks') + ' bija' + statuss + ' ' + elem('Amats','Ģenitīvs') + ' amatā' + darbavieta + vieta
             else:
                 return laiks + ' ' + elem('Darbinieks') + ' strādāja' + statuss + darbavieta + vieta
