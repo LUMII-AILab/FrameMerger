@@ -821,6 +821,7 @@ def get_cv_frame_category(mentioned_entities, frame):
                 category = 113 # Saistītie uzņēmumi                
             elif frame_type == 18: # Īpašums
                 owner = None
+                category = 114 # Default value - 'other'
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 1: # īpašnieks
                         owner = mentioned_entities[element2["Value"]["Entity"]]
