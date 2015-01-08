@@ -393,8 +393,10 @@ class SemanticApiPostgres(object):
         self.api.commit()
 
     #Apvieno summarizētajam freimam 'apakšfreimu' sarakstu, skaitu un arī verbalizāciju - lieto pie apvienošanas, blesotiem summaryfreimiem
-    def updateSummaryFrameRawFrames(self, frameid, summarizedFrames, frametext=None, date=None, start_date=None, commit=True):
-        self.api.insert("UPDATE SummaryFrames SET framecnt = %s, frametext = %s, date=%s, start_date=%s where frameid = %s", (len(summarizedFrames), frametext, date, start_date, frameid))
+    # TODO - nosaukums kļuvis missleading, jārefactoro
+    def updateSummaryFrameRawFrames(self, frameid, summarizedFrames, frametext=None, date=None, start_date=None, cvframecategory=None, commit=True):
+        self.api.insert("UPDATE SummaryFrames SET framecnt = %s, frametext = %s, date=%s, start_date=%s, cvframecategory=%s where frameid = %s", 
+            (len(summarizedFrames), frametext, date, start_date, Json(cvframecategory), frameid))
         self.api.insert("DELETE FROM SummaryFrameData where SummaryFrameID = %s", (frameid, ))
         frame_sql = "INSERT INTO SummaryFrameData(SummaryFrameID, FrameID) VALUES (%s, %s)"
         for summarizedFrame in summarizedFrames:

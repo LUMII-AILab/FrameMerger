@@ -68,7 +68,7 @@ def consolidate_frames(entity_list, api):
                 # Building frame descriptions
                 for frame in frames:
                     try:
-                        frametext, frame["Date"], frame["StartDate"] = get_frame_data(mentioned_entities, frame)
+                        frametext, frame["Date"], frame["StartDate"], frame["CVFrameCategory"] = get_frame_data(mentioned_entities, frame)
                     except KeyError as e:
                         log.exception("Key error in get_frame_data:\n%s", e)
                         frametext = None
@@ -185,7 +185,7 @@ def save_entity_frames_to_api(api, entity_list):
             summary_frame_id = frame.get("SummaryFrameID")
             if summary_frame_id:
                 # FIXME - frametext, date un startdate principā te nav jāaiztiek - tas ir tāpēc, lai verbalizācijas utml uzlabojumi nonāktu līdz konsolidētajiem faktiem
-                api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], frame.get('FrameText'), frame.get('Date'), frame.get('StartDate'), commit=False)                
+                api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], frame.get('FrameText'), frame.get('Date'), frame.get('StartDate'), frame.get('CVFrameCategory'), commit=False)                
                 summary_frame_ids.append(summary_frame_id)
                 # print('apdeitoju')
             else:
@@ -267,6 +267,7 @@ def main():
 
     single_load = False
     load_all_dirty = False
+    load_all_persons = False
     options, remainder = getopt.getopt(sys.argv[1:], 's', ['help', 'dirty', 'single', 'allpersons', 'database='])
     for opt, arg in options:
         if opt == '--help':
@@ -302,8 +303,8 @@ def main():
             print(entity_list)
         for nr, chunk in enumerate(split_seq(entity_list, 50)): # TODO - čunka izmērs var nebūt optimāls, cits cipars varbūt dod labāku ātrdarbību
             process_entities(chunk, out_dir, api=api)
-            if nr % 20 == 19:
-                print(nr*len(chunk))
+            if nr % 5 == 4:
+                print((nr+1)*len(chunk))
         print('All dirty entities processed')
     else:
         entity_list = entity_ids_from_stdin()

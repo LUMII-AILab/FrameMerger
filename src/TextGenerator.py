@@ -68,7 +68,8 @@ def fetch_all_entities(mentioned_entities, api):
 
     return entity_data # Dict no entītiju id uz entītijas pilnajiem datiem
 
-# Izveidot smuku aprakstu freimam
+# Izveidot smuku aprakstu freimam, kā arī pārējo no freima entītijām atvasināto informāciju
+# Atgriež 4-tuple - (verbalization, date, start_date, cvframecategory)
 def get_frame_data(mentioned_entities, frame):
 
     def elem(role, case='Nominatīvs'):
@@ -706,7 +707,7 @@ def get_frame_data(mentioned_entities, frame):
     # print('%s -> %s' % (date, formatdate(date)))
     # print('%s -> %s' % (start_date, formatdate(start_date)))
     # print('haha %s' % (verbalization(), ))
-    return (verbalization(), formatdate(date), formatdate(start_date))
+    return (verbalization(), formatdate(date), formatdate(start_date), get_cv_frame_category(mentioned_entities, frame))
 
 
 # Pārveido datumus no entītijas kanoniskā vārda formāta uz Didža formātu - yyyymmdd kā integer un ja nezināms mēnesis/diena, tad 0
@@ -764,6 +765,117 @@ def formatdate(date):
 
     log.debug('Nesaprasts datums %s' % date)
     return None
+
+
+# Atgriež LETA gribēto sašķirošanu pa CV 'kartiņas' sadaļām / kategorijām
+# NB! te ir hardkodēti šo kategoriju ID, kam jāatbilst datubāzes tabulas 'cvframecategories' saturam
+def get_cv_frame_category(mentioned_entities, frame):
+    result = {}
+    frame_type = frame.get('FrameType')
+    for element in frame["FrameData"]:
+        # handle incorrect frame data
+        #  - when entity does not exist for the e_ID mentioned in the frame
+        try:
+            entity = mentioned_entities[element["Value"]["Entity"]]
+        except KeyError as e:
+            # Error should have been logged during frame text verbalization already
+            continue
+        
+        if entity.get('Category') == 2: # Organization            
+            if frame_type in [0,1,2,4,8]: # Dzimšana, vecums, miršana, pseidonīmi, izcelsme
+                category = 101 # Pamatdati
+            elif frame_type == 5: # Dzīvesvieta
+                category = 102 # Kontakti
+            elif frame_type == 6: # Izglītība
+                category = 103 # Izglītība
+            elif frame_type in [9,10,11,12]: # Amats, darba sākums, darba beigas, dalība
+                category = 104 # Amatpersonas, īpašnieki, darbinieki
+            elif frame_type == 7: # Nodarbošanās
+                category = 105 # Nozares
+            elif frame_type in [14]: # Atbalsts
+                category = 106 # Ziedojumi, dāvinājumi
+            elif frame_type in [20, 21]: # Tiesvedība, uzbrukums
+                category = 107 # Incidenti un tiesvedības
+            elif frame_type in [13]: # vēlēšanas, piedalīšanās
+                category = 108 # Sabiedriskās un politiskās darbības
+            elif frame_type in [25]: # Zīmols
+                category = 109 # Produkti
+            elif frame_type in [22]: # Sasniegums                
+                category = 110 # Apbalvojumi un sasniegumi
+            elif frame_type in [24]: # Publisks iepirkums
+                category = 111 # Publisks iepirkums
+            elif frame_type in [17, 19]: # Finanses, Parāds
+                category = 112 # Finanses
+            elif frame_type in [15]: # Dibināšana
+                category = 101 # Pamatdati - ja nav nekas īpašs
+                creator = None
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 2: # dibinātājs
+                        creator = mentioned_entities[element2["Value"]["Entity"]]
+                if creator and creator.get('Category') == 2: # ... ja dibināja persona
+                    category = 104 # Amatpersonas, īpašnieki, darbinieki
+                if creator and creator.get('Category') == 3: # ... ja dibināja organizācija
+                    category = 113 # Saistītie uzņēmumi
+            elif frame_type == 3: # Attiecības
+                # LETAs dokumentā tur nezkāpēc kautkādas prasības, kas nesakrīt ar freimu definīciju - org<>pers attiecības "amatpersonas, īpašnieki, darbinieki" nedrīkst būt šajā freima veidā
+                category = 113 # Saistītie uzņēmumi                
+            elif frame_type == 18: # Īpašums
+                owner = None
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 1: # īpašnieks
+                        owner = mentioned_entities[element2["Value"]["Entity"]]
+                if owner and owner.get('Category') == 2: # ... ja pieder personai
+                    category = 104 # Amatpersonas, īpašnieki, darbinieki
+                if owner and owner.get('Category') == 3: # ... ja pieder organizācijai
+                    category = 113 # Saistītie uzņēmumi                        
+            else:
+                category = 114 # Default value - 'other'
+
+            result[element["Value"]["Entity"]] = category
+
+        if entity.get('Category') == 3: # Person
+            if frame_type in [0,1,2,4,5,8]: # Dzimšana, vecums, miršana, pseidonīmi, dzīvesvieta, izcelsme
+                category = 1 # Pamatdati
+            elif frame_type == 3: # Attiecības
+                # LETAs dokumentā tur nezkāpēc kautkādas prasības, kas nesakrīt ar freimu definīciju - org<>pers attiecības "amatpersonas, īpašnieki, darbinieki" nedrīkst būt šajā freima veidā
+                category = 2 # Ģimene                
+            elif frame_type == 6: # Izglītība
+                category = 3 # Izglītība
+            elif frame_type in [7,9,10,11]: # Nodarbošanās, amats, darba sākums, darba beigas
+                category = 4 # Darbs un nodarbošanās
+            elif frame_type in [12,13,16]: # Dalība, vēlēšanas, piedalīšanās
+                category = 5 # Sabiedriskās un politiskās darbības
+            elif frame_type in [15]: # Dibināšana
+                category = 6 # Uzņēmējdarbība
+            elif frame_type in [22]: # Sasniegums
+                category = 7 # Apbalvojumi un sasniegumi
+            elif frame_type in [20, 21]: # Tiesvedība, uzbrukums
+                category = 8 # Incidenti un tiesvedības
+            elif frame_type == 18: # Īpašums
+                category = 9 # Īpašumi un finanses                
+                item = None
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 2: # pats īpašums
+                        item = mentioned_entities[element2["Value"]["Entity"]]
+                if item and item.get('Category') == 2: # ... ja pieder organizācija
+                    category = 6 # Uzņēmējdarbība
+            elif frame_type in [19]: # Parāds
+                category = 9 # Īpašumi un finanses
+            elif frame_type in [14]: # Atbalsts
+                category = 10 # Ziedojumi, dāvinājumi
+            elif frame_type in [24]: # Publisks iepirkums
+                category = 11 # Publisks iepirkums
+            else:
+                category = 12 # Default value - 'other'
+
+            result[element["Value"]["Entity"]] = category
+
+            
+
+    if result:
+        return result
+    else:
+        return None  # If no involved entities need this, then let's have a null value
 
 def main():
     # do nothing for now
