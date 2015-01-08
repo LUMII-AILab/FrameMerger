@@ -295,7 +295,7 @@ def main():
         if load_all_dirty:
             entity_list = list(api.get_dirty_entities())
         elif load_all_persons:
-            persons = api.api.query('select entityid from entities where deleted is false and category = 3', None)
+            persons = api.api.query('select entityid from entities where deleted is false and (category = 3 or category = 2)', None)
             entity_list = list(map(lambda x: int(x[0]), persons)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem)
 
         print('Consolidating %s dirty entities' % len(entity_list))
