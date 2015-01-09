@@ -117,7 +117,13 @@ def get_frame_data(mentioned_entities, frame):
 
         vieta = ''
         if elem('Vieta') is not None:
-            vieta = ' ' + elem('Vieta','Lokatīvs') # ' Ķemeros'
+            if elem('Vieta','Lokatīvs'):
+                vieta = ' ' + elem('Vieta','Lokatīvs') # ' Ķemeros'
+            else:
+                print('Vietas entītija bez lokatīva')
+                print(roles.get('Vieta'))
+                log.error('Vietas entītija bez lokatīva %s', frame)
+                vieta = ' ' + elem('Vieta') 
 
         statuss = ''
         if elem('Statuss') is not None:
