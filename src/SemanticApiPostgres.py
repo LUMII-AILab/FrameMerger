@@ -516,8 +516,8 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
 	# date - freima datums - string ISO datumformātā 
     def insert_summary_frame(self, frame, commit):
         main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
-                         FrameCnt, FrameText, SummaryInfo, Deleted, date, start_date)\
-                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+                         FrameCnt, FrameText, SummaryInfo, Deleted, date, start_date, cvframecategory)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
         # fix MergeType codes (!) as the API requires Int for now
         merge_type_map = {"O": 0, "M": 2, "E": 1}
@@ -534,7 +534,7 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
         res = self.api.insert(main_sql,
                 (frame["FrameType"], frame.get("SourceId"), frame.get('SentenceId'), frame.get('DocumentId'), frame.get('TargetWord'), 
                     merge_type, self.api.dataset, frame.get('IsBlessed'), frame.get('IsHidden'), frame.get('FrameCnt'), frame["FrameText"],
-                    frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate")),
+                    frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate"), Json(frame.get('CVFrameCategory'))),
                 returning = True,
                 commit = False)
         frameid = res # insertotā freima id

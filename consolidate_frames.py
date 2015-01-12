@@ -187,10 +187,11 @@ def save_entity_frames_to_api(api, entity_list):
                 # FIXME - frametext, date un startdate principā te nav jāaiztiek - tas ir tāpēc, lai verbalizācijas utml uzlabojumi nonāktu līdz konsolidētajiem faktiem
                 api.updateSummaryFrameRawFrames(summary_frame_id, frame["SummarizedFrames"], frame.get('FrameText'), frame.get('Date'), frame.get('StartDate'), frame.get('CVFrameCategory'), commit=False)                
                 summary_frame_ids.append(summary_frame_id)
-                # print('apdeitoju')
+                # print('apdeitoju freimu # %s "%s"' % (summary_frame_id,frame.get('FrameText')))
             else:
                 frame_id = api.insert_summary_frame(frame, commit=False)
                 summary_frame_ids.append(frame_id)
+                # print('insertoju freimu # %s "%s"' % (frame_id,frame.get('FrameText')))
                 # print('insertoju %s' % (frame_id,))
 
         # commit changes (delete + insert in one transaction)
