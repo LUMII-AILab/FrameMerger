@@ -13,8 +13,8 @@ from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from db_config import api_conn_info
 
 def main():
-	new_cv_folder = '../SemanticAnalyzer/CVFactData/CVjson/'
-	old_cv_folder = '../SemanticAnalyzer/CVFactData/CVjson_20141024/'
+	new_cv_folder = '../SemanticAnalyzer/CVFactData/CVjson_20150122/'
+	old_cv_folder = '../SemanticAnalyzer/CVFactData/CVjson_20141231/'
 	# old_cv_folder = './testdata/'
 
 	conn = PostgresConnection(api_conn_info)
@@ -39,7 +39,9 @@ def main():
 				for nr, sentence in enumerate(old_doc.sentences):
 					new_nr = new_data.get(sentence.text)
 					if new_nr is None:
-						raise Exception('Pazudis teikums %s :(' % sentence.text)
+						continue
+						# Pieņemam, ka ja ir mainīts tad datus atstājam, kā bija
+						# raise Exception('Failaa %s pazudis teikums %s :(' % (file, sentence.text))
 
 					if new_nr != nr:
 						# print('%d -> %d\t%s\n\t\t%s' % (nr+1, new_nr+1, sentence.text, new_doc.sentences[nr].text))

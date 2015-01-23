@@ -13,4 +13,4 @@ find ./testdata_mk_parsed/ -type f -name \*.json.gz >> ./testdata_mk_parsed/json
 ./consolidate_frames.py --database=accept_test --dirty
 
 # Vērtējam šos datus
-./evaluate_mk.py --database=accept_test testdata_mk_parsed
+./evaluate_mk.py --database=accept_test testdata_mk_parsed > mktestdati.$(date +"%Y%m%d")

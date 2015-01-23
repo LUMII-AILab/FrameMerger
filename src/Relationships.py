@@ -28,6 +28,7 @@ inverted_relations_text = {
 'sieva' : {'male' : 'vīrs', 'female' : 'sieva'},
 'šķīries' : {'male' : 'šķīries', 'female' : 'šķīrusies'},
 'šķīrusies' : {'male' : 'šķīries', 'female' : 'šķīrusies'}
+# TODO - brāļadēls <> tēvabrālis šādā kontekstā neiet, par maz info lai pateiktu, piem, tēvabrālis vs mātesbrālis. 
 }
 
 secondary_relations_text = {
