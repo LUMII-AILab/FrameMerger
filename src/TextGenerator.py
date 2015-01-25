@@ -835,6 +835,27 @@ def get_cv_frame_category(mentioned_entities, frame):
                     category = 104 # Amatpersonas, īpašnieki, darbinieki
                 if owner and owner.get('Category') == 3: # ... ja pieder organizācijai
                     category = 113 # Saistītie uzņēmumi                        
+            elif frame_type == 26: # Nestrukturēta info
+                category = 114 # Default value - 'other'
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 3: # kategorija
+                        category = { # Kategoriju teksti no web ui entītijām letacv2 datubāzē 2015.01.25
+                            'Nodarbošanās un publiskā darbība' : 108,
+                            'Pamatdati' : 101,
+                            'Ģimene' : 113,
+                            'Tuvinieki' : 113,
+                            'Izglītība' : 103,
+                            'Darbs un nodarbošanās' : 104,
+                            'Sabiedriskās un politiskās darbības' : 108,
+                            'Uzņēmējdarbība' : 105,
+                            'Incidenti un tiesvedības' : 107,
+                            'Īpašumi un finanses' : 112,
+                            'Kontakti' : 102,
+                            'Amatpersonas, īpašnieki, darbinieki' : 104,
+                            'Nozares' : 105,
+                            'Apbalvojumi, interesanti fakti un izteicieni' : 110,
+                        }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
+                
             else:
                 category = 114 # Default value - 'other'
 
@@ -872,6 +893,26 @@ def get_cv_frame_category(mentioned_entities, frame):
                 category = 10 # Ziedojumi, dāvinājumi
             elif frame_type in [24]: # Publisks iepirkums
                 category = 11 # Publisks iepirkums
+            elif frame_type == 26: # Nestrukturēta info
+                category = 12 # Default value - 'other'                
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 3: # kategorija
+                        category = { # Kategoriju teksti no web ui entītijām letacv2 datubāzē 2015.01.25
+                            'Nodarbošanās un publiskā darbība' : 5,
+                            'Pamatdati' : 1,
+                            'Ģimene' : 2,
+                            'Tuvinieki' : 2,
+                            'Izglītība' : 3,
+                            'Darbs un nodarbošanās' : 4,
+                            'Sabiedriskās un politiskās darbības' : 5,
+                            'Uzņēmējdarbība' : 6,
+                            'Incidenti un tiesvedības' : 8,
+                            'Īpašumi un finanses' : 9,
+                            'Kontakti' : 12,
+                            'Amatpersonas, īpašnieki, darbinieki' : 12,
+                            'Nozares' : 12,
+                            'Apbalvojumi, interesanti fakti un izteicieni' : 7,
+                        }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
             else:
                 category = 12 # Default value - 'other'
 
