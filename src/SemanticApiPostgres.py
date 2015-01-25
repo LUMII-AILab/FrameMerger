@@ -634,11 +634,16 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
     # Pēc entītijas ID, atgriež visus blessed/anti-blessed summary freimus par viņu. 
     def blessed_summary_frame_data_by_entity_id(self, entityID):
         cursor = self.api.new_cursor()
-        main_sql = "select f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword, json_agg(r) as elements from SummaryFrames f\
-                    join (select frameid, roleid, entityid from SummaryFrameRoleData) r on r.frameid = f.frameid\
-                    where f.frameid in (select frameid from SummaryFrameRoleData where entityid = %s)\
-                      and blessed is true\
-                    group by f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword"
+        main_sql = """
+SELECT f.frameid, blessed, hidden, sourceid, frametypeid, summaryinfo, framecnt, targetword, elements, cvframecategory 
+FROM SummaryFrames f JOIN 
+    (SELECT frameid, json_agg(x) AS elements 
+    FROM (SELECT frameid, roleid, entityid FROM SummaryFrameRoleData
+        WHERE frameid IN (SELECT frameid FROM SummaryFrameRoleData WHERE entityid = %s)
+    ) x
+    GROUP BY frameid
+    ) r ON r.frameid = f.frameid
+WHERE blessed IS TRUE"""
         cursor.execute(main_sql, (entityID,))
         r = []
 
@@ -658,6 +663,7 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
                  'TargetWord': frame.targetword,
                  'SummaryInfo': frame.summaryinfo,
                  'FrameCnt': frame.framecnt,
+                 'CVFrameCategory': frame.cvframecategory,
             }
             r.append(frame_info)
         cursor.close()

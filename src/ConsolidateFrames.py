@@ -101,6 +101,7 @@ class BaseConsolidator(object):
                 item = deepcopy(res_buf[key][0])
                 item["SummarizedFrames"] = [f.get('FrameId') for f in res_buf[key]]
                 item["SummaryFrameID"] = sum_frame["FrameId"]
+                item["CVFrameCategory"] = sum_frame["CVFrameCategory"]
                 res.append(item)
             else: 
                 # Ieliekam placeholder - te ir summary freims ar 0 avotiem, kuram vienalga ir jāatjaunina info

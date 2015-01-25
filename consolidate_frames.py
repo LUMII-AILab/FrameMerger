@@ -68,7 +68,16 @@ def consolidate_frames(entity_list, api):
                 # Building frame descriptions
                 for frame in frames:
                     try:
-                        frametext, frame["Date"], frame["StartDate"], frame["CVFrameCategory"] = get_frame_data(mentioned_entities, frame)
+                        frametext, frame["Date"], frame["StartDate"], cv_frame_category = get_frame_data(mentioned_entities, frame)
+                        if frame.get('CVFrameCategory'):
+                            manual_categories = frame.get('CVFrameCategory').get('manual')
+                            cv_frame_category['manual'] = manual_categories
+                            if manual_categories and isinstance(manual_categories, dict):
+                                for entity_id, res in manual_categories.iteritems():
+                                    if res: # the expected format is - "123456":true
+                                        cv_frame_category[entity_id] = frame.get('CVFrameCategory').get(entity_id) # keep the old value
+
+                        frame['CVFrameCategory'] = cv_frame_category
                     except KeyError as e:
                         log.exception("Key error in get_frame_data:\n%s", e)
                         frametext = None
