@@ -73,7 +73,7 @@ def consolidate_frames(entity_list, api):
                             manual_categories = frame.get('CVFrameCategory').get('manual')
                             cv_frame_category['manual'] = manual_categories
                             if manual_categories and isinstance(manual_categories, dict):
-                                for entity_id, res in manual_categories.iteritems():
+                                for entity_id, res in manual_categories.items():
                                     if res: # the expected format is - "123456":true
                                         cv_frame_category[entity_id] = frame.get('CVFrameCategory').get(entity_id) # keep the old value
 
