@@ -212,9 +212,9 @@ class SemanticApiPostgres(object):
             sql = "select entityid, name, category from entities where deleted is false and entityid = %s"
         else:
             sql = "select e.entityid, e.name, e.category, e.nameinflections, array_agg(n.name) aliases, min(i.outerid) ids from entities e \
-                        left outer join entityothernames n on e.entityid = n.entityid \
+                        left outer join (select * from entityothernames where deleted is false) n on e.entityid = n.entityid \
                         left outer join entityouterids i on e.entityid = i.entityid \
-                        where e.entityid = %s and e.deleted is false \
+                        where e.entityid = %s and e.deleted is false\
                         group by e.entityid, e.name, e.category, e.nameinflections"
 
         res = self.api.query(sql, (e_id,) )
@@ -246,7 +246,7 @@ class SemanticApiPostgres(object):
         # tikai entīšu sarakstu (kamēr SemanticApi.* atgriež JSON struktūru
         # kur ir "iepakots" ID saraksts)
         # sql = "select entityid from entityothernames where lower(name) = %s"
-        sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false"
+        sql = "select distinct e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = %s and e.deleted is false and n.deleted is false"
         res = self.api.query(sql, (name.lower().strip(),) )
 
         return list(map(lambda x: x[0], res)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
@@ -258,7 +258,7 @@ class SemanticApiPostgres(object):
         names2=[]
         for name in names:
             names2.append(name.lower().strip())
-        sql = "select distinct n.name, e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false"        
+        sql = "select distinct n.name, e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false and n.deleted is false"        
         res = self.api.query(sql, (names2, ) )
 
         return res
