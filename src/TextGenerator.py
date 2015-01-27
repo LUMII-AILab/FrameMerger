@@ -345,9 +345,12 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             targetword = frame.get('TargetWord')
+            if targetword and targetword.lower() in ['izstājies', 'izstājusies']:
+                return laiks + ' ' + elem('Biedrs') + statuss + ' izstājies no ' + elem('Organizācija', 'Ģenitīvs') 
+
             verb = ' ir '
-            if targetword and targetword.lower() in ['izstājies', 'izstājusies', 'iestājies', 'iestājusies']:
-                verb = ' bija '
+            if targetword and targetword.lower() in ['iestājies', 'iestājusies']:
+                verb = ' iestājies '
 
             return laiks + ' ' + elem('Biedrs') + verb + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
 
@@ -831,9 +834,9 @@ def get_cv_frame_category(mentioned_entities, frame):
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 1: # īpašnieks
                         owner = mentioned_entities[element2["Value"]["Entity"]]
-                if owner and owner.get('Category') == 2: # ... ja pieder personai
+                if owner and owner.get('Category') == 3: # ... ja pieder personai
                     category = 104 # Amatpersonas, īpašnieki, darbinieki
-                if owner and owner.get('Category') == 3: # ... ja pieder organizācijai
+                if owner and owner.get('Category') == 2: # ... ja pieder organizācijai
                     category = 113 # Saistītie uzņēmumi                        
             elif frame_type == 26: # Nestrukturēta info
                 category = 114 # Default value - 'other'
