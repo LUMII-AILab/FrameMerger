@@ -479,6 +479,12 @@ def clearOrgName(name):
     return norm
 
 def inflectEntity(name, category):
+    # Nekonkrētajām personu entītijām formā "Arvīds (Pētera Vaska tēvs)" locījumos liekam tikai to daļu, kas ir ārpus iekavām
+    if category == 'person':
+        match = re.match(r'([A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+) \(.*\)', name, re.UNICODE)
+        if match:
+            name = match.group(1)
+
     query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), quote(name.encode('utf8')).replace('/','%2F'), category) 
     r = requests.get(query) 
     if r.status_code != 200:
