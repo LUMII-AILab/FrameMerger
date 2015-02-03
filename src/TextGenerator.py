@@ -103,7 +103,7 @@ def get_frame_data(mentioned_entities, frame):
                       - element: %s
                       - role data: %s
                       """, frame, text, role, elem(role), roles)
-                    text = text + ' ' + unicode(role) + ':' + unicode(elem(role))
+                    text = text + ' ' + str(role) + ':' + str(elem(role))
 
             return text
 
@@ -166,8 +166,11 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
+            inversaas_relaacijas_lokaamais_partneris = 'Partneris_1' # šis ir mazliet wtf, bet tā sanāk - ja inversā relācija ir "P2 ir P1 tēvs/māte", tad dzimti jāņem no P1
+            if elem('Attiecības') in ('šķīries', 'šķīrusies', 'precējies', 'precējusies'):
+                inversaas_relaacijas_lokaamais_partneris = 'Partneris_2' # ... bet ja inversā relācija ir "P2 ir precējies/usies ar P1", tad dzimti jāņem no P2
             gender = 'male'
-            if elem('Partneris_1', 'Dzimte') == 'Sieviešu':
+            if elem(inversaas_relaacijas_lokaamais_partneris, 'Dzimte') == 'Sieviešu':
                 gender = 'female'
             inv_relation = Relationships.inverted_relations_text.get(elem('Attiecības'))
 
@@ -186,14 +189,13 @@ def get_frame_data(mentioned_entities, frame):
 
                 if elem(p2) is None:
                     return laiks + ' ' +  elem(p1) + ' ir ' + rel
-                # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
                 else:
                     return laiks + ' ' +  elem(p1, 'Ģenitīvs') + ' ' + rel + ' ir ' + elem(p2)
 
             if inv_relation and elem('Partneris_2'):
                 # print('%s -> %s' % (elem('Attiecības'), inv_relation.get(gender)))
-                return json.dumps( { elem('Partneris_1','ID') : desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2'),
-                                     elem('Partneris_2','ID') : desc_relations(inv_relation.get(gender), 'Partneris_2', 'Partneris_1') }, ensure_ascii=False )
+                return json.dumps( { elem('Partneris_1','ID') : desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2').strip(),
+                                     elem('Partneris_2','ID') : desc_relations(inv_relation.get(gender), 'Partneris_2', 'Partneris_1').strip() }, ensure_ascii=False )
             else:
                 return desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2')
 
@@ -346,11 +348,11 @@ def get_frame_data(mentioned_entities, frame):
 
             targetword = frame.get('TargetWord')
             if targetword and targetword.lower() in ['izstājies', 'izstājusies']:
-                return laiks + ' ' + elem('Biedrs') + statuss + ' izstājies no ' + elem('Organizācija', 'Ģenitīvs') 
+                return laiks + ' ' + elem('Biedrs') + statuss + ' ' + targetword + ' no ' + elem('Organizācija', 'Ģenitīvs') 
 
-            verb = ' ir '
+            verb = ' bija '
             if targetword and targetword.lower() in ['iestājies', 'iestājusies']:
-                verb = ' iestājies '
+                verb = ' ' + targetword + ' '
 
             return laiks + ' ' + elem('Biedrs') + verb + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
 
@@ -418,7 +420,7 @@ def get_frame_data(mentioned_entities, frame):
                 org = ''
                 if elem('Organizētājs') is not None:
                     org = ', kuru organizēja ' + elem('Organizētājs')
-                return laiks + vieta + elem('Dalībnieks') + veids + ' piedalījās' + elem('Notikums', 'Akuzatīvs') + org
+                return laiks + vieta + ' ' + elem('Dalībnieks') + veids + ' piedalījās ' + elem('Notikums', 'Lokatīvs') + org
             else:
                 if elem('Organizētājs') is not None:
                     return laiks + vieta + ' ' + elem('Organizētājs') + veids + ' organizēja ' + elem('Notikums', 'Akuzatīvs')
@@ -539,7 +541,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Uzbrucējs') is not None:
                 # ir gan uzbrucējs, gan upuris: LAIKS VIETA APSTĀKĻI UZBRUCĒJS VEIDS uzbruka UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
-                return laiks + vieta + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
+                return laiks + vieta + ' ' + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + sekas + veids
             else:
                 # ir tikai upuris: LAIKS VIETA APSTĀKĻI notika uzbrukums UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
                 return laiks + vieta + apstaaklji + ' notika uzbrukums ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
@@ -581,7 +583,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Sasniegums') is None and elem('Rangs') is None:
                 targetword = frame.get('TargetWord')
-                if targetword and targetword.lower() in ['iekļauts', 'iekļauta', 'iekļāvis', 'iekļāvusi', 'minēts', 'minēta', 'minējis', 'minējusi']:
+                if targetword and targetword.lower() in ['iekļauts', 'iekļauta', 'iekļāvis', 'iekļāvusi', 'ierindots', 'ierindota', 'minēts', 'minēta', 'minējis', 'minējusi']:
                     if org.endswith(','):
                         org = ', kuru organizēja ' + elem('Organizētājs')
                     if targetword and targetword.lower() in ['minējis', 'minējusi']:
@@ -862,7 +864,7 @@ def get_cv_frame_category(mentioned_entities, frame):
             else:
                 category = 114 # Default value - 'other'
 
-            result[unicode(element["Value"]["Entity"])] = category
+            result[str(element["Value"]["Entity"])] = category
 
         if entity.get('Category') == 3: # Person
             if frame_type in [0,1,2,4,5,8]: # Dzimšana, vecums, miršana, pseidonīmi, dzīvesvieta, izcelsme
@@ -919,7 +921,7 @@ def get_cv_frame_category(mentioned_entities, frame):
             else:
                 category = 12 # Default value - 'other'
 
-            result[unicode(element["Value"]["Entity"])] = category
+            result[str(element["Value"]["Entity"])] = category
 
             
 
