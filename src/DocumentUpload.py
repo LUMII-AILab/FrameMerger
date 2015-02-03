@@ -489,7 +489,7 @@ def inflectEntity(name, category):
     r = requests.get(query) 
     if r.status_code != 200:
         log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
-        return '{"Nominatīvs":%s}' % json.dumps(name)
+        return '{"Nominatīvs":%s}' % json.dumps(name, ensure_ascii=False)
     return r.text # TODO - check if valid JSON ?
 
 # Vai forma izskatās pēc 'pareizas' kas būtu rādāma UI - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.

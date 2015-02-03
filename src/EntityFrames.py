@@ -59,7 +59,7 @@ class EntityFrames(object):
         if self.frames is not None:
             for item in self.frames:
                 if item.get("FrameCnt") is None:
-                    item["FrameCnt"] = 1
+                    item["FrameCnt"] = 0
 
     def entity_name(self):
         # if cases when entity is not found, entity_data_by_id returns None
