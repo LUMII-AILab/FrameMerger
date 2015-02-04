@@ -341,12 +341,18 @@ def start_logging(log_level = log.ERROR):
     filename = "consolidate_frames-%s.log" % (datetime.now().strftime("%Y_%m_%d-%H_%M"))
     filename = os.path.join(log_dir, filename)
 
-    log.basicConfig(
-        filename = filename,
-        level = log_level,
-        datefmt= "%Y-%m-%d %H:%M:%S",
-        format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s",
-    )
+    # Windows + Python 3: failam, kurā tiek log-ots, vajag norādīt encoding.
+    log.getLogger().setLevel(log_level)
+    handler = log.FileHandler(filename, encoding='utf-8')
+    handler.setFormatter(log.Formatter(datefmt= "%Y-%m-%d %H:%M:%S", fmt = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"))
+    log.getLogger().addHandler(handler)
+#    log.getLogger().removeHandler('std')
+#    log.basicConfig(
+#        filename = filename,
+#        level = log_level,
+#        datefmt= "%Y-%m-%d %H:%M:%S",
+#        format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s",
+#    )
 
     log.getLogger("SemanticApiPostgres").level = log.INFO
 

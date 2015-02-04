@@ -41,13 +41,18 @@ def start_logging(log_level = log.ERROR):
     filename = "uploadJSON-%s.log" % (datetime.now().strftime("%Y_%m_%d-%H_%M"))
     filename = os.path.join(log_dir, filename)
 
-    log.basicConfig(
-        filename = filename,
-        level = log_level,
-        datefmt= "%Y-%m-%d %H:%M:%S",
-        format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s",
-    )
-
+    #log.basicConfig(
+    #    level = log_level,
+    #    datefmt= "%Y-%m-%d %H:%M:%S",
+    #    format = "%(asctime)s: %(name)s: %(levelname)s: %(message)s",
+    #)
+    # Windows + Python 3: failam, kurā tiek log-ots, vajag norādīt encoding.
+    log.getLogger().setLevel(log_level)
+    handler = log.FileHandler(filename, encoding='utf-8')
+    handler.setFormatter(log.Formatter(datefmt= "%Y-%m-%d %H:%M:%S", fmt = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"))
+    log.getLogger().addHandler(handler)
+#    log.getLogger().removeHandler('std')
+	
     log.getLogger("SemanticApiPostgres").level = log.INFO
 
 def main():
@@ -97,10 +102,10 @@ def main():
             try:
                 document = None
                 if filename.endswith('.json'):
-                    with open(filename) as f:
+                    with open(filename, encoding='utf-8') as f:
                         document = json.load(f, object_hook=Dict)
                 if filename.endswith('.json.gz'):
-                    with gzip.open(filename, 'rb') as f:
+                    with gzip.open(filename, 'rt', encoding='utf-8') as f:
                         document = json.load(f, object_hook=Dict)
 
                 if document:
