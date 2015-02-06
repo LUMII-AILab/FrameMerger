@@ -859,6 +859,13 @@ def get_cv_frame_category(mentioned_entities, frame):
                             'Amatpersonas, īpašnieki, darbinieki' : 104,
                             'Nozares' : 105,
                             'Apbalvojumi, interesanti fakti un izteicieni' : 110,
+                            'Apbalvojumi, sasniegumi' : 110,
+                            'Ziedojumi, dāvinājumi' : 106,
+                            'Publiskie iepirkumi' : 11,
+                            'Produkti' : 109 ,
+                            'Finanses' : 112,
+                            'Saistītie uzņēmumi' : 113,
+                            'Cits' : 114                        
                         }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
                 
             else:
@@ -917,6 +924,13 @@ def get_cv_frame_category(mentioned_entities, frame):
                             'Amatpersonas, īpašnieki, darbinieki' : 12,
                             'Nozares' : 12,
                             'Apbalvojumi, interesanti fakti un izteicieni' : 7,
+                            'Apbalvojumi, sasniegumi' : 7,
+                            'Ziedojumi, dāvinājumi' : 10,
+                            'Publiskie iepirkumi' : 11,
+                            'Produkti' : 12 ,
+                            'Finanses' : 9,
+                            'Saistītie uzņēmumi' : 9,
+                            'Cits' : 12
                         }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
             else:
                 category = 12 # Default value - 'other'
