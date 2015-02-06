@@ -103,7 +103,11 @@ def get_frame_data(mentioned_entities, frame):
                       - element: %s
                       - role data: %s
                       """, frame, text, role, elem(role), roles)
-                    text = text + ' ' + str(role) + ':' + str(elem(role))
+                    try:
+                        text = text + ' ' + unicode(role) + ':' + unicode(elem(role))
+                    except NameError:
+                        text = text + ' ' + str(role) + ':' + str(elem(role))
+                        # Python 3 nav unicode() funkcijas, jo visi stringi ir unicode
 
             return text
 
@@ -871,7 +875,11 @@ def get_cv_frame_category(mentioned_entities, frame):
             else:
                 category = 114 # Default value - 'other'
 
-            result[str(element["Value"]["Entity"])] = category
+            try:
+                result[unicode(element["Value"]["Entity"])] = category
+            except NameError:
+                result[str(element["Value"]["Entity"])] = category
+                # Python 3 nav unicode() funkcijas, jo visi stringi ir unicode
 
         if entity.get('Category') == 3: # Person
             if frame_type in [0,1,2,4,5,8]: # Dzimšana, vecums, miršana, pseidonīmi, dzīvesvieta, izcelsme
@@ -935,9 +943,11 @@ def get_cv_frame_category(mentioned_entities, frame):
             else:
                 category = 12 # Default value - 'other'
 
-            result[str(element["Value"]["Entity"])] = category
-
-            
+            try:
+                result[unicode(element["Value"]["Entity"])] = category
+            except NameError:
+                result[str(element["Value"]["Entity"])] = category
+                # Python 3 nav unicode() funkcijas, jo visi stringi ir unicode
 
     if result:
         return result

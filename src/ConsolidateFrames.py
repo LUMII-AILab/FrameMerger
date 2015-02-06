@@ -24,7 +24,7 @@ from Relationships import relation_source
 
 # ---------------------------------------- 
 
-INFO_STR = os.getenv("LOGNAME") + " | " + __name__ + ": "
+INFO_STR = (os.getenv("LOGNAME") or "") + " | " + __name__ + ": "
 
 def get_info_str(cons_obj):
     """
