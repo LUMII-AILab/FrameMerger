@@ -209,7 +209,10 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             if elem('Tips') is None:
-                return elem('Entītija') + ' saukts arī par ' + elem('Vārds')
+                if elem('Entītija', 'Dzimte') == 'Sieviešu':
+                    return elem('Entītija') + ' saukta arī par ' + elem('Vārds')
+                else:
+                    return elem('Entītija') + ' saukts arī par ' + elem('Vārds')
             else:
                 return elem('Entītija', 'Ģenitīvs') + ' ' + elem('Tips') + ' ir ' + elem('Vārds')
 
@@ -330,7 +333,7 @@ def get_frame_data(mentioned_entities, frame):
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
             veids = ''
             if elem('Veids') is not None:
-                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+                veids = ' ' + elem('Veids', 'Nelocīts') 
             amats = ''
             naakamais = ''
             if elem('Nākamais_darbinieks') is not None:
@@ -507,7 +510,7 @@ def get_frame_data(mentioned_entities, frame):
                 tiesa = ' ' + elem('Tiesa', 'Lokatīvs')
             apsuudziiba = ''
             if elem('Apsūdzība') is not None:
-                apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība')
+                apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība', 'Nelocīts')
             prasiitaajs = ''
             if elem('Prasītājs') is not None:
                 prasiitaajs = ', prasītājs - ' + elem('Prasītājs')
@@ -591,7 +594,10 @@ def get_frame_data(mentioned_entities, frame):
                     if org.endswith(','):
                         org = ', kuru organizēja ' + elem('Organizētājs')
                     if targetword and targetword.lower() in ['minējis', 'minējusi']:
-                        targetword = 'minēts'
+                        if elem('Dalībnieks', 'Dzimte') == 'Sieviešu':
+                            targetword = 'minēta'    
+                        else:
+                            targetword = 'minēts'
                     return laiks + vieta + daliibnieks + ' ' + targetword + org2 + sacensiibas + org + rezultaats + citi
                 else:
                     log.debug("Sasniegums bez sasnieguma :( %s", frame)
