@@ -203,8 +203,9 @@ def load_entities(filename):
 
 def reinflect_entities():
     print('Re-inflecting all entities!')
-    # res = api.api.query("select entityid, name, categorynameeng, nameinflections from entities e JOIN entitycategories c ON e.category = c.categoryid", None )
-    res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where entityid = 2500118", None )
+    res = api.api.query("select entityid, name, categorynameeng, nameinflections from entities e JOIN entitycategories c ON e.category = c.categoryid", None )
+    
+    # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where entityid = 2500118", None )
     # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 1 and dataset = 1", None )    
     # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 3", None )    
 
@@ -321,7 +322,7 @@ def main():
     # load_education()
     # load_parties()
     # load_cv_entities("entity_fixtures/gold/Organizācijas no LETA20150122.json")
-    load_cv_entities("entity_fixtures/gold/Personas no LETA20150122.json")
+    # load_cv_entities("entity_fixtures/gold/Personas no LETA20150122.json")
     # load_entities("entity_fixtures/gold/Vietas no LĢIS.json")
     # load_entities("entity_fixtures/gold/Personas no firmu exceļa.json")
     # load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
