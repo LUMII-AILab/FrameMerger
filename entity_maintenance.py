@@ -155,6 +155,12 @@ def load_cv_entities(filename):
     with open(filename) as f:
         cv_entities = json.load(f)
 
+    query = """
+    SELECT e.entityid, NAME, dataset, cv_status, i.outerid
+    FROM entities e JOIN entityouterids i ON e.entityid = i.entityid
+    where i.outerid = %s
+    """
+
     for entity in cv_entities:
         name = entity.get('representative')
         aliases = entity.get('aliases')
@@ -163,10 +169,15 @@ def load_cv_entities(filename):
             category = 2
             aliases = set(orgAliases(name)).union(aliases)
         if entity.get('type') == 'person':
-            category = 3
+            category = 3        
         
-        
-        api.insertEntity(name, aliases, category, outerids=[entity.get('uqid')], inflections = json.dumps(entity.get('inflections'), ensure_ascii=False), commit = False)
+        res = api.api.query(query, (entity.get('uqid'),) )
+        if res and res[0].dataset == 3:
+            continue
+        print('Skatamies uz %s - ID %s' % (name,entity.get('uqid')))
+        print(res)
+
+        api.insertEntity(name, aliases, category, outerids=[entity.get('uqid')], cv_status=1, source='LETA 20150122 CV apdeita entītiju ielāde', inflections = json.dumps(entity.get('inflections'), ensure_ascii=False), commit = False)
     conn.commit()
     print("Entities from file %s loaded!" % filename)
 
@@ -306,13 +317,11 @@ order by sentenceid desc
         #     break
 
 def main():
-    print(sys.version)
-    print(sys.stdout.encoding)
     # create_dates()
     # load_education()
     # load_parties()
-    # load_cv_entities("entity_fixtures/gold/Organizācijas no LETA.json")
-    # load_cv_entities("entity_fixtures/gold/Personas no LETA.json")
+    # load_cv_entities("entity_fixtures/gold/Organizācijas no LETA20150122.json")
+    load_cv_entities("entity_fixtures/gold/Personas no LETA20150122.json")
     # load_entities("entity_fixtures/gold/Vietas no LĢIS.json")
     # load_entities("entity_fixtures/gold/Personas no firmu exceļa.json")
     # load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
@@ -341,7 +350,7 @@ if __name__ == "__main__":
         elif opt == '--reinflect':
             reinflect = True
 
-    conn = PostgresConnection(api_conn_info, dataset=2)
+    conn = PostgresConnection(api_conn_info, dataset=4)
     api = SemanticApiPostgres(conn)
 
     if cleardb:
@@ -349,4 +358,5 @@ if __name__ == "__main__":
     else:
         if reinflect:
             reinflect_entities()
-        # main()
+
+        main()
