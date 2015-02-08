@@ -71,6 +71,8 @@ def consolidate_frames(entity_list, api):
                         frametext, frame["Date"], frame["StartDate"], cv_frame_category = get_frame_data(mentioned_entities, frame)
                         if frame.get('CVFrameCategory'):
                             manual_categories = frame.get('CVFrameCategory').get('manual')
+                            if not cv_frame_category:
+                                cv_frame_category = {}
                             cv_frame_category['manual'] = manual_categories
                             if manual_categories and isinstance(manual_categories, dict):
                                 for entity_id, res in manual_categories.items():
