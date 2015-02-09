@@ -454,7 +454,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Ienākumi') is not None:
                 if elem('Peļņa') is not None: # ir abi divi
-                    return laiks + elem('Organizācija', 'Ģenitīvs') + ' apgrozījums bija ' + elem('Ienākumi') + ', bet peļņa - ' + elem('Peļņa') + vieniibas + pieaugums + avots 
+                    return laiks + ' ' + elem('Organizācija', 'Ģenitīvs') + ' apgrozījums bija ' + elem('Ienākumi') + ', bet peļņa - ' + elem('Peļņa') + vieniibas + pieaugums + avots 
                 else: # tikai ienākumi
                     return elem('Organizācija', 'Ģenitīvs') + ' apgrozījums' + laiks + ' bija ' + elem('Ienākumi') + vieniibas + pieaugums + avots 
             else:
@@ -833,9 +833,9 @@ def get_cv_frame_category(mentioned_entities, frame):
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 2: # dibinātājs
                         creator = mentioned_entities[element2["Value"]["Entity"]]
-                if creator and creator.get('Category') == 2: # ... ja dibināja persona
+                if creator and creator.get('Category') == 3: # ... ja dibināja persona
                     category = 104 # Amatpersonas, īpašnieki, darbinieki
-                if creator and creator.get('Category') == 3: # ... ja dibināja organizācija
+                if creator and creator.get('Category') == 2: # ... ja dibināja organizācija
                     category = 113 # Saistītie uzņēmumi
             elif frame_type == 3: # Attiecības
                 # LETAs dokumentā tur nezkāpēc kautkādas prasības, kas nesakrīt ar freimu definīciju - org<>pers attiecības "amatpersonas, īpašnieki, darbinieki" nedrīkst būt šajā freima veidā
