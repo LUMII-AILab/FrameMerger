@@ -840,6 +840,11 @@ def get_cv_frame_category(mentioned_entities, frame):
             elif frame_type == 3: # Attiecības
                 # LETAs dokumentā tur nezkāpēc kautkādas prasības, kas nesakrīt ar freimu definīciju - org<>pers attiecības "amatpersonas, īpašnieki, darbinieki" nedrīkst būt šajā freima veidā
                 category = 113 # Saistītie uzņēmumi                
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 4: # attiecību veids
+                        attieciibas = mentioned_entities[element2["Value"]["Entity"]]
+                if attieciibas.get('Name').lower() == 'struktūrvienība':
+                    category = 115 # Struktūrvienības
             elif frame_type == 18: # Īpašums
                 owner = None
                 category = 114 # Default value - 'other'
