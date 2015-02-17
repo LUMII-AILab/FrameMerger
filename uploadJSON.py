@@ -51,7 +51,6 @@ def start_logging(log_level = log.ERROR):
     handler = log.FileHandler(filename, encoding='utf-8')
     handler.setFormatter(log.Formatter(datefmt= "%Y-%m-%d %H:%M:%S", fmt = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"))
     log.getLogger().addHandler(handler)
-#    log.getLogger().removeHandler('std')
 	
     log.getLogger("SemanticApiPostgres").level = log.INFO
 
