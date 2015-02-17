@@ -225,6 +225,11 @@ def get_frame_data(mentioned_entities, frame):
             if elem('Biežums') is not None:
                 biezhums = ' ' + elem('Biežums')
 
+            targetword = frame.get('TargetWord')
+            if targetword and targetword.lower() in ['adrese'] and elem('Vieta', 'Nelocīts'):
+                # Lai nemēģina locīt tādas frāzes kā "Brīvības 68, Rīga, LV-1011"
+                return laiks + ' ' + elem('Rezidents') + biezhums + ' adrese: ' + elem('Vieta', 'Nelocīts')
+
             if elem('Rezidents', 'Kategorija') == 2: # Organizācija
                 return laiks + ' ' + elem('Rezidents') + biezhums + ' atrodas' + vieta
 
@@ -302,7 +307,7 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             darbavieta = ''
-            if elem('Darbavieta') is not None:
+            if elem('Darbavieta', 'Lokatīvs') is not None:
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
             veids = ''
             if elem('Veids') is not None:
@@ -548,7 +553,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Uzbrucējs') is not None:
                 # ir gan uzbrucējs, gan upuris: LAIKS VIETA APSTĀKĻI UZBRUCĒJS VEIDS uzbruka UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
-                return laiks + vieta + ' ' + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + sekas + veids
+                return laiks + vieta + ' ' + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + '.' + iemesls + sekas + veids
             else:
                 # ir tikai upuris: LAIKS VIETA APSTĀKĻI notika uzbrukums UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
                 return laiks + vieta + apstaaklji + ' notika uzbrukums ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
@@ -579,7 +584,12 @@ def get_frame_data(mentioned_entities, frame):
                     core_verb = ' bija '
                     rangs = elem('Rangs')
                 else:
-                    rangs = elem('Rangs', 'Akuzatīvs')
+                    targetword = frame.get('TargetWord')
+                    if targetword and targetword.lower() in ['ierindots', 'ierindota']:
+                        core_verb = ' ' + targetword + ' '
+                        rangs = elem('Rangs', 'Lokatīvs')
+                    else:
+                        rangs = elem('Rangs', 'Akuzatīvs')
 
             rezultaats = ''
             if elem('Rezultāts') is not None:
@@ -598,6 +608,7 @@ def get_frame_data(mentioned_entities, frame):
                             targetword = 'minēta'    
                         else:
                             targetword = 'minēts'
+
                     return laiks + vieta + daliibnieks + ' ' + targetword + org2 + sacensiibas + org + rezultaats + citi
                 else:
                     log.debug("Sasniegums bez sasnieguma :( %s", frame)
