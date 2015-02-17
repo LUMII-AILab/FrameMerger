@@ -95,11 +95,44 @@ secondary_relations_text = {
 	'sieva' : {'result' : 'māte', 'blessed' : False},
 	'tēvs' : {'result' : 'vectēvs', 'blessed' : True},
 	'māte' : {'result' : 'vecmamma', 'blessed' : True}
+},
+'vīrs' : {
+	'brālis' : {'result' : 'vīrabrālis', 'blessed' : True},
+	'māsa' : {'result' : 'vīramāsa', 'blessed' : True},
+	'dēls' : {'result' : 'dēls', 'blessed' : False},
+	'meita' : {'result' : 'meita', 'blessed' : False},
+	'tēvs' : {'result' : 'vīratēvs', 'blessed' : True},
+	'māte' : {'result' : 'vīramāte', 'blessed' : True}
+},
+'precējusies' : {
+	'brālis' : {'result' : 'vīrabrālis', 'blessed' : True},
+	'māsa' : {'result' : 'vīramāsa', 'blessed' : True},
+	'dēls' : {'result' : 'dēls', 'blessed' : False},
+	'meita' : {'result' : 'meita', 'blessed' : False},
+	'tēvs' : {'result' : 'vīratēvs', 'blessed' : True},
+	'māte' : {'result' : 'vīramāte', 'blessed' : True}
+},
+'sieva' : {
+	'brālis' : {'result' : 'sievasbrālis', 'blessed' : True},
+	'māsa' : {'result' : 'sievasmāsa', 'blessed' : True},
+	'dēls' : {'result' : 'dēls', 'blessed' : False},
+	'meita' : {'result' : 'meita', 'blessed' : False},
+	'tēvs' : {'result' : 'sievastēvs', 'blessed' : True},
+	'māte' : {'result' : 'sievasmāte', 'blessed' : True}
+},
+'precējies' : {
+	'brālis' : {'result' : 'sievasbrālis', 'blessed' : True},
+	'māsa' : {'result' : 'sievasmāsa', 'blessed' : True},
+	'dēls' : {'result' : 'dēls', 'blessed' : False},
+	'meita' : {'result' : 'meita', 'blessed' : False},
+	'tēvs' : {'result' : 'sievastēvs', 'blessed' : True},
+	'māte' : {'result' : 'sievasmāte', 'blessed' : True}
 }
 }
-
 __inverted_relations = None
 __secondary_relations = None
+
+relation_source = 'Pastarpināto attiecību veidošana'
 
 def inverted_relations(api):
 	global __inverted_relations
@@ -261,7 +294,7 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 								{'Key':1,'Value': {'Entity': entity_a}},
 								{'Key':2,'Value': {'Entity': entity_c}},
 								{'Key':4,'Value': {'Entity': result_relation.get('result')}}
-								], 'IsBlessed':result_relation.get('blessed'), 'FrameType' : 3, 'SourceId' : 'Pastarpināto attiecību veidošana', 'IsHidden' : False} )
+								], 'IsBlessed':result_relation.get('blessed'), 'FrameType' : 3, 'SourceId' : relation_source, 'IsHidden' : False} )
 							# Ja pievilktā attiecību veida entītija nav listē, tad viņas dati jāpaņem, lai ir korekta verbalizācija
 							ensure_entity(result_relation.get('result'), mentioned_entities, api)
 

@@ -170,8 +170,11 @@ def get_frame_data(mentioned_entities, frame):
                 log.debug("Attiecības bez pilna komplekta :( %s", frame)
                 return simpleVerbalization()
 
+            inversaas_relaacijas_lokaamais_partneris = 'Partneris_1' # šis ir mazliet wtf, bet tā sanāk - ja inversā relācija ir "P2 ir P1 tēvs/māte", tad dzimti jāņem no P1
+            if elem('Attiecības') in ('šķīries', 'šķīrusies', 'precējies', 'precējusies'):
+                inversaas_relaacijas_lokaamais_partneris = 'Partneris_2' # ... bet ja inversā relācija ir "P2 ir precējies/usies ar P1", tad dzimti jāņem no P2
             gender = 'male'
-            if elem('Partneris_1', 'Dzimte') == 'Sieviešu':
+            if elem(inversaas_relaacijas_lokaamais_partneris, 'Dzimte') == 'Sieviešu':
                 gender = 'female'
             inv_relation = Relationships.inverted_relations_text.get(elem('Attiecības'))
 
@@ -190,14 +193,13 @@ def get_frame_data(mentioned_entities, frame):
 
                 if elem(p2) is None:
                     return laiks + ' ' +  elem(p1) + ' ir ' + rel
-                # TODO - te jāšķiro 'Jāņa sieva ir Anna' vs 'Jānis apprecējās ar Annu', ko atšķirt var tikai skatoties uz Attiecību lauku
                 else:
                     return laiks + ' ' +  elem(p1, 'Ģenitīvs') + ' ' + rel + ' ir ' + elem(p2)
 
             if inv_relation and elem('Partneris_2'):
                 # print('%s -> %s' % (elem('Attiecības'), inv_relation.get(gender)))
-                return json.dumps( { elem('Partneris_1','ID') : desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2'),
-                                     elem('Partneris_2','ID') : desc_relations(inv_relation.get(gender), 'Partneris_2', 'Partneris_1') }, ensure_ascii=False )
+                return json.dumps( { elem('Partneris_1','ID') : desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2').strip(),
+                                     elem('Partneris_2','ID') : desc_relations(inv_relation.get(gender), 'Partneris_2', 'Partneris_1').strip() }, ensure_ascii=False )
             else:
                 return desc_relations(elem('Attiecības'), 'Partneris_1', 'Partneris_2')
 
@@ -207,7 +209,10 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             if elem('Tips') is None:
-                return elem('Entītija') + ' saukts arī par ' + elem('Vārds')
+                if elem('Entītija', 'Dzimte') == 'Sieviešu':
+                    return elem('Entītija') + ' saukta arī par ' + elem('Vārds')
+                else:
+                    return elem('Entītija') + ' saukts arī par ' + elem('Vārds')
             else:
                 return elem('Entītija', 'Ģenitīvs') + ' ' + elem('Tips') + ' ir ' + elem('Vārds')
 
@@ -219,6 +224,11 @@ def get_frame_data(mentioned_entities, frame):
             biezhums = ''
             if elem('Biežums') is not None:
                 biezhums = ' ' + elem('Biežums')
+
+            targetword = frame.get('TargetWord')
+            if targetword and targetword.lower() in ['adrese'] and elem('Vieta', 'Nelocīts'):
+                # Lai nemēģina locīt tādas frāzes kā "Brīvības 68, Rīga, LV-1011"
+                return laiks + ' ' + elem('Rezidents') + biezhums + ' adrese: ' + elem('Vieta', 'Nelocīts')
 
             if elem('Rezidents', 'Kategorija') == 2: # Organizācija
                 return laiks + ' ' + elem('Rezidents') + biezhums + ' atrodas' + vieta
@@ -297,7 +307,7 @@ def get_frame_data(mentioned_entities, frame):
                 return simpleVerbalization()
 
             darbavieta = ''
-            if elem('Darbavieta') is not None:
+            if elem('Darbavieta', 'Lokatīvs') is not None:
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
             veids = ''
             if elem('Veids') is not None:
@@ -328,7 +338,7 @@ def get_frame_data(mentioned_entities, frame):
                 darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
             veids = ''
             if elem('Veids') is not None:
-                veids = ' ' + elem('Veids') # TODO - jānočeko kādi reāli veidi parādās, jo locījumu īsti nevar saprast
+                veids = ' ' + elem('Veids', 'Nelocīts') 
             amats = ''
             naakamais = ''
             if elem('Nākamais_darbinieks') is not None:
@@ -350,11 +360,11 @@ def get_frame_data(mentioned_entities, frame):
 
             targetword = frame.get('TargetWord')
             if targetword and targetword.lower() in ['izstājies', 'izstājusies']:
-                return laiks + ' ' + elem('Biedrs') + statuss + ' izstājies no ' + elem('Organizācija', 'Ģenitīvs') 
+                return laiks + ' ' + elem('Biedrs') + statuss + ' ' + targetword + ' no ' + elem('Organizācija', 'Ģenitīvs') 
 
-            verb = ' ir '
+            verb = ' bija '
             if targetword and targetword.lower() in ['iestājies', 'iestājusies']:
-                verb = ' iestājies '
+                verb = ' ' + targetword + ' '
 
             return laiks + ' ' + elem('Biedrs') + verb + statuss + ' ' + elem('Organizācija', 'Lokatīvs') 
 
@@ -422,7 +432,7 @@ def get_frame_data(mentioned_entities, frame):
                 org = ''
                 if elem('Organizētājs') is not None:
                     org = ', kuru organizēja ' + elem('Organizētājs')
-                return laiks + vieta + elem('Dalībnieks') + veids + ' piedalījās' + elem('Notikums', 'Akuzatīvs') + org
+                return laiks + vieta + ' ' + elem('Dalībnieks') + veids + ' piedalījās ' + elem('Notikums', 'Lokatīvs') + org
             else:
                 if elem('Organizētājs') is not None:
                     return laiks + vieta + ' ' + elem('Organizētājs') + veids + ' organizēja ' + elem('Notikums', 'Akuzatīvs')
@@ -449,7 +459,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Ienākumi') is not None:
                 if elem('Peļņa') is not None: # ir abi divi
-                    return laiks + elem('Organizācija', 'Ģenitīvs') + ' apgrozījums bija ' + elem('Ienākumi') + ', bet peļņa - ' + elem('Peļņa') + vieniibas + pieaugums + avots 
+                    return laiks + ' ' + elem('Organizācija', 'Ģenitīvs') + ' apgrozījums bija ' + elem('Ienākumi') + ', bet peļņa - ' + elem('Peļņa') + vieniibas + pieaugums + avots 
                 else: # tikai ienākumi
                     return elem('Organizācija', 'Ģenitīvs') + ' apgrozījums' + laiks + ' bija ' + elem('Ienākumi') + vieniibas + pieaugums + avots 
             else:
@@ -505,7 +515,7 @@ def get_frame_data(mentioned_entities, frame):
                 tiesa = ' ' + elem('Tiesa', 'Lokatīvs')
             apsuudziiba = ''
             if elem('Apsūdzība') is not None:
-                apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība')
+                apsuudziiba = ', apsūdzība - ' + elem('Apsūdzība', 'Nelocīts')
             prasiitaajs = ''
             if elem('Prasītājs') is not None:
                 prasiitaajs = ', prasītājs - ' + elem('Prasītājs')
@@ -543,7 +553,7 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Uzbrucējs') is not None:
                 # ir gan uzbrucējs, gan upuris: LAIKS VIETA APSTĀKĻI UZBRUCĒJS VEIDS uzbruka UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
-                return laiks + vieta + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
+                return laiks + vieta + ' ' + apstaaklji + ' ' + elem('Uzbrucējs') + ' uzbruka ' + elem('Cietušais', 'Datīvs') + ierocis + '.' + iemesls + sekas + veids
             else:
                 # ir tikai upuris: LAIKS VIETA APSTĀKĻI notika uzbrukums UPURIS (Dat.sg.) ar IEROCIS (Acc.sg.). Iemesls - IEMESLS. Sekas - SEKAS.
                 return laiks + vieta + apstaaklji + ' notika uzbrukums ' + elem('Cietušais', 'Datīvs') + ierocis + iemesls + '.' + sekas + veids
@@ -574,7 +584,12 @@ def get_frame_data(mentioned_entities, frame):
                     core_verb = ' bija '
                     rangs = elem('Rangs')
                 else:
-                    rangs = elem('Rangs', 'Akuzatīvs')
+                    targetword = frame.get('TargetWord')
+                    if targetword and targetword.lower() in ['ierindots', 'ierindota']:
+                        core_verb = ' ' + targetword + ' '
+                        rangs = elem('Rangs', 'Lokatīvs')
+                    else:
+                        rangs = elem('Rangs', 'Akuzatīvs')
 
             rezultaats = ''
             if elem('Rezultāts') is not None:
@@ -585,11 +600,15 @@ def get_frame_data(mentioned_entities, frame):
 
             if elem('Sasniegums') is None and elem('Rangs') is None:
                 targetword = frame.get('TargetWord')
-                if targetword and targetword.lower() in ['iekļauts', 'iekļauta', 'iekļāvis', 'iekļāvusi', 'minēts', 'minēta', 'minējis', 'minējusi']:
+                if targetword and targetword.lower() in ['iekļauts', 'iekļauta', 'iekļāvis', 'iekļāvusi', 'ierindots', 'ierindota', 'minēts', 'minēta', 'minējis', 'minējusi']:
                     if org.endswith(','):
                         org = ', kuru organizēja ' + elem('Organizētājs')
                     if targetword and targetword.lower() in ['minējis', 'minējusi']:
-                        targetword = 'minēts'
+                        if elem('Dalībnieks', 'Dzimte') == 'Sieviešu':
+                            targetword = 'minēta'    
+                        else:
+                            targetword = 'minēts'
+
                     return laiks + vieta + daliibnieks + ' ' + targetword + org2 + sacensiibas + org + rezultaats + citi
                 else:
                     log.debug("Sasniegums bez sasnieguma :( %s", frame)
@@ -825,13 +844,18 @@ def get_cv_frame_category(mentioned_entities, frame):
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 2: # dibinātājs
                         creator = mentioned_entities[element2["Value"]["Entity"]]
-                if creator and creator.get('Category') == 2: # ... ja dibināja persona
+                if creator and creator.get('Category') == 3: # ... ja dibināja persona
                     category = 104 # Amatpersonas, īpašnieki, darbinieki
-                if creator and creator.get('Category') == 3: # ... ja dibināja organizācija
+                if creator and creator.get('Category') == 2: # ... ja dibināja organizācija
                     category = 113 # Saistītie uzņēmumi
             elif frame_type == 3: # Attiecības
                 # LETAs dokumentā tur nezkāpēc kautkādas prasības, kas nesakrīt ar freimu definīciju - org<>pers attiecības "amatpersonas, īpašnieki, darbinieki" nedrīkst būt šajā freima veidā
                 category = 113 # Saistītie uzņēmumi                
+                for element2 in frame["FrameData"]:
+                    if element2.get('Key') == 4: # attiecību veids
+                        attieciibas = mentioned_entities[element2["Value"]["Entity"]]
+                if attieciibas.get('Name').lower() == 'struktūrvienība':
+                    category = 115 # Struktūrvienības
             elif frame_type == 18: # Īpašums
                 owner = None
                 category = 114 # Default value - 'other'
@@ -861,6 +885,13 @@ def get_cv_frame_category(mentioned_entities, frame):
                             'Amatpersonas, īpašnieki, darbinieki' : 104,
                             'Nozares' : 105,
                             'Apbalvojumi, interesanti fakti un izteicieni' : 110,
+                            'Apbalvojumi, sasniegumi' : 110,
+                            'Ziedojumi, dāvinājumi' : 106,
+                            'Publiskie iepirkumi' : 11,
+                            'Produkti' : 109 ,
+                            'Finanses' : 112,
+                            'Saistītie uzņēmumi' : 113,
+                            'Cits' : 114                        
                         }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
                 
             else:
@@ -923,6 +954,13 @@ def get_cv_frame_category(mentioned_entities, frame):
                             'Amatpersonas, īpašnieki, darbinieki' : 12,
                             'Nozares' : 12,
                             'Apbalvojumi, interesanti fakti un izteicieni' : 7,
+                            'Apbalvojumi, sasniegumi' : 7,
+                            'Ziedojumi, dāvinājumi' : 10,
+                            'Publiskie iepirkumi' : 11,
+                            'Produkti' : 12 ,
+                            'Finanses' : 9,
+                            'Saistītie uzņēmumi' : 9,
+                            'Cits' : 12
                         }.get(mentioned_entities[element2["Value"]["Entity"]].get('Name'))
             else:
                 category = 12 # Default value - 'other'

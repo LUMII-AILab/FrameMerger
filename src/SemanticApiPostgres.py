@@ -527,6 +527,9 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
         else:
             merge_type = None
 
+        if frame["FrameCnt"] is None:
+            frame["FrameCnt"] = 0
+
         if frame["IsBlessed"] is None:
             if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
                 frame["IsHidden"] = True

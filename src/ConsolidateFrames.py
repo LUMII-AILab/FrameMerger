@@ -13,12 +13,14 @@ log.addHandler(logging.NullHandler())
 
 import os
 from datetime import datetime
-from collections import Counter
+from collections import Counter, defaultdict
 
 import EntityFrames as EF
 
 from copy import deepcopy
 from pprint import pprint
+
+from Relationships import relation_source
 
 # ---------------------------------------- 
 
@@ -83,13 +85,13 @@ class BaseConsolidator(object):
         #  - add "O" (original frame) as frame status 
 
         # put identical frames together
-        res_cnt = {}
+        res_cnt = defaultdict(int)
         res_buf = {}
         for f in frame_list:
-            key = EF.frame_key(f)       # frame_key = (all frame elements)
-            res_cnt[key] = res_cnt.get(key, 0) + 1
+            key = EF.frame_key(f)       # frame_key = (all frame elements)        
+            if f.get('SourceId') != relation_source:
+                res_cnt[key] = res_cnt[key] + 1
             res_buf.setdefault(key, []).append(f)
-
         res = []
 
         # Handle blessed and anti-blessed summary frames
@@ -99,7 +101,7 @@ class BaseConsolidator(object):
             summary_list_keys.add(key)
             if res_buf.get(key):
                 item = deepcopy(res_buf[key][0])
-                item["SummarizedFrames"] = [f.get('FrameId') for f in res_buf[key]]
+                item["SummarizedFrames"] = [f.get('FrameId') for f in res_buf[key] if f.get('FrameId')]
                 item["SummaryFrameID"] = sum_frame["FrameId"]
                 item["CVFrameCategory"] = sum_frame["CVFrameCategory"]
                 res.append(item)
@@ -142,7 +144,7 @@ class BaseConsolidator(object):
                 item = deepcopy(blessed[0])
 
                 item["MergeType"] = "O"
-                item["FrameCnt"] = 1
+                item["FrameCnt"] = res_cnt.get(key)
 
                 item["SummaryInfo"] = get_info_str(self) + " + blessed"
                 if (item.get('FrameId')):
@@ -158,7 +160,7 @@ class BaseConsolidator(object):
                 item = deepcopy(anti_bless[0])
 
                 item["MergeType"] = "O"
-                item["FrameCnt"] = 1
+                item["FrameCnt"] = res_cnt.get(key)
 
                 item["SummaryInfo"] = get_info_str(self) + " + anti_bless"
                 if (item.get('FrameId')):
@@ -177,7 +179,7 @@ class BaseConsolidator(object):
 
                 item = deepcopy(res_buf[key][0])
 
-                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key] if f["FrameId"]]
 
                 if res_cnt[key] > 1:
                     item["MergeType"] = "M"
@@ -205,7 +207,6 @@ class BaseConsolidator(object):
                 # get target words
                 c = Counter(f["TargetWord"] for f in res_buf[key])
                 item["TargetWord"] = c.most_common(1)[0][0]
-
                 res.append(item)
 
         return res
@@ -248,7 +249,7 @@ class Consolidator(object):
 
                 # assumes all frames participated in merging - XXX
                 #  - otherwise an exception would have been raised
-                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key]]
+                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key] if f["FrameId"]]
 
                 # set "Merged" flag
                 item["MergeType"] = "M"

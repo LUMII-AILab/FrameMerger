@@ -155,6 +155,12 @@ def load_cv_entities(filename):
     with open(filename) as f:
         cv_entities = json.load(f)
 
+    query = """
+    SELECT e.entityid, NAME, dataset, cv_status, i.outerid
+    FROM entities e JOIN entityouterids i ON e.entityid = i.entityid
+    where i.outerid = %s
+    """
+
     for entity in cv_entities:
         name = entity.get('representative')
         aliases = entity.get('aliases')
@@ -163,10 +169,15 @@ def load_cv_entities(filename):
             category = 2
             aliases = set(orgAliases(name)).union(aliases)
         if entity.get('type') == 'person':
-            category = 3
+            category = 3        
         
-        
-        api.insertEntity(name, aliases, category, outerids=[entity.get('uqid')], inflections = json.dumps(entity.get('inflections'), ensure_ascii=False), commit = False)
+        res = api.api.query(query, (entity.get('uqid'),) )
+        if res and res[0].dataset == 3:
+            continue
+        print('Skatamies uz %s - ID %s' % (name,entity.get('uqid')))
+        print(res)
+
+        api.insertEntity(name, aliases, category, outerids=[entity.get('uqid')], cv_status=1, source='LETA 20150122 CV apdeita entītiju ielāde', inflections = json.dumps(entity.get('inflections'), ensure_ascii=False), commit = False)
     conn.commit()
     print("Entities from file %s loaded!" % filename)
 
@@ -192,14 +203,19 @@ def load_entities(filename):
 
 def reinflect_entities():
     print('Re-inflecting all entities!')
-    # res = api.api.query("select entityid, name, categorynameeng from entities e JOIN entitycategories c ON e.category = c.categoryid", None )
-    res = api.api.query("SELECT entityid, NAME, categorynameeng FROM entities e JOIN entitycategories c ON e.category = c.categoryid where entityid = 2223023", None )
-    # res = api.api.query("SELECT entityid, NAME, categorynameeng FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 1 and dataset = 1", None )    
-    # res = api.api.query("SELECT entityid, NAME, categorynameeng FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 3", None )    
+    res = api.api.query("select entityid, name, categorynameeng, nameinflections from entities e JOIN entitycategories c ON e.category = c.categoryid", None )
+    
+    # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where entityid = 2500118", None )
+    # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 1 and dataset = 1", None )    
+    # res = api.api.query("SELECT entityid, NAME, categorynameeng, nameinflections FROM entities e JOIN entitycategories c ON e.category = c.categoryid where category = 3", None )    
 
     for counter, entity in enumerate(res):
         inflections = inflectEntity(entity.name, entity.categorynameeng)
-        # print(inflections)
+        gender = json.loads(entity.nameinflections).get('Dzimte')
+        if gender:
+            inflections = json.loads(inflections)
+            inflections['Dzimte'] = gender
+            inflections = json.dumps(inflections, ensure_ascii=False)
         api.api.insert("update entities set nameinflections = %s where entityid = %s", (inflections, entity.entityid))
         if counter % 1000 == 999:
             print('%s' % (counter+1,))
@@ -302,41 +318,46 @@ order by sentenceid desc
         #     break
 
 def main():
-    print(sys.version)
-    print(sys.stdout.encoding)
     # create_dates()
     # load_education()
     # load_parties()
-    # load_cv_entities("entity_fixtures/gold/Organizācijas no LETA.json")
-    # load_cv_entities("entity_fixtures/gold/Personas no LETA.json")
+    # load_cv_entities("entity_fixtures/gold/Organizācijas no LETA20150122.json")
+    # load_cv_entities("entity_fixtures/gold/Personas no LETA20150122.json")
     # load_entities("entity_fixtures/gold/Vietas no LĢIS.json")
     # load_entities("entity_fixtures/gold/Personas no firmu exceļa.json")
     # load_entities("entity_fixtures/gold/Organizācijas no firmu exceļa.json")
     # fetch_entities()
-    reinflect_entities()
+    # reinflect_entities()
     # describe_namesakes()
     print('Done!')
 
 if __name__ == "__main__":
-    options, remainder = getopt.getopt(sys.argv[1:], '', ['help', 'cleardb', 'database='])
+    options, remainder = getopt.getopt(sys.argv[1:], '', ['help', 'cleardb', 'reinflect', 'database='])
     cleardb = False
+    reinflect = False
     for opt, arg in options:
         if opt == '--help':
             print('Entity maintenance script')
             print('')
             print('Usage: runs whatever is uncommented in code, handle everything manually!')
             print('--database=<dbname>   overrides the database name from the one set in db_config.py')
+            print('--reinflect           reinflect entities')
             print('--cleardb             instead of normal operation, runs a script to clear the selected DB of unblessed frames and entities')
             quit()
         elif opt == '--database':
             api_conn_info["dbname"] = arg
         elif opt == '--cleardb':
             cleardb = True
+        elif opt == '--reinflect':
+            reinflect = True
 
-    conn = PostgresConnection(api_conn_info, dataset=2)
+    conn = PostgresConnection(api_conn_info, dataset=4)
     api = SemanticApiPostgres(conn)
 
     if cleardb:
         clear_db()
     else:
+        if reinflect:
+            reinflect_entities()
+
         main()
