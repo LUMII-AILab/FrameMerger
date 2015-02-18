@@ -317,6 +317,37 @@ order by sentenceid desc
         # if counter > 40:
         #     break
 
+
+def retokenize_main_name():
+    print('Verifying if proper tokenization of primary name exists in aliases')
+    sql = """
+        select e.entityid, e.name, e.category, e.dataset, e.nameinflections, c.categorynameeng, array_agg(n.name) aliases from entities e 
+        left outer join entityothernames n on e.entityid = n.entityid
+        join entitycategories c ON e.category = c.categoryid
+        where e.deleted is false
+        group by e.entityid, e.name, e.category, e.dataset, e.nameinflections, c.categorynameeng
+        order by e.dataset, e.category, e.entityid
+        """
+    res = api.api.query(sql, None )
+    print('Query done...')
+
+    names_sql = "INSERT INTO EntityOtherNames(EntityID, Name) VALUES (%s, %s)"
+
+    for counter, entity in enumerate(res):
+        inflections = inflectEntity(entity.name, entity.categorynameeng)
+        inflections = json.loads(inflections)
+        if inflections.get('Nominatīvs') != entity.name and inflections.get('Nominatīvs') not in entity.aliases:
+            print('Insertojam aliasu %s entītijai %s' % (inflections.get('Nominatīvs'), entity.name))            
+            api.api.insert(names_sql, (entity.entityid, inflections.get('Nominatīvs')) )
+
+        if counter % 1000 == 999:
+            print('%s' % (counter+1,))
+            conn.commit()
+
+    conn.commit()
+    print('Entity re-tokenization done!')
+
+
 def main():
     # create_dates()
     # load_education()
@@ -329,6 +360,7 @@ def main():
     # fetch_entities()
     # reinflect_entities()
     # describe_namesakes()
+    retokenize_main_name()
     print('Done!')
 
 if __name__ == "__main__":
