@@ -164,8 +164,8 @@ def makeEntity(entities, phrase, namedEntityType):
     for entity in entities.values(): # atrodam max_id +1
         if entity['representative'] == phrase:
             matchingEntity = entity
-        if entity['id'] >= entityID:
-            entityID = entity['id'] + 1
+        if int(entity['id']) >= entityID:
+            entityID = int(entity['id']) + 1
 
     if matchingEntity is None:            
         entity = {
