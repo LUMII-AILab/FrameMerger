@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+REPDIR=`git rev-parse --show-toplevel`
+
+cd "$REPDIR"
+
+echo "Starting service..."
+./service.py &
