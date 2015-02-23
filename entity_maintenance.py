@@ -247,20 +247,24 @@ DELETE FROM frames WHERE blessed IS NULL;
 DELETE FROM entityouterids WHERE entityid IN 
     (SELECT entityid FROM entities
     WHERE NOT entityid IN (SELECT DISTINCT entityid FROM framedata)
+    AND NOT entityid IN (SELECT DISTINCT entityid FROM summaryframeroledata)
     AND dataset = 0);
 
 DELETE FROM entityothernames WHERE entityid IN 
     (SELECT entityid FROM entities
     WHERE NOT entityid IN (SELECT DISTINCT entityid FROM framedata)
+    AND NOT entityid IN (SELECT DISTINCT entityid FROM summaryframeroledata)
     AND dataset = 0);
 
 DELETE FROM entitymentions WHERE entityid IN 
     (SELECT entityid FROM entities
     WHERE NOT entityid IN (SELECT DISTINCT entityid FROM framedata)
+    AND NOT entityid IN (SELECT DISTINCT entityid FROM summaryframeroledata)
     AND dataset = 0);
 
 DELETE FROM entities
 WHERE NOT entityid IN (SELECT DISTINCT entityid FROM framedata)
+AND NOT entityid IN (SELECT DISTINCT entityid FROM summaryframeroledata)
 AND dataset = 0;
 
 DELETE FROM dirtyentities;
