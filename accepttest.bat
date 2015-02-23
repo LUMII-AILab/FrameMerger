@@ -1,4 +1,4 @@
-
+chcp 1257
 py ./entity_maintenance.py --cleardb --database=accept_test
 
 type nul > ./testdata/jsonlist.txt
@@ -8,6 +8,7 @@ type nul > ./testdata/jsonlist.txt
 :: Čakarīgais risinājums, lai būtu relatīvās adreses, nestrādā apakšmapēm.
 :: Paldies, http://stackoverflow.com/a/12209020
 @echo off
+
 setlocal disableDelayedExpansion
 for /f "delims=" %%A in ('forfiles /s /m *.json /p testdata /c "cmd /c echo @relpath"') do (
   set "file=%%~A"
@@ -27,3 +28,5 @@ endlocal
 py ./uploadJSON.py --database=accept_test < ./testdata/jsonlist.txt
 
 py ./consolidate_frames.py --database=accept_test --dirty
+
+pause
