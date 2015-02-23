@@ -1,0 +1,6 @@
+./testdata_mk_parsed//dombrovskis.json.gz
+./testdata_mk_parsed//idejaslatvijai.json.gz
+./testdata_mk_parsed//melbarde.json.gz
+./testdata_mk_parsed//personibas.json.gz
+./testdata_mk_parsed//seile.json.gz
+./testdata_mk_parsed//test_taube.json.gz
