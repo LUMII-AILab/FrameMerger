@@ -181,7 +181,7 @@ def makeEntity(entities, phrase, namedEntityType):
     return entityID
 
 # Apstaigājam atrastajam galvasvārdam pakļautos vārdus un izveidojam tādu
-def entityPhraseByTree(tokenIndex, tokens):
+def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
     included = {tokenIndex}
     dirty = True # Vai vajag vēl dziļāk apstaigāt
     terminator = False # Vai esam atraduši ko tādu, ka tok dziļāk nelienam
@@ -286,9 +286,13 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
 
         # Ja nu toč nav tādas entītijas... tad veidojam no koka
         if entityID is None: 
-            phrase = entityPhraseByTree(tokenIndex, tokens)
+            phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, defaultType)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
             entities[str(entityID)]['source'] = 'entity built from syntactic tree'
+            if entityCreationDebuginfo:
+                print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
+                    phrase, defaultType, element.name, frame.type))
+            
 
     headtoken['namedEntityID'] = entityID
     frames = entities[str(entityID)].get("frames")
