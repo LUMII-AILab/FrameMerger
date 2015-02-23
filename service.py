@@ -6,7 +6,7 @@
 # All rights reserved.
 
 import sys, os
-
+import signal
 
 pidfile = 'service.pid'
 pidfile = os.path.join(os.path.dirname(__file__), pidfile)  # relative to script directory
@@ -17,8 +17,7 @@ try:
         pid = int(f.read().strip())
 
     # kill other service process
-    import signal
-    os.kill(pid, signal.SIGTERM)
+    os.kill(pid, signal.SIGKILL)
 except:
     pass
 

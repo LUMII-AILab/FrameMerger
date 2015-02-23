@@ -4,5 +4,4 @@ REPDIR=`git rev-parse --show-toplevel`
 
 cd "$REPDIR"
 
-echo "Starting service..."
-./service.py &
+kill -TERM `cat "$REPDIR/service.pid"`
