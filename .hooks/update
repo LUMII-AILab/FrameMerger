@@ -13,7 +13,8 @@ cd ..
 # cd "$REPDIR"
 
 # nogalina servisu, lai var atdzimt no pelniem...
-kill -TERM `cat "$REPDIR/service.pid"` 2> /dev/null
+kill -TERM `cat "service.pid"` 2> /dev/null
+# kill -TERM `cat "$REPDIR/service.pid"` 2> /dev/null
 
 # bez "clean exit" git neļaus push servera pusē
 exit 0
