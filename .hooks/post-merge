@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-REPDIR=`git rev-parse --show-toplevel`
-
-cd "$REPDIR"
-
-kill -TERM `cat "$REPDIR/service.pid"`
