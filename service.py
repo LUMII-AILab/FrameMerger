@@ -5,7 +5,27 @@
 #
 # All rights reserved.
 
-import sys
+import sys, os
+import signal
+
+pidfile = 'service.pid'
+pidfile = os.path.join(os.path.dirname(__file__), pidfile)  # relative to script directory
+
+try:
+    # get pid from pid file
+    with open(pidfile, 'r') as f:
+        pid = int(f.read().strip())
+
+    # kill other service process
+    os.kill(pid, signal.SIGKILL)
+except:
+    pass
+
+# write pid file
+with open(pidfile, 'w') as f:
+    print(os.getpid(), file=f)
+
+
 
 sys.path.append("./src")
 # from db_config import api_conn_info

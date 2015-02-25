@@ -249,7 +249,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
 
         headtoken = tokens[tokenIndex-1] 
 
-        if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O':
+        if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
+                or headtoken.namedEntityType == 'unk':
             headtoken.namedEntityType = defaultType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
 
         if headtoken['namedEntityType'] == None:
@@ -257,7 +258,15 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         if headtoken['namedEntityType'] == 'None': 
             sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (defaultType, ))
 
-        entityID = headtoken.namedEntityID 
+        # entityID = headtoken.namedEntityID
+        # Koreferenču formāta labojums.
+        entityID = None
+        if 'mentions' in headtoken.keys():
+            entityID = headtoken['mentions'][0]['id']
+            if len(headtoken['mentions']) > 1 and entityCreationDebuginfo:
+                print('Tokenam {0} ir {1} pieminējumi.\n'.format(
+                    headtoken['form'], len(headtoken['mentions'])))  
+        
         if entityID:
             entities[str(entityID)]['source'] = 'from NER'
 

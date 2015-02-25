@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# http://stackoverflow.com/a/12293994
+REPDIR=`git rev-parse --show-toplevel`
+GITDIR=`git rev-parse --git-dir`
+# Sekojošās komandas atgriež true/false
+# git rev-parse --is-inside-work-tree
+# git rev-parse --is-inside-git-dir
+
+# update hook laikā atrodamies .git direktorijā,
+# konkrētajā setupā darba direktorijai ir jābūt ..
+cd ..
+# cd "$REPDIR"
+
+# nogalina servisu, lai var atdzimt no pelniem...
+kill -TERM `cat "service.pid"` 2> /dev/null
+# kill -TERM `cat "$REPDIR/service.pid"` 2> /dev/null
+
+# bez "clean exit" git neļaus push servera pusē
+exit 0
