@@ -22,3 +22,5 @@ rm .DS_Store
 rm -rf ./__pycache__
 rm config.py
 rm service.pid
+rm -rf .hooks
+rm setup_server_hooks.sh

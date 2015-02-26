@@ -51,3 +51,14 @@ Piekļuve:
 	[servera adrese]:9000/verbalize/[summary freima ID]
 	http://localhost:9000/verbalize/1376556
 	Uz GET pieprasījumiem šādā formā tiks atgriezts verbalizācijas teksts norādītajam summary freima ID, ņemot aktuālos datus no datubāzes, kas ir db_config.py
+
+
+Konsolidācijas webserviss (tiek izsaukts no UI)
+-----------------------------------------------
+
+Konfigurēšana:
+	config_template.py => config.py + parametru iestādīšana (host+port+datubāzēm ir jāsakrīt ar atbilstošo UI konfigurāciju)
+Palaišana:
+	./service.py
+	vai
+	./run_service.sh    šajā gadījumā ir iespēja pārstartēt servisu ar kill -TERM `cat service.pid`
