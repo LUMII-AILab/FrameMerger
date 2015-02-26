@@ -20,3 +20,5 @@ rm octtest*
 rm -rf ./entity_fixtures
 rm .DS_Store 
 rm -rf ./__pycache__
+rm config.py
+rm service.pid
