@@ -4,7 +4,7 @@ Moduļi darbam ar semantisko datubāzi
 Priekšnosacījumi:
 	Python 2.7.6
 	Python modulis psycopg2 (uz ubuntu instalējas ar "apt-get install python-psycopg2" / "pip install psycopg2")
-	Python modulis openpyxl ("sudo pip install openpyxl==1.7.0", ar jaunākām versijām nedarbojas)
+	Python modulis openpyxl ("sudo pip install openpyxl", ar jaunākām versijām nedarbojas)
 
 Konfigurēšana:
 	Jānorāda datubāzes servera pieslēguma informācija failā 'db_config.py' - skat 'db_config.py.template'
@@ -51,3 +51,15 @@ Piekļuve:
 	[servera adrese]:9000/verbalize/[summary freima ID]
 	http://localhost:9000/verbalize/1376556
 	Uz GET pieprasījumiem šādā formā tiks atgriezts verbalizācijas teksts norādītajam summary freima ID, ņemot aktuālos datus no datubāzes, kas ir db_config.py
+
+
+Konsolidācijas webserviss (tiek izsaukts no UI)
+-----------------------------------------------
+
+Konfigurēšana:
+	config_template.py => config.py + parametru iestādīšana (host+port+datubāzēm ir jāsakrīt ar atbilstošo UI konfigurāciju)
+	db_config.py.template => db_config.py + parametru iestatīšana (datubāze jeb api_conn_info šeit var nebūt konfigurēta)
+Palaišana:
+	./service.py
+	vai
+	./run_service.sh    šajā gadījumā ir iespēja pārstartēt servisu ar kill -TERM `cat service.pid`
