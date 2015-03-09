@@ -27,7 +27,7 @@ import logging as log
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
@@ -60,6 +60,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
                     # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
                 neededEntities.add(entityid)
+                #print (entities[str(entityid)].get('representative'))
 
         for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
             neID = token.get('namedEntityID')
@@ -271,10 +272,18 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
             entities[str(entityID)]['source'] = 'from NER'
 
         # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
-        if entityID is not None and entities[str(entityID)].get('type') == 'person' and headtoken.namedEntityType == 'profession':
+        if entityID is not None and entities[str(entityID)].get('type') == 'person' and \
+                (headtoken.namedEntityType == 'profession' or headtoken.namedEntityType == 'possition'):
             phrase = entityPhraseByNER(tokenIndex, tokens)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
             entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
+        
+        if entityID is not None and (entities[str(entityID)].get('type') == 'organization' or \
+                entities[str(entityID)].get('type') == 'person') and \
+                element.name == 'Vocation':
+            phrase = entityPhraseByNER(tokenIndex, tokens)
+            entityID = makeEntity(entities, phrase, 'descriptor')
+            entities[str(entityID)]['source'] = 'workaround #3 - changeing vocation type'
 
         if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
             entityID = makeEntity(entities, '_NEKONKRĒTS_', headtoken['namedEntityType'])
