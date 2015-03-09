@@ -60,7 +60,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
                     # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
                 neededEntities.add(entityid)
-                #print (entities[str(entityid)].get('representative'))
+                #print ("{0} {1}".format(entities[str(entityid)].get('representative'), entityid))
 
         for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
             neID = token.get('namedEntityID')
@@ -231,6 +231,14 @@ def entityPhraseByNER(tokenIndex, tokens):
     phrase = " ".join(phrase)
     return phrase
 
+# Izvelk frāzi, kas ir konkrētais pieminējums, nevis NER reprezentatīvais vārds
+# Artūrs numurē tokenus sākot ar 1, python masīva elementus - sākot ar 0
+def entityPhraseByNERMention (start, end, tokens):
+    phrase = []
+    # Riskants risinājums, vajadzētu patiesībā ņemt pēc token.index
+    for token in tokens[start-1:end]:
+        phrase.append(token.form)
+    return " ".join(phrase)
 
 # Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id
 # ja tādas entītijas nav, tad pievieno jaunu sarakstam
@@ -262,8 +270,13 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         # entityID = headtoken.namedEntityID
         # Koreferenču formāta labojums.
         entityID = None
+        representativePhrase = None
+        mentionPhrase = None
         if 'mentions' in headtoken.keys():
             entityID = headtoken['mentions'][0]['id']
+            representativePhrase = entities[str(entityID)].get('representative')
+            mentionPhrase = entityPhraseByNERMention(
+                headtoken['mentions'][0]['start'], headtoken['mentions'][0]['end'], tokens)
             if len(headtoken['mentions']) > 1 and entityCreationDebuginfo:
                 print('Tokenam {0} ir {1} pieminējumi.\n'.format(
                     headtoken['form'], len(headtoken['mentions'])))  
@@ -275,15 +288,25 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         if entityID is not None and entities[str(entityID)].get('type') == 'person' and \
                 (headtoken.namedEntityType == 'profession' or headtoken.namedEntityType == 'possition'):
             phrase = entityPhraseByNER(tokenIndex, tokens)
+            if representativePhrase is not None:
+                phrase = representativePhrase
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
             entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
         
-        if entityID is not None and (entities[str(entityID)].get('type') == 'organization' or \
-                entities[str(entityID)].get('type') == 'person') and \
-                element.name == 'Vocation':
+        if entityID is not None and element.name == 'Vocation':
             phrase = entityPhraseByNER(tokenIndex, tokens)
-            entityID = makeEntity(entities, phrase, 'descriptor')
-            entities[str(entityID)]['source'] = 'workaround #3 - changeing vocation type'
+            source = ''
+            if mentionPhrase is not None:
+                # print(mentionPhrase)
+                phrase = mentionPhrase
+                source = 'from NER mention'                    
+            entityType = headtoken['namedEntityType']
+            # Šajā if vēlāk būs vēl jāpieliek organizācijas nodarbošanās tips.
+            if headtoken['namedEntityType'] not in set(['profession', 'descriptor']):
+                entityType = 'descriptor'
+                source = 'workaround #3 - changing vocation type'
+            entityID = makeEntity(entities, phrase, entityType)
+            entities[str(entityID)]['source'] = source
 
         if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
             entityID = makeEntity(entities, '_NEKONKRĒTS_', headtoken['namedEntityType'])
@@ -339,8 +362,8 @@ def filterEntityNames(entities, documentdate):
             return str(documentdate.year - 1)
         # TODO - šie ir biežākie, bet vēl vajadzētu relatīvos laikus: 'jūlijā' -> pēdējais jūlijs, kas ir bijis (šis vai iepriekšējais gads) utml.
         return name
-
-    def goodName(name):
+    
+    def goodName(type, name):
         if len(name) <= 2 and not re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]+|\d+$', name, re.UNICODE): # tik īsi drīkst būt tikai cipari vai organizāciju (partiju) saīsinājumi
             return False
         if name.lower() in {'viņš', 'viņs', 'viņa', 'viņam', 'viņu', 'viņā', 'viņas', 'viņai', 'viņās', 'viņi', 'viņiem', 'viņām',
@@ -352,12 +375,16 @@ def filterEntityNames(entities, documentdate):
             return False
         if name in {'Var', 'gan'}:
             return False
-        if name.lower() in {'uzņēmums', 'kompānija',  'firma', 'firmas', 'aģentūra', 'portāls', 'tiesa', 'banka', 'fonds', 'koncerns',
-                            'komisija', 'partija', 'apvienība', 'frakcija', 'birojs', 'dome', 'organizācija', 'augstskola', 'investori',
-                            'studentu sabiedrība', 'studija', 'žurnāls', 'sabiedrība', 'iestāde', 'skola',
-                            'cilvēki', 'personas', 'darbinieki', 'vadība', 'pircēji', 'vīrieši', 'sievietes', 'konkurenti', 'latvija iedzīvotāji',
-                            'savienība biedrs', 'skolēni', 'studenti', 'personība', 'viesi', 'viesis', 'ieguvējs', 'klients',
-                            'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars', 'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
+        if type != 'descriptor' and name.lower() in {'investori', 'cilvēki', 'personas', 'darbinieki',
+                            'vadība', 'pircēji', 'vīrieši', 'sievietes', 'konkurenti', 'latvija iedzīvotāji',
+                            'savienība biedrs', 'skolēni', 'studenti', 'personība', 'viesi', 'viesis',
+                            'ieguvējs', 'klients', 'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars',
+                            'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
+            return False
+        if type == 'organization' and name.lower() in {'uzņēmums', 'kompānija',  'firma', 'firmas',
+                            'aģentūra', 'portāls', 'tiesa', 'banka', 'fonds', 'koncerns', 'komisija',
+                            'partija', 'apvienība', 'frakcija', 'birojs', 'dome', 'organizācija', 'augstskola',
+                            'studentu sabiedrība', 'studija', 'žurnāls', 'sabiedrība', 'iestāde', 'skola'}: 
             return False
         if name.lower() in {'gads', 'gada'}: 
             return False
@@ -369,11 +396,11 @@ def filterEntityNames(entities, documentdate):
         entity = entities[e_id]        
         entity['representative'] = updateName(entity.get('representative'))
         entity['aliases'] = [updateName(alias) for alias in entity.get('aliases')]
-        entity['aliases'] = list(filter(goodName, entity.get('aliases')))
+        entity['aliases'] = list(filter((lambda name: goodName(entity.get('type'), name)), entity.get('aliases')))
         if not entity.get('aliases'): # Hmm, tātad nekas nebija labs
             entity['aliases'] = ['_NEKONKRĒTS_'] #FIXME - jāsaprot vai nevar labāk to norādīt
             # entity['representative'] = '_NEKONKRĒTS_' 
-        if not goodName(entity.get('representative')):
+        if not goodName(entity.get('type'), entity.get('representative')):
             entity['representative'] = entity.get('aliases')[0] # Pieņemam, ka gan jau pirmais derēs
         entities[e_id] = entity
     
