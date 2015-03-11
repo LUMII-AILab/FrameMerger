@@ -368,23 +368,37 @@ def filterEntityNames(entities, documentdate):
             return False
         if name.lower() in {'viņš', 'viņs', 'viņa', 'viņam', 'viņu', 'viņā', 'viņas', 'viņai', 'viņās', 'viņi', 'viņiem', 'viņām',
                             'es', 'mēs', 'man', 'mūs', 'mums', 'tu', 'tev', 'jūs', 'jums', 'jūsu',
-                            'tas', 'tā', 'tie', 'tās', 'tajā', 'kas', 'kam', 'tam', 'tām', 'ko', 'to', 'tos', 'tai', 'tiem',
+                            'tas', 'tā', 'tie', 'tās', 'tajā', 'tam', 'tām', 'to', 'tos', 'tai', 'tiem', 'tur',
+                            'kas', 'kam', 'ko', 
                             'sava', 'savu', 'savas', 'savus', 
                             'kurš', 'kuru', 'kura', 'kuram', 'kuri', 'kuras', 'kurai', 'kuriem', 'kurām', 'kurā', 'kurās',
-                            'būs', 'arī', 'dr.', 'jau', 'tur'}: 
+                            'būs', 'arī', 'jau'}: 
             return False
         if name in {'Var', 'gan'}:
             return False
-        if type != 'descriptor' and name.lower() in {'investori', 'cilvēki', 'personas', 'darbinieki',
-                            'vadība', 'pircēji', 'vīrieši', 'sievietes', 'konkurenti', 'latvija iedzīvotāji',
-                            'savienība biedrs', 'skolēni', 'studenti', 'personība', 'viesi', 'viesis',
-                            'ieguvējs', 'klients', 'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars',
+        if type not in {'qualification', 'descriptor'} and name.lower() in {'dr.'}:
+            return False
+        if name.lower() in {'cilvēki', 'personas', 'darbinieki', 'vadība',
+                            'pircēji', 'vīrieši', 'sievietes', 'latvija iedzīvotāji',
+                            'savienība biedrs', 'personība', 'viesi', 'viesis',
+                            'ieguvējs', 'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars',
                             'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
             return False
-        if type == 'organization' and name.lower() in {'uzņēmums', 'kompānija',  'firma', 'firmas',
-                            'aģentūra', 'portāls', 'tiesa', 'banka', 'fonds', 'koncerns', 'komisija',
-                            'partija', 'apvienība', 'frakcija', 'birojs', 'dome', 'organizācija', 'augstskola',
-                            'studentu sabiedrība', 'studija', 'žurnāls', 'sabiedrība', 'iestāde', 'skola'}: 
+        if type not in {'descriptor', 'relationship'} and name.lower() in {
+                'investori', 'konkurenti', 'klients'}:
+            return False
+        if type not in {'descriptor', 'profession'} and name.lower() in {
+                'skolēni', 'studenti'}:
+            return False
+        if name.lower() in {'kompānija', 'firma', 'firmas', 'tiesa', 'dome',
+                            'komisija', 'apvienība', 'organizācija', 
+                            'studentu sabiedrība', 'sabiedrība'}: 
+            return False
+        # TODO te vēl būs jāpieliek orgprof, kad tādu ieviesīs
+        if type not in {'descriptor', 'profession'} and name.lower() in {
+                'uzņēmums', 'aģentūra', 'portāls', 'banka', 'koncerns',
+                'partija', 'birojs', 'augstskola', 'žurnāls', 'skola',
+                'studija', 'frakcija', 'iestāde', 'fonds'}:
             return False
         if name.lower() in {'gads', 'gada'}: 
             return False
