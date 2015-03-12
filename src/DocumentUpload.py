@@ -302,8 +302,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
                 source = 'from NER mention'                    
             entityType = headtoken['namedEntityType']
             # Šajā if vēlāk būs vēl jāpieliek organizācijas nodarbošanās tips.
-            if headtoken['namedEntityType'] not in set(['profession', 'descriptor']):
-                entityType = 'descriptor'
+            if headtoken['namedEntityType'] not in set(['profession', 'industry']):
+                entityType = 'industry'
                 source = 'workaround #3 - changing vocation type'
             entityID = makeEntity(entities, phrase, entityType)
             entities[str(entityID)]['source'] = source
@@ -394,11 +394,10 @@ def filterEntityNames(entities, documentdate):
                             'komisija', 'apvienība', 'organizācija', 
                             'studentu sabiedrība', 'sabiedrība'}: 
             return False
-        # TODO te vēl būs jāpieliek orgprof, kad tādu ieviesīs
-        if type not in {'descriptor', 'profession'} and name.lower() in {
+        if type not in {'descriptor', 'industry', 'profession'} and name.lower() in {
                 'uzņēmums', 'aģentūra', 'portāls', 'banka', 'koncerns',
                 'partija', 'birojs', 'augstskola', 'žurnāls', 'skola',
-                'studija', 'frakcija', 'iestāde', 'fonds'}:
+                'studija', 'frakcija', 'iestāde', 'fonds', 'korporācija'}:
             return False
         if name.lower() in {'gads', 'gada'}: 
             return False

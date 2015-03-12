@@ -115,7 +115,8 @@ NETypeCodes = {
     'prize': 11,
     'media': 12 ,
     'product': 13,
-    'event' : 14 }
+    'event' : 14,
+    'industry' : 15}
 
 def getNETypeCode (name):
     if name is None: 
@@ -138,34 +139,120 @@ def getNETypeName(code):
     return ""
 
 __roleDefaultNETypes__ = [  # ja NE nav neko ielicis, bet freima elements uz šo norāda - kāda ir defaultā NE kategorija. reizēm var būt gan persona gan organizācija.. bet nu cerams tos NER palīdzēs.
-    ['person', 'time', 'location', 'relatives'],
-    ['person', 'sum'],
-    ['person', 'time', 'location', 'descriptor', 'descriptor'],
-    ['person', 'person', 'relatives', 'relationship', 'time'],
-    ['person', 'person', 'descriptor'],
-    ['person', 'location', 'descriptor', 'time'], 
-    ['person', 'organization', 'descriptor', 'descriptor', 'time', 'location'], # jāsaprot par grādiem - vai plikus deskriptorus vai ko precīzāku...
-    ['person', 'profession', 'time', 'descriptor'],
-    ['location', 'person', 'descriptor'],
-    ['person', 'organization', 'profession', 'sum', 'location', 'time', 'descriptor', 'time', 'time'],
-    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'],
-    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'], 
-    ['person', 'organization', 'time', 'descriptor'],
-    ['person', 'organization', 'profession', 'person', 'descriptor', 'time', 'location'], 
-    ['person', 'organization', 'descriptor', 'time'],
-    ['organization', 'person', 'descriptor', 'profession', 'time', 'location'], # organizāciju nozares sintaktiski ir līdzīgas profesijām bet sarakstu varbūt jāliek citu
-    ['person', 'descriptor', 'time', 'location', 'descriptor', 'organization'], 
-    ['organization', 'sum', 'descriptor', 'sum', 'time', 'descriptor', 'descriptor'], 
-    ['person', 'descriptor', 'time', 'descriptor'],
-    ['organization', 'organization', 'descriptor', 'descriptor', 'time', 'descriptor'], 
-    ['person', 'descriptor', 'organization', 'person', 'person', 'person', 'location', 'time'], 
-    ['person', 'person', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'location', 'time'], 
-    ['person', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'time', 'location', 'organization', 'person'], 
-    ['organization', 'person', 'descriptor', 'time'],
-    ['organization', 'descriptor', 'sum', 'descriptor', 'organization', 'descriptor', 'time'], 
-    ['descriptor', 'organization', 'descriptor'],
-    ['person','descriptor','descriptor']]
+    ['person', 'time', 'location', 'relatives'],        #Dzimšana/Being_born
+    ['person', 'sum'],                                  #Vecums/People_by_age
+    ['person', 'time', 'location', 'descriptor', 'descriptor'], #Miršana/Death
+    ['person', 'person', 'descriptor', 'relationship', 'time'],  #Attiecības/Personal_relationship
+    ['person', 'person', 'descriptor'],                 #Vārds/Being_named
+    ['person', 'location', 'descriptor', 'time'],    #Dzīvesvieta/Residence
+    ['person', 'organization', 'descriptor', 'qualification', 'time', 'location'], #Izglītība/Education_teaching # jāsaprot par grādiem - vai plikus deskriptorus vai ko precīzāku...
+    ['person', 'profession', 'time', 'descriptor'],     #Nodarbošanās/People_by_vocation
+    ['location', 'person', 'descriptor'],               #Izcelsme/People_by_origin
+    ['person', 'organization', 'profession', 'sum', 'location', 'time', 'descriptor', 'time', 'time'],  #Amats/Being_employed
+    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'],     #Darba_sākums/Hiring
+    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'],     #Darba_beigas/Employment_end
+    ['person', 'organization', 'time', 'descriptor'],   #Dalība/Membership
+    ['person', 'organization', 'profession', 'organization', 'descriptor', 'time', 'location'],   #Vēlēšanas/Change_of_leadership
+    ['person', 'organization', 'descriptor', 'time'],   #Atbalsts/Giving
+    ['organization', 'person', 'descriptor', 'industry', 'time', 'location'], #Dibināšana/Intentionally_create # organizāciju nozares sintaktiski ir līdzīgas profesijām bet sarakstu varbūt jāliek citu
+    ['person', 'event', 'time', 'location', 'descriptor', 'organization'], #Piedalīšanās/Participation
+    ['organization', 'sum', 'descriptor', 'sum', 'time', 'descriptor', 'descriptor'],   #Finanses/Earnings_and_losses
+    ['person', 'descriptor', 'time', 'descriptor'], #Īpašums/Possession
+    ['organization', 'organization', 'sum', 'descriptor', 'time', 'descriptor'], #Parāds/Lending
+    ['person', 'descriptor', 'organization', 'person', 'person', 'person', 'location', 'time'], #Tiesvedība/Trial
+    ['person', 'person', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'location', 'time'],   #Uzbrukums/Attack
+    ['person', 'prize', 'event', 'descriptor', 'prize', 'time', 'location', 'organization', 'person'],  #Sasniegums/Win_prize
+    ['organization', 'person', 'descriptor', 'time'],   #Ziņošana/Statement
+    ['organization', 'descriptor', 'sum', 'organization', 'organization', 'descriptor', 'time'],    #Publisks_iepirkums/Public_procurement
+    ['descriptor', 'organization', 'product'],  #Zīmols/Product_line
+    ['person','descriptor','descriptor']]   #Nestrukturēts/Unstructured
 
+__rolePlausibleEntityTypes__ = [
+    [['person'], ['time'], ['location'], ['person', 'relatives']],  #Dzimšana/Being_born
+    [['person'], ['sum', 'descriptor']],                            #Vecums/People_by_age
+    [['person', 'organization', 'media'],
+        ['time'], ['location'], ['descriptor'], ['descriptor']],    #Miršana/Death
+    [['person', 'organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['person', 'organization', 'media', 'relatives', 'descriptor'],
+        ['relationship'], ['time']],                                #Attiecības/Personal_relationship
+    [['person', 'organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['descriptor']],                                            #Vārds/Being_named
+    [['person', 'organization', 'media'],
+        ['location'], ['descriptor'], ['time']],                    #Dzīvesvieta/Residence
+    [['person'], ['organization'], 
+        ['profession', 'descriptor'],
+        ['qualification'], ['time'], ['location']],     #Izglītība/Education_teaching # jāsaprot par grādiem - vai plikus deskriptorus vai ko precīzāku...
+    [['person', 'organization', 'media'],
+        ['profession', 'industry', 'descriptor'],
+        ['time'], ['descriptor']],                      #Nodarbošanās/People_by_vocation
+    [['location'],
+        ['person', 'organization', 'media'],
+        ['descriptor']],                                #Izcelsme/People_by_origin
+    [['person'],
+        ['organization', 'media'],
+        ['profession'],
+        ['sum', 'descriptor'],
+        ['location'], ['time'], ['descriptor'], ['time'], ['time']],    #Amats/Being_employed
+    [['person'],
+        ['organization', 'media'],
+        ['profession'],
+        ['person', 'organization'],
+        ['descriptor'], ['location'], ['time'], ['person']],            #Darba_sākums/Hiring
+    [['person'],
+        ['organization', 'media'],
+        ['profession'],
+        ['person', 'organization'],
+        ['descriptor'], ['location'], ['time'], ['person']],            #Darba_beigas/Employment_end
+    [['person', 'organization', 'media'],
+        ['organization'], ['time'], ['descriptor']],    #Dalība/Membership
+    [['person', 'organization'],
+        ['organization'], ['profession'], ['organization'],
+        ['descriptor'], ['time'], ['location']],        #Vēlēšanas/Change_of_leadership # Uzvarētājs patiesībā ir saraksts
+    [['person', 'organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['sum', 'descriptor'],
+        ['time']],                                  #Atbalsts/Giving
+    [['organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['descriptor'], ['industry'], ['time'], ['location']],    #Dibināšana/Intentionally_create # organizāciju nozares sintaktiski ir līdzīgas profesijām bet sarakstu varbūt jāliek citu
+    [['person', 'organization', 'media'],
+        ['event'], ['time'], ['location'], ['descriptor'],
+        ['person', 'organization', 'media']],       #Piedalīšanās/Participation
+    [['person', 'organization', 'media'],
+        ['sum'], ['descriptor'], ['sum'], ['time'], ['descriptor'],
+        ['sum', 'descriptor']],                     #Finanses/Earnings_and_losses
+    [['person', 'organization', 'media'],
+        ['organization', 'media', 'descriptor'],
+        ['time'],
+        ['sum', 'descriptor']],                     #Īpašums/Possession
+    [['person', 'organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['sum'], ['descriptor'], ['time'], ['descriptor']], #Parāds/Lending
+    [['person', 'organization', 'media'],
+        ['descriptor'], ['organization'],
+        ['person', 'organization', 'media'],
+        ['person', 'organization'],
+        ['person'], ['location'], ['time']],       #Tiesvedība/Trial 
+    [['person', 'organization', 'media'],
+        ['person', 'organization'],
+        ['descriptor'], ['descriptor'], ['descriptor'], ['descriptor'],
+        ['product', 'descriptor'],
+        ['descriptor'], ['location'], ['time']],   #Uzbrukums/Attack
+    [['person', 'organization', 'media'],
+        ['prize'], ['event'], ['descriptor'], ['prize'], ['time'], ['location'],
+        ['person', 'organization', 'media'],
+        ['person', 'organization', 'media']],       #Sasniegums/Win_prize
+    [['organization', 'media'], ['person'], ['descriptor'], ['time']], #Ziņošana/Statement
+    [['organization', 'media'],
+        ['product', 'descriptor'],
+        ['sum'],
+        ['person', 'organization', 'media'],
+        ['person', 'organization', 'media'],
+        ['descriptor'], ['time']],                  #Publisks_iepirkums/Public_procurement
+    [['product', 'descriptor'], ['person', 'organization', 'media'], ['product']],  #Zīmols/Product_line
+    [['person'], ['descriptor'], ['descriptor']]]   #Nestrukturēts/Unstructured
 
 def getDefaultRole(frameCode, elementCode):
     try:
