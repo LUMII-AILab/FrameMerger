@@ -16,7 +16,10 @@ except ImportError:
     from urllib import quote # Fall back to Python 2's urllib
 
 from collections import Counter
-from frameinfo2 import getFrameType, getElementCode, getEntityTypeCode, getDefaultEnityType, getFrameName, getElementName, getEntityTypeName
+from frameinfo2 import getFrameCode, getFrameName, \
+                       getElementCode, getElementName, \
+                       getEntityTypeCode, getEntityTypeName, \
+                       getDefaultEnityType, getDeterminerElement
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
@@ -55,12 +58,27 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             addDate(frame, document.date) # Fills the Time attribute for selected frames from document metadata, if it is empty
             frame['sentence'] = sentence # backpointer tālākai apstrādei
             
+            # Noskaidro vai, ir viena loma, kas nosaka citu elementu tipus.
+            detElement = getDeterminerElement(getFrameCode(frame.type))
+            detType = None
+            doneElem = None
+            # Ja šāda loma ir, tad tās entīti uztaisa pirmo, lai būtu zināms tās tips.
+            if detElement is not None:
+                for element in frame.elements:
+                    if element.name == detElement:
+                        entityid, detType = makeEntityIfNeeded(entities, sentence.tokens, element.tokenIndex, frame, element, None)
+                        neededEntities.add(entityid)
+                        doneElem = element
+                        break
+                        
+            # Apstrādā pārējās lomas.
             for element in frame.elements:
-                entityid = makeEntityIfNeeded(entities, sentence.tokens, element.tokenIndex, frame, element)
-                    # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
-                    # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
-                neededEntities.add(entityid)
-                #print ("{0} {1}".format(entities[str(entityid)].get('representative'), entityid))
+                if element is not doneElem:     # Lai neapstrādā determinējošo lomu vēlreiz.
+                    entityid, enityType = makeEntityIfNeeded(entities, sentence.tokens, element.tokenIndex, frame, element, detType)
+                        # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
+                        # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
+                    neededEntities.add(entityid)
+                    #print ("{0} {1}".format(entities[str(entityid)].get('representative'), entityid))
 
         for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
             neID = token.get('namedEntityID')
@@ -90,7 +108,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
         for frame in sentence.frames:
             if len(frame.elements) < 2:
                 continue # mikrofreimus neliekam. TODO: te varētu vēl pat agresīvāk filtrēt
-            frameType = getFrameType(frame.type)
+            frameType = getFrameCode(frame.type)
 
             elements = {} # dict no elementu lomas koda uz attiecīgās entītes ID
             filledRoles = set() 
@@ -242,30 +260,30 @@ def entityPhraseByNERMention (start, end, tokens):
 
 # Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id
 # ja tādas entītijas nav, tad pievieno jaunu sarakstam
-def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
+def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerElementType):
     # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
     if element.entityID:
         entities[str(element.entityID)]['source'] = 'defined in document'
-        return element.entityID
+        return (element.entityID, entities[str(element.entityID)]['type'])
 
     if tokenIndex > len(tokens):
         log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
-        return 0
+        return (0, None)
     else: 
-        frameType = getFrameType(frame.type)
-        elementCode = getElementCode(frameType, element.name)
-        defaultType = getDefaultEnityType(frameType, elementCode)
+        frameCode = getFrameCode(frame.type)
+        elementCode = getElementCode(frameCode, element.name)
+        entityType = getDefaultEnityType(frameCode, elementCode)
 
         headtoken = tokens[tokenIndex-1] 
 
         if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
                 or headtoken.namedEntityType == 'unk':
-            headtoken.namedEntityType = defaultType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
+            headtoken.namedEntityType = entityType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
 
         if headtoken['namedEntityType'] == None:
-            sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (defaultType, ))
+            sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (entityType, ))
         if headtoken['namedEntityType'] == 'None': 
-            sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (defaultType, ))
+            sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (entityType, ))
 
         # entityID = headtoken.namedEntityID
         # Koreferenču formāta labojums.
@@ -290,6 +308,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
             phrase = entityPhraseByNER(tokenIndex, tokens)
             if representativePhrase is not None:
                 phrase = representativePhrase
+            entityType = headtoken['namedEntityType']
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
             entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
         
@@ -309,13 +328,15 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
             entities[str(entityID)]['source'] = source
 
         if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
-            entityID = makeEntity(entities, '_NEKONKRĒTS_', headtoken['namedEntityType'])
+            entityType = headtoken['namedEntityType']
+            entityID = makeEntity(entities, '_NEKONKRĒTS_', entityType)
 
         # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
         if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
             # Pa lielam, ja 'atrastais' vārds ir pareiza tipa entītijas iekšpusē tad ieliekam nevis tagera atrasto bet visu lielo entīti
             parent = tokens[headtoken.parentIndex-1]
             if headtoken.namedEntityType == parent.namedEntityType:
+                entityType = parent.namedEntityType
                 entityID = parent.namedEntityID
                 if entityID:
                     entities[str(entityID)]['source'] = 'workaround #2 - entity from syntactic parent'
@@ -327,12 +348,12 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
 
         # Ja nu toč nav tādas entītijas... tad veidojam no koka
         if entityID is None: 
-            phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, defaultType)
+            phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, entityType)
             entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
             entities[str(entityID)]['source'] = 'entity built from syntactic tree'
             if entityCreationDebuginfo:
                 print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
-                    phrase, defaultType, element.name, frame.type))
+                    phrase, entityType, element.name, frame.type))
             
 
     headtoken['namedEntityID'] = entityID
@@ -341,7 +362,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
         frames = []
     frames.append(frame)
     entities[str(entityID)]["frames"] = frames
-    return entityID
+    return (entityID, entityType)
 
 # Fills the Time attribute for selected frames from document metadata, if it is empty
 def addDate(frame, documentdate): 
@@ -905,12 +926,12 @@ def compact_document(document):
         for frame in sentence.frames:
             if not frame.tokenIndex:
                 continue
-            frametypeid = getFrameType(frame.type)
+            frametypeid = getFrameCode(frame.type)
             fr = [[frametypeid,frame.tokenIndex]]
             for element in frame.elements:
                 if not element.tokenIndex:
                     continue
-                frameroleid = getElementCode(frametypeid,element.name)
+                frameroleid = getElementCode(frametypeid, element.name)
                 fr.append([frameroleid,element.tokenIndex])
             sent[0].append(fr)
 

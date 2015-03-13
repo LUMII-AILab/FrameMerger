@@ -38,7 +38,7 @@ frameTypes = [
     "Product_line",
     "Unstructured"]
 
-def getFrameType (name):
+def getFrameCode (name):
     if name in frameTypes:
         return frameTypes.index(name)
     else:
@@ -302,9 +302,9 @@ determinerElement = [
     None,           #Zīmols/Product_line
     None]           #Nestrukturēts/Unstructured
 
-def getDeterminerRole (frameCode):
+def getDeterminerElement (frameCode):
     try:
-        role = determinerElement[code]
+        role = determinerElement[frameCode]
     except IndexError:
         sys.stderr.write("Mēģinam dabūt vārdu freimam ar nelabu numuru"+str(code)+"\n")
         role = None
