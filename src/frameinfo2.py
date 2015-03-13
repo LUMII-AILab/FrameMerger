@@ -101,7 +101,7 @@ def getElementName(frameCode, elementCode):
         name = ""
     return name
 
-NETypeCodes = {
+entityTypeCodes = {
     'location': 1,
     'organization': 2,
     'person': 3,
@@ -118,27 +118,27 @@ NETypeCodes = {
     'event' : 14,
     'industry' : 15}
 
-def getNETypeCode (name):
+def getEntityTypeCode (name):
     if name is None: 
         # sys.stderr.write("Prasam NE tipu priekš None...")
         return 0
     if name == 'organizations':
         name = 'organization' # TODO - salabo reālu situāciju datos, taču nav skaidrs kurā brīdī tādi bugaini dati tika izveidoti.
-    code = NETypeCodes.get(name)
+    code = entityTypeCodes.get(name)
     if code is None:
         sys.stderr.write("Nesaprasts NE tips '"+name+"'\n")
         return 0
     else:        
         return code
 
-def getNETypeName(code):
-    for name in NETypeCodes:
-        if NETypeCodes[name] == code:
+def getEntityTypeName(code):
+    for name in EnityTypeCodes:
+        if entityTypeCodes[name] == code:
             return name
     sys.stderr.write("Hmm nesanāca dabūt vārdu entītijas tipam ar kodu "+str(code)+"\n")
     return ""
 
-__roleDefaultNETypes__ = [  # ja NE nav neko ielicis, bet freima elements uz šo norāda - kāda ir defaultā NE kategorija. reizēm var būt gan persona gan organizācija.. bet nu cerams tos NER palīdzēs.
+elementDefaultEntityTypes = [  # ja NE nav neko ielicis, bet freima elements uz šo norāda - kāda ir defaultā NE kategorija. reizēm var būt gan persona gan organizācija.. bet nu cerams tos NER palīdzēs.
     ['person', 'time', 'location', 'relatives'],        #Dzimšana/Being_born
     ['person', 'sum'],                                  #Vecums/People_by_age
     ['person', 'time', 'location', 'descriptor', 'descriptor'], #Miršana/Death
@@ -167,7 +167,15 @@ __roleDefaultNETypes__ = [  # ja NE nav neko ielicis, bet freima elements uz šo
     ['descriptor', 'organization', 'product'],  #Zīmols/Product_line
     ['person','descriptor','descriptor']]   #Nestrukturēts/Unstructured
 
-__rolePlausibleEntityTypes__ = [
+def getDefaultEnityType(frameCode, elementCode):
+    try:
+        type = elementDefaultEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
+    except IndexError:
+        sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
+        type = ''
+    return type
+
+elementPlausibleEntityTypes = [
     [['person'], ['time'], ['location'], ['person', 'relatives']],  #Dzimšana/Being_born
     [['person'], ['sum', 'descriptor']],                            #Vecums/People_by_age
     [['person', 'organization', 'media'],
@@ -254,10 +262,52 @@ __rolePlausibleEntityTypes__ = [
     [['product', 'descriptor'], ['person', 'organization', 'media'], ['product']],  #Zīmols/Product_line
     [['person'], ['descriptor'], ['descriptor']]]   #Nestrukturēts/Unstructured
 
-def getDefaultRole(frameCode, elementCode):
+def getPlausibleTypes(frameCode, elementCode):
     try:
-        role = __roleDefaultNETypes__[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
+        types = elementPlausibleEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
     except IndexError:
-        sys.stderr.write("Hmm mēģinam dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
-        role = ''
+        sys.stderr.write("Mēģina dabūt lomai pieļaujamos entīšu tipus elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
+        types = []
+    return types
+# Freimiem, kas ir kopīgi gan organizācijām, viena loma parasti nosaka, vai
+# konkrētais freims ir par personu vai organizāciju, un šīs lomas entītes tips
+# tālāk ļauj spriest par piemērotākajiem pārējo lomu entīšu tipiem.
+# Šeit ir tās "noteicošās" lomas apkopotas.
+determinerElement = [
+    None,           #Dzimšana/Being_born
+    None,           #Vecums/People_by_age
+    None,           #Miršana/Death
+    None,           #Attiecības/Personal_relationship - abi elementi nav vienādi
+    "Entity",       #Vārds/Being_named - Entity un Name tipi ir vienādi
+    None,           #Dzīvesvieta/Residence
+    None,           #Izglītība/Education_teaching
+    "Person",       #Nodarbošanās/People_by_vocation - Person nosaka Vocation tipu
+    None,           #Izcelsme/People_by_origin
+    None,           #Amats/Being_employed
+    None,           #Darba_sākums/Hiring
+    None,           #Darba_beigas/Employment_end
+    None,           #Dalība/Membership
+    None,           #Vēlēšanas/Change_of_leadership
+    None,           #Atbalsts/Giving - abi elementi ir neatkarīgi
+    None,           #Dibināšana/Intentionally_create
+    None,           #Piedalīšanās/Participation - abi elementi ir neatkarīgi
+    None,           #Finanses/Earnings_and_losses
+    None,           #Īpašums/Possession
+    None,           #Parāds/Lending
+    None,           #Tiesvedība/Trial
+    None,           #Uzbrukums/Attack 
+    "Competitor",   #Sasniegums/Win_prize - Competitor un Opponent tipi ir vienādi
+    None,           #Ziņošana/Statement
+    None,           #Publisks_iepirkums/Public_procurement
+    None,           #Zīmols/Product_line
+    None]           #Nestrukturēts/Unstructured
+
+def getDeterminerRole (frameCode):
+    try:
+        role = determinerElement[code]
+    except IndexError:
+        sys.stderr.write("Mēģinam dabūt vārdu freimam ar nelabu numuru"+str(code)+"\n")
+        role = None
     return role
+ 
+    

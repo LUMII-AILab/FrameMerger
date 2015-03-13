@@ -16,7 +16,7 @@ except ImportError:
     from urllib import quote # Fall back to Python 2's urllib
 
 from collections import Counter
-from frameinfo2 import getFrameType, getElementCode, getNETypeCode, getDefaultRole, getFrameName, getElementName, getNETypeName
+from frameinfo2 import getFrameType, getElementCode, getEntityTypeCode, getDefaultEnityType, getFrameName, getElementName, getEntityTypeName
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
@@ -254,7 +254,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element):
     else: 
         frameType = getFrameType(frame.type)
         elementCode = getElementCode(frameType, element.name)
-        defaultType = getDefaultRole(frameType, elementCode)
+        defaultType = getDefaultEnityType(frameType, elementCode)
 
         headtoken = tokens[tokenIndex-1] 
 
@@ -625,7 +625,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 if entity.get('type') != 'descriptor':              
                     representative = inflections.get('Nominatīvs')                
 
-            category = getNETypeCode(entity.get('type'))
+            category = getEntityTypeCode(entity.get('type'))
             outerId = [] # Organizācijām un personām pieliekam random UUID
             if category == 3:
                 outerId = ['FP-' + str(uuid.uuid4())]
@@ -751,7 +751,7 @@ def buildGlobalEntityBags(globalID, api=api):
         for element in frame["FrameData"]:
             entityID = element['entityid']
             # Šis aizkomentētais būtu production variants - mazāk korekti nekā tiešās entīšu kategorijas, bet vajadzētu (nav pārbaudīts) būt būtiski ātrāk jo nav lieku DB request
-            # defaultroletype = getDefaultRole(frame['FrameType'], element['Key'])
+            # defaultroletype = getDefaultEnityType(frame['FrameType'], element['Key'])
             # if (defaultroletype == 'person') or (defaultroletype == 'organization') or (defaultroletype == 'location'):
             #     mentionbag.add(entityID)   
             entity = api.entity_data_by_id(entityID, False)
@@ -811,7 +811,7 @@ def disambiguateEntity(entity, matchedEntities, entities, api=api):
         k['outerID'] = db_info['OuterId'] 
         if isinstance(k['outerID'], list):
             k['outerID'] = k['outerID'][0] # TODO - jāizdomā kā apieties ja ir vairāki outerID (ja nākotnē sāks tur likt personkodus vai ko tādu)
-        k['category'] = getNETypeName(db_info['Category'])
+        k['category'] = getEntityTypeName(db_info['Category'])
         k['amati'] = set()
         k['darbavietas'] = set()
         # if len(freimi) == 0:
