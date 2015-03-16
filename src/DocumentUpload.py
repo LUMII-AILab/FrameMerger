@@ -284,7 +284,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
         
         # Dažas lomas vienmēr ir jāaizpilda ar koka fragmentu, dažas var arī ar
         # NER/NEL/coref entītēm vai to pieminējumiem.
-        if (frame.name, element.name) not in [('Statement', 'Message')]:
+        if (frame.type, element.name) not in [('Statement', 'Message')]:
         
             # Mēģinās aizpildīt ar NER/NEL/coref palīdzību
             if 'mentions' in headtoken.keys():
@@ -319,14 +319,18 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                 else:
                     entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
-                    if (frame.name, element.name) not in [('People_by_vocation', 'Vocation')]:
+                    print (frame.type, element.name)
+                    if (frame.type, element.name) not in [('People_by_vocation', 'Vocation')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
                         entities[str(entityID)]['source'] = 'from NER with changed type'
+                        print ("Uztaisīja no repr: {0}".format(representativePhrase))
                     #Freimi, kuriem ņem entītes pieminējumu
                     else:
                         entityID = makeEntity(entities, mentionPhrase, entityType)
                         entities[str(entityID)]['source'] = 'from NER mention with changed type'
-                        
+                        print ("Uztaisīja no mention: {0}".format(mentionPhrase))
+                    print ("Det {0} un iedotais tips {1}".format(determinerElementType, entityType))
+                    
             #if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
             #        or headtoken.namedEntityType == 'unk':
             #    headtoken.namedEntityType = entityType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.

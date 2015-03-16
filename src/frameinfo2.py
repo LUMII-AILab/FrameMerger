@@ -281,7 +281,7 @@ def getDefaultEnityType(frameCode, elementCode, determinerType):
     Person ir 'person', tad - 'profession'.
     """
     try:
-        determiner = getDeterminerElement(frameCode)
+        determiner = determinerElement[frameCode]
         if determinerType is None or determiner is None or determinerType not in determiner[1]:
             type = elementPlausibleEntityTypes[frameCode][elementCode-1][0] # -1 jo freimu lomas numurējas no 1
         else:
