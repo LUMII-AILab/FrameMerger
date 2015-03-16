@@ -19,7 +19,8 @@ from collections import Counter
 from frameinfo2 import getFrameCode, getFrameName, \
                        getElementCode, getElementName, \
                        getEntityTypeCode, getEntityTypeName, \
-                       getDefaultEnityType, getDeterminerElement
+                       getDefaultEnityType, getPlausibleTypes, \
+                       getDeterminerElement
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
@@ -74,7 +75,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             # Apstrādā pārējās lomas.
             for element in frame.elements:
                 if element is not doneElem:     # Lai neapstrādā determinējošo lomu vēlreiz.
-                    entityid, enityType = makeEntityIfNeeded(entities, sentence.tokens, element.tokenIndex, frame, element, detType)
+                    entityid, entityType = makeEntityIfNeeded(entities, sentence.tokens, element.tokenIndex, frame, element, detType)
                         # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
                         # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
                     neededEntities.add(entityid)
@@ -270,86 +271,121 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
         log.error('Error: entity sākas tokenā #%d no %d datos : %s',tokenIndex,len(tokens), repr(tokens))
         return (0, None)
     else: 
+        headtoken = tokens[tokenIndex-1]    # Tokens, ap kuru visa ņemšanās notiek.
         frameCode = getFrameCode(frame.type)
         elementCode = getElementCode(frameCode, element.name)
-        entityType = getDefaultEnityType(frameCode, elementCode)
-
-        headtoken = tokens[tokenIndex-1] 
-
-        if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
-                or headtoken.namedEntityType == 'unk':
-            headtoken.namedEntityType = entityType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
-
-        if headtoken['namedEntityType'] == None:
-            sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (entityType, ))
-        if headtoken['namedEntityType'] == 'None': 
-            sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (entityType, ))
-
-        # entityID = headtoken.namedEntityID
-        # Koreferenču formāta labojums.
+        permitedTypes = getPlausibleTypes(frameCode, elementCode, determinerElementType)
+        
+        # Paņemam NER/NEL/coref entīti un paskatamies, vai der.
         entityID = None
         representativePhrase = None
         mentionPhrase = None
-        if 'mentions' in headtoken.keys():
-            entityID = headtoken['mentions'][0]['id']
-            representativePhrase = entities[str(entityID)].get('representative')
-            mentionPhrase = entityPhraseByNERMention(
-                headtoken['mentions'][0]['start'], headtoken['mentions'][0]['end'], tokens)
-            if len(headtoken['mentions']) > 1 and entityCreationDebuginfo:
-                print('Tokenam {0} ir {1} pieminējumi.\n'.format(
-                    headtoken['form'], len(headtoken['mentions'])))  
+        entityType = None
         
-        if entityID:
-            entities[str(entityID)]['source'] = 'from NER'
-
-        # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
-        if entityID is not None and entities[str(entityID)].get('type') == 'person' and \
-                (headtoken.namedEntityType == 'profession' or headtoken.namedEntityType == 'possition'):
-            phrase = entityPhraseByNER(tokenIndex, tokens)
-            if representativePhrase is not None:
-                phrase = representativePhrase
-            entityType = headtoken['namedEntityType']
-            entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
-            entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
+        # Dažas lomas vienmēr ir jāaizpilda ar koka fragmentu, dažas var arī ar
+        # NER/NEL/coref entītēm vai to pieminējumiem.
+        if (frame.name, element.name) not in [('Statement', 'Message')]:
         
-        if entityID is not None and element.name == 'Vocation':
-            phrase = entityPhraseByNER(tokenIndex, tokens)
-            source = ''
-            if mentionPhrase is not None:
-                # print(mentionPhrase)
-                phrase = mentionPhrase
-                source = 'from NER mention'                    
-            entityType = headtoken['namedEntityType']
-            # Šajā if vēlāk būs vēl jāpieliek organizācijas nodarbošanās tips.
-            if headtoken['namedEntityType'] not in set(['profession', 'industry']):
-                entityType = 'industry'
-                source = 'workaround #3 - changing vocation type'
-            entityID = makeEntity(entities, phrase, entityType)
-            entities[str(entityID)]['source'] = source
+            # Mēģinās aizpildīt ar NER/NEL/coref palīdzību
+            if 'mentions' in headtoken.keys():
+                entityID = headtoken['mentions'][0]['id']
+                #representativePhrase = entities[str(entityID)].get('representative')
+                representativePhrase = entities[str(entityID)]['representative']
+                mentionPhrase = entityPhraseByNERMention(
+                    headtoken['mentions'][0]['start'], headtoken['mentions'][0]['end'], tokens)
 
-        if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
-            entityType = headtoken['namedEntityType']
-            entityID = makeEntity(entities, '_NEKONKRĒTS_', entityType)
+                # Reizēm coref mentioniem nav tipu, ja NER tur neko jēdzīgu nav atradis.
+                mentionType = 'unk'
+                if 'type' in headtoken['mentions'][0]:
+                    mentionType = headtoken['mentions'][0]['type']
+                # Pabrīdina, ja ir vairāk par vienu mention, jo tas šobrīd
+                # netiek ņemts vērā.
+                if len(headtoken['mentions']) > 1 and entityCreationDebuginfo:
+                    print('Tokenam {0} ir {1} pieminējumi.\n'.format(
+                        headtoken['form'], len(headtoken['mentions'])))
+               
+                # Atradās entīte ar pieļaujamu tipu + ir tāda loma, kurā to varam lietot, viss forši
+                if entities[str(entityID)]['type'] in permitedTypes:
+                    entities[str(entityID)]['source'] = 'from NER'
+                    entityType = entities[str(entityID)]['type']
+                    
+                # Atradās mentions ar pieļaujamu tipu, varam uztaisīt no tā jaunu entīti
+                elif mentionType in permitedTypes:
+                    entityType = mentionType
+                    entityID = makeEntity(entities, mentionPhrase, entityType)
+                    entities[str(entityID)]['source'] = 'from NER mention'
+                
+                # Tipi nav piemēroti, nomainīs uz defaulto
+                else:
+                    entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
+                    #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
+                    if (frame.name, element.name) not in [('People_by_vocation', 'Vocation')]:
+                        entityID = makeEntity(entities, representativePhrase, entityType)
+                        entities[str(entityID)]['source'] = 'from NER with changed type'
+                    #Freimi, kuriem ņem entītes pieminējumu
+                    else:
+                        entityID = makeEntity(entities, mentionPhrase, entityType)
+                        entities[str(entityID)]['source'] = 'from NER mention with changed type'
+                        
+            #if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
+            #        or headtoken.namedEntityType == 'unk':
+            #    headtoken.namedEntityType = entityType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
 
-        # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
-        if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
-            # Pa lielam, ja 'atrastais' vārds ir pareiza tipa entītijas iekšpusē tad ieliekam nevis tagera atrasto bet visu lielo entīti
-            parent = tokens[headtoken.parentIndex-1]
-            if headtoken.namedEntityType == parent.namedEntityType:
-                entityType = parent.namedEntityType
-                entityID = parent.namedEntityID
-                if entityID:
-                    entities[str(entityID)]['source'] = 'workaround #2 - entity from syntactic parent'
+            #if headtoken['namedEntityType'] == None:
+            #    sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (entityType, ))
+            #if headtoken['namedEntityType'] == 'None': 
+            #    sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (entityType, ))
 
-        # TODO - varbūt pirms koka vajadzētu uz NER robežām paskatīties? jānotestē kas dod labākus rezultātus
-        # if entityID is None:
-        #     phrase = entityPhraseByNER(tokenIndex, tokens)
-        #     entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+            
+            # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
+            #if entityID is not None and entities[str(entityID)].get('type') == 'person' and \
+            #        (headtoken.namedEntityType == 'profession' or headtoken.namedEntityType == 'possition'):
+            #    phrase = entityPhraseByNER(tokenIndex, tokens)
+            #    if representativePhrase is not None:
+            #        phrase = representativePhrase
+            #    entityType = headtoken['namedEntityType']
+            #    entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+            #    entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
+            
+            #if entityID is not None and element.name == 'Vocation':
+            #    phrase = entityPhraseByNER(tokenIndex, tokens)
+            #    source = ''
+            #    if mentionPhrase is not None:
+            #        # print(mentionPhrase)
+            #        phrase = mentionPhrase
+            #        source = 'from NER mention'                    
+            #    entityType = headtoken['namedEntityType']
+                # Šajā if vēlāk būs vēl jāpieliek organizācijas nodarbošanās tips.
+            #    if headtoken['namedEntityType'] not in set(['profession', 'industry']):
+            #        entityType = 'industry'
+            #        source = 'workaround #3 - changing vocation type'
+            #    entityID = makeEntity(entities, phrase, entityType)
+            #    entities[str(entityID)]['source'] = source
 
-        # Ja nu toč nav tādas entītijas... tad veidojam no koka
+            if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
+                entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
+                entityID = makeEntity(entities, '_NEKONKRĒTS_', entityType)
+
+            # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
+            #if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
+                # Pa lielam, ja 'atrastais' vārds ir pareiza tipa entītijas iekšpusē tad ieliekam nevis tagera atrasto bet visu lielo entīti
+            #    parent = tokens[headtoken.parentIndex-1]
+            #    if headtoken.namedEntityType == parent.namedEntityType:
+            #        entityType = parent.namedEntityType
+            #        entityID = parent.namedEntityID
+            #        if entityID:
+            #            entities[str(entityID)]['source'] = 'workaround #2 - entity from syntactic parent'
+
+            # TODO - varbūt pirms koka vajadzētu uz NER robežām paskatīties? jānotestē kas dod labākus rezultātus
+            # if entityID is None:
+            #     phrase = entityPhraseByNER(tokenIndex, tokens)
+            #     entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+
+        # Ja nu toč nav tādas entītijas (vai arī tas ir Ziņojums)... tad veidojam no koka
         if entityID is None: 
+            entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
             phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, entityType)
-            entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
+            entityID = makeEntity(entities, phrase, entityType)
             entities[str(entityID)]['source'] = 'entity built from syntactic tree'
             if entityCreationDebuginfo:
                 print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(

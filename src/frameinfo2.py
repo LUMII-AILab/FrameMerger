@@ -138,51 +138,15 @@ def getEntityTypeName(code):
     sys.stderr.write("Hmm nesanāca dabūt vārdu entītijas tipam ar kodu "+str(code)+"\n")
     return ""
 
-elementDefaultEntityTypes = [  # ja NE nav neko ielicis, bet freima elements uz šo norāda - kāda ir defaultā NE kategorija. reizēm var būt gan persona gan organizācija.. bet nu cerams tos NER palīdzēs.
-    ['person', 'time', 'location', 'relatives'],        #Dzimšana/Being_born
-    ['person', 'sum'],                                  #Vecums/People_by_age
-    ['person', 'time', 'location', 'descriptor', 'descriptor'], #Miršana/Death
-    ['person', 'person', 'descriptor', 'relationship', 'time'],  #Attiecības/Personal_relationship
-    ['person', 'person', 'descriptor'],                 #Vārds/Being_named
-    ['person', 'location', 'descriptor', 'time'],    #Dzīvesvieta/Residence
-    ['person', 'organization', 'descriptor', 'qualification', 'time', 'location'], #Izglītība/Education_teaching # jāsaprot par grādiem - vai plikus deskriptorus vai ko precīzāku...
-    ['person', 'profession', 'time', 'descriptor'],     #Nodarbošanās/People_by_vocation
-    ['location', 'person', 'descriptor'],               #Izcelsme/People_by_origin
-    ['person', 'organization', 'profession', 'sum', 'location', 'time', 'descriptor', 'time', 'time'],  #Amats/Being_employed
-    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'],     #Darba_sākums/Hiring
-    ['person', 'organization', 'profession', 'person', 'descriptor', 'location', 'time', 'person'],     #Darba_beigas/Employment_end
-    ['person', 'organization', 'time', 'descriptor'],   #Dalība/Membership
-    ['person', 'organization', 'profession', 'organization', 'descriptor', 'time', 'location'],   #Vēlēšanas/Change_of_leadership
-    ['person', 'organization', 'descriptor', 'time'],   #Atbalsts/Giving
-    ['organization', 'person', 'descriptor', 'industry', 'time', 'location'], #Dibināšana/Intentionally_create # organizāciju nozares sintaktiski ir līdzīgas profesijām bet sarakstu varbūt jāliek citu
-    ['person', 'event', 'time', 'location', 'descriptor', 'organization'], #Piedalīšanās/Participation
-    ['organization', 'sum', 'descriptor', 'sum', 'time', 'descriptor', 'descriptor'],   #Finanses/Earnings_and_losses
-    ['person', 'descriptor', 'time', 'descriptor'], #Īpašums/Possession
-    ['organization', 'organization', 'sum', 'descriptor', 'time', 'descriptor'], #Parāds/Lending
-    ['person', 'descriptor', 'organization', 'person', 'person', 'person', 'location', 'time'], #Tiesvedība/Trial
-    ['person', 'person', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'descriptor', 'location', 'time'],   #Uzbrukums/Attack
-    ['person', 'prize', 'event', 'descriptor', 'prize', 'time', 'location', 'organization', 'person'],  #Sasniegums/Win_prize
-    ['organization', 'person', 'descriptor', 'time'],   #Ziņošana/Statement
-    ['organization', 'descriptor', 'sum', 'organization', 'organization', 'descriptor', 'time'],    #Publisks_iepirkums/Public_procurement
-    ['descriptor', 'organization', 'product'],  #Zīmols/Product_line
-    ['person','descriptor','descriptor']]   #Nestrukturēts/Unstructured
-
-def getDefaultEnityType(frameCode, elementCode):
-    try:
-        type = elementDefaultEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
-    except IndexError:
-        sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
-        type = ''
-    return type
-
+# Pieļaujamie entīšu tipi pa lomām. Pirmais - defaultais.
 elementPlausibleEntityTypes = [
-    [['person'], ['time'], ['location'], ['person', 'relatives']],  #Dzimšana/Being_born
+    [['person'], ['time'], ['location'], ['relatives', 'person']],  #Dzimšana/Being_born
     [['person'], ['sum', 'descriptor']],                            #Vecums/People_by_age
     [['person', 'organization', 'media'],
         ['time'], ['location'], ['descriptor'], ['descriptor']],    #Miršana/Death
     [['person', 'organization', 'media'],
         ['person', 'organization', 'media'],
-        ['person', 'organization', 'media', 'relatives', 'descriptor'],
+        ['descriptor', 'person', 'organization', 'media', 'relatives'],
         ['relationship'], ['time']],                                #Attiecības/Personal_relationship
     [['person', 'organization', 'media'],
         ['person', 'organization', 'media'],
@@ -190,7 +154,7 @@ elementPlausibleEntityTypes = [
     [['person', 'organization', 'media'],
         ['location'], ['descriptor'], ['time']],                    #Dzīvesvieta/Residence
     [['person'], ['organization'], 
-        ['profession', 'descriptor'],
+        ['descriptor', 'profession'],
         ['qualification'], ['time'], ['location']],     #Izglītība/Education_teaching # jāsaprot par grādiem - vai plikus deskriptorus vai ko precīzāku...
     [['person', 'organization', 'media'],
         ['profession', 'industry', 'descriptor'],
@@ -219,8 +183,8 @@ elementPlausibleEntityTypes = [
         ['organization'], ['profession'], ['organization'],
         ['descriptor'], ['time'], ['location']],        #Vēlēšanas/Change_of_leadership # Uzvarētājs patiesībā ir saraksts
     [['person', 'organization', 'media'],
-        ['person', 'organization', 'media'],
-        ['sum', 'descriptor'],
+        ['organization', 'person', 'media'],
+        ['descriptor', 'sum'],
         ['time']],                                  #Atbalsts/Giving
     [['organization', 'media'],
         ['person', 'organization', 'media'],
@@ -228,15 +192,15 @@ elementPlausibleEntityTypes = [
     [['person', 'organization', 'media'],
         ['event'], ['time'], ['location'], ['descriptor'],
         ['person', 'organization', 'media']],       #Piedalīšanās/Participation
-    [['person', 'organization', 'media'],
+    [['organization', 'person', 'media'],
         ['sum'], ['descriptor'], ['sum'], ['time'], ['descriptor'],
-        ['sum', 'descriptor']],                     #Finanses/Earnings_and_losses
+        ['descriptor', 'sum']],                     #Finanses/Earnings_and_losses
     [['person', 'organization', 'media'],
-        ['organization', 'media', 'descriptor'],
+        ['descriptor', 'organization', 'media'],
         ['time'],
-        ['sum', 'descriptor']],                     #Īpašums/Possession
-    [['person', 'organization', 'media'],
-        ['person', 'organization', 'media'],
+        ['descriptor', 'sum']],                     #Īpašums/Possession
+    [['organization', 'person', 'media'],
+        ['organization', 'person', 'media'],
         ['sum'], ['descriptor'], ['time'], ['descriptor']], #Parāds/Lending
     [['person', 'organization', 'media'],
         ['descriptor'], ['organization'],
@@ -246,42 +210,108 @@ elementPlausibleEntityTypes = [
     [['person', 'organization', 'media'],
         ['person', 'organization'],
         ['descriptor'], ['descriptor'], ['descriptor'], ['descriptor'],
-        ['product', 'descriptor'],
+        ['descriptor', 'product'],
         ['descriptor'], ['location'], ['time']],   #Uzbrukums/Attack
     [['person', 'organization', 'media'],
         ['prize'], ['event'], ['descriptor'], ['prize'], ['time'], ['location'],
-        ['person', 'organization', 'media'],
+        ['organization', 'person', 'media'],
         ['person', 'organization', 'media']],       #Sasniegums/Win_prize
     [['organization', 'media'], ['person'], ['descriptor'], ['time']], #Ziņošana/Statement
     [['organization', 'media'],
-        ['product', 'descriptor'],
+        ['descriptor', 'product'],
         ['sum'],
-        ['person', 'organization', 'media'],
-        ['person', 'organization', 'media'],
+        ['organization', 'person', 'media'],
+        ['organization', 'person', 'media'],
         ['descriptor'], ['time']],                  #Publisks_iepirkums/Public_procurement
-    [['product', 'descriptor'], ['person', 'organization', 'media'], ['product']],  #Zīmols/Product_line
+    [['descriptor', 'product'],
+        ['organization', 'person', 'media'],
+        ['product']],  #Zīmols/Product_line
     [['person'], ['descriptor'], ['descriptor']]]   #Nestrukturēts/Unstructured
 
 def getPlausibleTypes(frameCode, elementCode):
+    """
+    Adod sarakstu ar entīšu tipiem, kas pieļaujami šī freima šai lomai.
+    """
     try:
         types = elementPlausibleEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
     except IndexError:
         sys.stderr.write("Mēģina dabūt lomai pieļaujamos entīšu tipus elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
         types = []
     return types
+    
+def getPlausibleTypes(frameCode, elementCode, determinerType):
+    """
+    Atdod sarakstu ar entīšu tipiem, kas pieļaujami šī freima šai lomai, ņemot
+    vērā, ar kāda tipa entīti jau ir aizpildīta "noteicoša" loma, piemēram,
+    vispārīgi Vocation lomu People_by_vocation freimā var aizpildīt entītes ar
+    tipu 'profession', 'industry', 'descriptor', bet, ja Person loma aizpildīta
+    ar 'organization' tipa entīti, tad Vocation var būt tikai 'industry' vai
+    'descriptor', bet ne 'profession'.
+    """
+    try:
+        determiner = getDeterminerElement(frameCode)
+        if determinerType is None or determiner is None or determinerType not in determiner[1]:
+            types = elementPlausibleEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
+        else:
+            elementName = getElementName(frameCode, elementCode);
+            types = determiner[1][determinerType][elementName]
+    except IndexError:
+        sys.stderr.write("Mēģina dabūt lomai pieļaujamos entīšu tipus elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
+        types = []
+    return types
+    
+def getDefaultEnityType(frameCode, elementCode):
+    """
+    Noklusētais entītes tips konkrētā freima konkrētai lomai - to lieto, ja nav
+    labāku apsvērumu.
+    """
+    try:
+        type = elementPlausibleEntityTypes[frameCode][elementCode-1][0] # -1 jo freimu lomas numurējas no 1
+    except IndexError:
+        sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
+        type = ''
+    return type
+
+def getDefaultEnityType(frameCode, elementCode, determinerType):
+    """
+    Noklusētais entītes tips konkrētā freima konkrētai lomai ņemot
+    vērā, ar kāda tipa entīti jau ir aizpildīta "noteicoša" loma, piemēram,
+    Vocation lomai People_by_vocation freimā, ja Person loma aizpildīta
+    ar 'organization' tipa entīti, noklusētā vērtība ir 'industry', bet, ja
+    Person ir 'person', tad - 'profession'.
+    """
+    try:
+        determiner = getDeterminerElement(frameCode)
+        if determinerType is None or determiner is None or determinerType not in determiner[1]:
+            type = elementPlausibleEntityTypes[frameCode][elementCode-1][0] # -1 jo freimu lomas numurējas no 1
+        else:
+            elementName = getElementName(frameCode, elementCode);
+            type = determiner[1][determinerType][elementName][0]           
+    except IndexError:
+        sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
+        type = ''
+    return type
+
 # Freimiem, kas ir kopīgi gan organizācijām, viena loma parasti nosaka, vai
 # konkrētais freims ir par personu vai organizāciju, un šīs lomas entītes tips
 # tālāk ļauj spriest par piemērotākajiem pārējo lomu entīšu tipiem.
-# Šeit ir tās "noteicošās" lomas apkopotas.
+# Šeit ir apkopots, kuras ir tās "noteicošās" lomas (korteža pirmākais
+# elements), un ko tās nosaka (korteža otrais elements: "noteicošā" elementa
+# tips -> kuru elementu nosaka -> uz kādiem tipiem nosaka (pirmais - 
+# defaultais).
 determinerElement = [
     None,           #Dzimšana/Being_born
     None,           #Vecums/People_by_age
     None,           #Miršana/Death
     None,           #Attiecības/Personal_relationship - abi elementi nav vienādi
-    "Entity",       #Vārds/Being_named - Entity un Name tipi ir vienādi
+    ("Entity", {'person' :       {'Name' : ['person']},
+                'organization' : {'Name' : ['organization', 'media']},
+                'media' :        {'Name' : ['media', 'organization']}}),         #Vārds/Being_named
     None,           #Dzīvesvieta/Residence
     None,           #Izglītība/Education_teaching
-    "Person",       #Nodarbošanās/People_by_vocation - Person nosaka Vocation tipu
+    ("Person", {'person' :       {'Vocation' : ['profession', 'descriptor']},
+                'organization' : {'Vocation' : ['industry', 'descriptor']},
+                'media' :        {'Vocation' : ['industry', 'descriptor']}}),    #Nodarbošanās/People_by_vocation
     None,           #Izcelsme/People_by_origin
     None,           #Amats/Being_employed
     None,           #Darba_sākums/Hiring
@@ -296,15 +326,23 @@ determinerElement = [
     None,           #Parāds/Lending
     None,           #Tiesvedība/Trial
     None,           #Uzbrukums/Attack 
-    "Competitor",   #Sasniegums/Win_prize - Competitor un Opponent tipi ir vienādi
+    ("Competitor", {'person' :       {'Opponent' : ['person']},
+                    'organization' : {'Opponent' : ['organization', 'media']},
+                    'media' :        {'Opponent' : ['media', 'organization']}}), #Sasniegums/Win_prize
     None,           #Ziņošana/Statement
     None,           #Publisks_iepirkums/Public_procurement
     None,           #Zīmols/Product_line
     None]           #Nestrukturēts/Unstructured
 
 def getDeterminerElement (frameCode):
+    """
+    Atgriež lomu, kas mēdz noteikt citu lomu tipus šajā freimā. Tiek
+    (optimistiski) pieņemts, ka tāda ir tikai viena.
+    """
     try:
         role = determinerElement[frameCode]
+        if role is not None:
+            role = role[0]
     except IndexError:
         sys.stderr.write("Mēģinam dabūt vārdu freimam ar nelabu numuru"+str(code)+"\n")
         role = None
