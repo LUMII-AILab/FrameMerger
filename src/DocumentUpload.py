@@ -9,7 +9,7 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import requests, json, time, datetime, re, copy, uuid, codecs, pylru
+import json, time, datetime, re, copy, uuid, codecs, pylru
 try:    
     from urllib.request import quote # For Python 3.0 and later
 except ImportError:    
@@ -21,17 +21,19 @@ from frameinfo2 import getFrameCode, getFrameName, \
                        getEntityTypeCode, getEntityTypeName, \
                        getDefaultEnityType, getPlausibleTypes, \
                        getDeterminerElement
+from Relationships import isRelationshipName
+from InflectEntity import inflectEntity
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
-from db_config import api_conn_info, inflection_webservice
+from db_config import api_conn_info
 import CDC
 import logging as log
 
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
@@ -319,56 +321,18 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                 else:
                     entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
-                    print (frame.type, element.name)
                     if (frame.type, element.name) not in [('People_by_vocation', 'Vocation')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
                         entities[str(entityID)]['source'] = 'from NER with changed type'
-                        print ("Uztaisīja no repr: {0}".format(representativePhrase))
                     #Freimi, kuriem ņem entītes pieminējumu
                     else:
                         entityID = makeEntity(entities, mentionPhrase, entityType)
                         entities[str(entityID)]['source'] = 'from NER mention with changed type'
-                        print ("Uztaisīja no mention: {0}".format(mentionPhrase))
-                    print ("Det {0} un iedotais tips {1}".format(determinerElementType, entityType))
                     
-            #if headtoken.namedEntityType is None or headtoken.namedEntityType == 'O' \
-            #        or headtoken.namedEntityType == 'unk':
-            #    headtoken.namedEntityType = entityType   # Ja NER nav iedevis tipu, tad mēs no freima elementa varam to izdomāt.
-
-            #if headtoken['namedEntityType'] == None:
-            #    sys.stderr.write('Entītijai nav tipa :( un defaulttips ir %s', (entityType, ))
-            #if headtoken['namedEntityType'] == 'None': 
-            #    sys.stderr.write('Entītijai tips ir "None" un defaulttips ir %s', (entityType, ))
-
-            
-            # PP 2013-11-24 - fix tam, ka LVCoref pagaidām mēdz profesijas pielinkot kā entītiju identisku personai
-            #if entityID is not None and entities[str(entityID)].get('type') == 'person' and \
-            #        (headtoken.namedEntityType == 'profession' or headtoken.namedEntityType == 'possition'):
-            #    phrase = entityPhraseByNER(tokenIndex, tokens)
-            #    if representativePhrase is not None:
-            #        phrase = representativePhrase
-            #    entityType = headtoken['namedEntityType']
-            #    entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
-            #    entities[str(entityID)]['source'] = 'workaround #1 - splitting person/profession coreference'
-            
-            #if entityID is not None and element.name == 'Vocation':
-            #    phrase = entityPhraseByNER(tokenIndex, tokens)
-            #    source = ''
-            #    if mentionPhrase is not None:
-            #        # print(mentionPhrase)
-            #        phrase = mentionPhrase
-            #        source = 'from NER mention'                    
-            #    entityType = headtoken['namedEntityType']
-                # Šajā if vēlāk būs vēl jāpieliek organizācijas nodarbošanās tips.
-            #    if headtoken['namedEntityType'] not in set(['profession', 'industry']):
-            #        entityType = 'industry'
-            #        source = 'workaround #3 - changing vocation type'
-            #    entityID = makeEntity(entities, phrase, entityType)
-            #    entities[str(entityID)]['source'] = source
-
             if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
                 entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                 entityID = makeEntity(entities, '_NEKONKRĒTS_', entityType)
+                entities[str(entityID)]['source'] = 'unspecified entity'
 
             # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
             #if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
@@ -379,11 +343,6 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
             #        entityID = parent.namedEntityID
             #        if entityID:
             #            entities[str(entityID)]['source'] = 'workaround #2 - entity from syntactic parent'
-
-            # TODO - varbūt pirms koka vajadzētu uz NER robežām paskatīties? jānotestē kas dod labākus rezultātus
-            # if entityID is None:
-            #     phrase = entityPhraseByNER(tokenIndex, tokens)
-            #     entityID = makeEntity(entities, phrase, headtoken['namedEntityType'])
 
         # Ja nu toč nav tādas entītijas (vai arī tas ir Ziņojums)... tad veidojam no koka
         if entityID is None: 
@@ -444,6 +403,8 @@ def filterEntityNames(entities, documentdate):
                             'savienība biedrs', 'personība', 'viesi', 'viesis',
                             'ieguvējs', 'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars',
                             'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
+            return False
+        if type != 'relationship' and isRelationshipName(name.lower()):
             return False
         if type not in {'descriptor', 'relationship'} and name.lower() in {
                 'investori', 'konkurenti', 'klients'}:
@@ -601,20 +562,6 @@ def clearOrgName(name):
     norm = re.sub('\s\s+', ' ', norm, re.UNICODE)  # ja nu palika dubultatstarpes
     return norm
 
-def inflectEntity(name, category):
-    # Nekonkrētajām personu entītijām formā "Arvīds (Pētera Vaska tēvs)" locījumos liekam tikai to daļu, kas ir ārpus iekavām
-    if category == 'person':
-        match = re.match(r'([A-ZĀČĒĢĪĶĻŅŠŪŽ]\w+) \(.*\)', name, re.UNICODE)
-        if match:
-            name = match.group(1)
-
-    query = 'http://%s:%d/inflect_phrase/%s?category=%s' % (inflection_webservice.get('host'), inflection_webservice.get('port'), quote(name.encode('utf8')).replace('/','%2F'), category) 
-    r = requests.get(query) 
-    if r.status_code != 200:
-        log.info("Error when calling %s -> code %s, message %s", query, r.status_code, r.text)
-        return '{"Nominatīvs":%s}' % json.dumps(name, ensure_ascii=False)
-    return r.text # TODO - check if valid JSON ?
-
 # Vai forma izskatās pēc 'pareizas' kas būtu rādāma UI - atradīs arī vispārīgas entītijas (piem. 'Latvijas uzņēmēji') kuras freimos jārāda, bet nevajag iekļaut nekur.
 def hideEntity(name, category):
     if category == 'person':
@@ -654,16 +601,19 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
         if not entity.get('representative') is None: 
             representative = fixName( entity.get('representative') )
             entity['representative'] = representative 
-            matchedEntities = api.entity_ids_by_name_list(representative)
+            matchedEntities = api.entity_ids_types_by_name_list(representative)
             # print('%d : %s' % (len(matchedEntities), representative))
 
         if len(matchedEntities) == 0 and entity.get('type') in {'person', 'organization'} : # neatradām - paskatīsimies pēc aliasiem NB! tikai priekš klasifikatoriem (pers/org)
             for alias in filter(goodAlias, entity.get('aliases')):
-                matchedEntities = matchedEntities + api.entity_ids_by_name_list(alias)
-                matchedEntities = matchedEntities + api.entity_ids_by_name_list(clearOrgName(alias))
+                matchedEntities = matchedEntities + api.entity_ids_types_by_name_list(alias)
+                matchedEntities = matchedEntities + api.entity_ids_types_by_name_list(clearOrgName(alias))
             # Te varētu filtrēt, vai pēc aliasa nav atrasts kautkas nekorekts, kam neatbilst tips
             # bet tad ir pēc ID jānolasa to entītiju pilnie dati, ko skatīties; un tas būtu lēni.
-
+        
+        # No atrastajām entītēm mums patīesībā der tikai tās, kurām ir pareizais tips.
+        matchedEntities = [e[0] for e in matchedEntities if getEntityTypeCode(entity['type']) == e[1]]
+        
         if len(matchedEntities) == 0: # Tiešām neatradām - tātad nav tādas entītijas, insertosim
             insertables.append(localID) # šeit sakrājam entītiju objektu ID, lai pēc tam varētu piesiet pie API atbildēm
 
@@ -729,7 +679,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
     mentions = CDC.mentionbag(entities.values()) # TODO - šobrīd mentionbag visiem ir vienāds un tādēļ iekļauj arī pašas disambiguējamās entītijas vārdus
     for tup in toDisambiguate: # tuples - entity, matchedEntities
         entity = tup[0]
-        matchedEntities = tup[1]
+        matchedEntities = tup[1] 
         entity['GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId, api)  
         # entity['GlobalID'] = disambiguateEntity(entity, matchedEntities, entities, api) # izvēlamies ticamāko atbilstošo no šīm entītijām        
 
