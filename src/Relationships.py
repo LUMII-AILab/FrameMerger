@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import sys, json
-from DocumentUpload import inflectEntity
+from InflectEntity import inflectEntity
 
 inverted_relations_text = {
 'brālis' : {'male' : 'brālis', 'female' : 'māsa'},
@@ -133,6 +133,11 @@ __inverted_relations = None
 __secondary_relations = None
 
 relation_source = 'Pastarpināto attiecību veidošana'
+
+def isRelationshipName(name):
+    if name in inverted_relations_text or name in secondary_relations_text:
+        return True
+    return False
 
 def inverted_relations(api):
 	global __inverted_relations
