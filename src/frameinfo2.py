@@ -55,33 +55,33 @@ def getFrameName (code):
 
 # Frame elements should have 1-based index !!
 frameElements = [
-    ["Child", "Time", "Place", "Relatives"],
-    ["Person", "Age"],
-    ["Protagonist", "Time", "Place", "Manner", "Cause"],
-    ["Partner_1", "Partner_2", "Partners", "Relationship", "Time"],
-    ["Name", "Entity", "Type"],
-    ["Resident", "Location", "Frequency", "Time"],
-    ["Student", "Institution", "Subject", "Qualification", "Time", "Place"],
-    ["Person", "Vocation", "Time", "Descriptor"],
-    ["Origin", "Person", "Ethnicity"],
-    ["Employee", "Employer", "Position", "Compensation", "Place_of_employment", "Time", "Manner", "Employment_start", "Employment_end"],
-    ["Employee", "Employer", "Position", "Appointer", "Manner", "Place", "Time", "Previous_employee"],
-    ["Employee", "Employer", "Position", "Appointer", "Manner", "Place", "Time", "Future_employee"], 
-    ["Member", "Group", "Time", "Standing"],
-    ["Candidate", "Body", "Role", "New_leader", "Result", "Time", "Place"], 
-    ["Donor", "Recipient", "Theme", "Time"],
-    ["Created_entity", "Creator", "Manner", "Industry", "Time", "Place"], 
-    ["Participant_1", "Event", "Time", "Place", "Manner", "Institution"], 
-    ["Earner", "Earnings", "Goods", "Profit", "Time", "Unit", "Growth"], 
-    ["Owner", "Possession", "Time", "Share"],
-    ["Borrower", "Lender", "Theme", "Collateral", "Time", "Units"], 
-    ["Defendant", "Charges", "Court", "Prosecutor", "Lawyer", "Judge", "Place", "Time"], 
-    ["Victim", "Assailant", "Result", "Circumstances", "Depictive", "Reason", "Weapon", "Manner", "Place", "Time"], 
-    ["Competitor", "Prize", "Competition", "Result", "Rank", "Time", "Place", "Organizer", "Opponent"],
-    ["Medium", "Speaker", "Message", "Time"],
-    ["Institution", "Theme", "Expected_amount", "Candidates", "Winner", "Result", "Time"], 
-    ["Brand", "Institution", "Products"],
-    ["Entity","Property","Category"]]
+    ["Child", "Time", "Place", "Relatives"], #Dzimšana/Being_born
+    ["Person", "Age"], #Vecums/People_by_age
+    ["Protagonist", "Time", "Place", "Manner", "Cause"], #Miršana/Death
+    ["Partner_1", "Partner_2", "Partners", "Relationship", "Time"], #Attiecības/Personal_relationship
+    ["Name", "Entity", "Type"], #Vārds/Being_named
+    ["Resident", "Location", "Frequency", "Time"], #Dzīvesvieta/Residence
+    ["Student", "Institution", "Subject", "Qualification", "Time", "Place"], #Izglītība/Education_teaching
+    ["Person", "Vocation", "Time", "Descriptor"], #Nodarbošanās/People_by_vocation
+    ["Origin", "Person", "Ethnicity"], #Izcelsme/People_by_origin
+    ["Employee", "Employer", "Position", "Compensation", "Place_of_employment", "Time", "Manner", "Employment_start", "Employment_end"], #Amats/Being_employed
+    ["Employee", "Employer", "Position", "Appointer", "Manner", "Place", "Time", "Previous_employee"], #Darba_sākums/Hiring
+    ["Employee", "Employer", "Position", "Appointer", "Manner", "Place", "Time", "Future_employee"], #Darba_beigas/Employment_end
+    ["Member", "Group", "Time", "Standing"], #Dalība/Membership
+    ["Candidate", "Body", "Role", "New_leader", "Result", "Time", "Place"], #Vēlēšanas/Change_of_leadership
+    ["Donor", "Recipient", "Theme", "Time"], #Atbalsts/Giving
+    ["Created_entity", "Creator", "Manner", "Industry", "Time", "Place"], #Dibināšana/Intentionally_create
+    ["Participant_1", "Event", "Time", "Place", "Manner", "Institution"], #Piedalīšanās/Participation
+    ["Earner", "Earnings", "Goods", "Profit", "Time", "Unit", "Growth"], #Finanses/Earnings_and_losses
+    ["Owner", "Possession", "Time", "Share"], #Īpašums/Possession
+    ["Borrower", "Lender", "Theme", "Collateral", "Time", "Units"], #Parāds/Lending
+    ["Defendant", "Charges", "Court", "Prosecutor", "Lawyer", "Judge", "Place", "Time"], #Tiesvedība/Trial
+    ["Victim", "Assailant", "Result", "Circumstances", "Depictive", "Reason", "Weapon", "Manner", "Place", "Time"], #Uzbrukums/Attack
+    ["Competitor", "Prize", "Competition", "Result", "Rank", "Time", "Place", "Organizer", "Opponent"], #Sasniegums/Win_prize
+    ["Medium", "Speaker", "Message", "Time"], #Ziņošana/Statement
+    ["Institution", "Theme", "Expected_amount", "Candidates", "Winner", "Result", "Time"], #Publisks_iepirkums/Public_procurement
+    ["Brand", "Institution", "Products"], #Zīmols/Product_line
+    ["Entity","Property","Category"]] #Nestrukturēts/Unstructured
 
 def getElementCode(frameCode, name):
     if name=="Insititution": 

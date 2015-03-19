@@ -53,7 +53,11 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
         blessed_sentences = set(api.doc_blessed_frame_sentences(document.id)) # paskatamies, kas šim dokumenta ID ir blesots bijis
 
     sentences = document.sentences
+    # Vai mums vispār vajag šitās entītes? Varbūt tās, kam makeEntityIfNeeded
+    # nav uzsetojis savu source, pēc tam atfiltrēt?
     entities = document.namedEntities
+    for e in entities:
+        entities[e]['source'] = 'initial NER/coref'
 
     neededEntities = set() # Savācam entītijas, kuras dokumentā piemin kāds freims
     for sentenceID, sentence in enumerate(sentences):
@@ -130,7 +134,6 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                 if elementCode in filledRoles: # Freimu analizators nedrīkstētu iedot 2x vienādas lomas, bet ja nu tomēr, tad lai te nenomirst
                     log.debug('Lomai %s vairāki varianti: %s ir par daudz', element.name, token_str )
                 elif globalID in usedEntities:                     
-
                     log.debug('Entītija #%d atkal parādās tai pašā freimā pie vārda %s', globalID, token_str )
                     # principā šāds varētu rasties ja koreferences saliek 2 NER-atrastas entītijas kopā, un vienā freimā pieliek pie katru savas lomas (piemēram, amats+personvārds?) - bet īsti labi tas nav
                 elif globalID: # nekonkrētos elementus šajā posmā nometam
@@ -236,34 +239,38 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
     return phrase
 
 # Apstaigājam atrastajam galvasvārdam blakus esošos vārdus ar vienādu NER kategoriju
-def entityPhraseByNER(tokenIndex, tokens):    
-    tips = tokens[tokenIndex-1].namedEntityType
+#def entityPhraseByNER(tokenIndex, tokens):    
+#    tips = tokens[tokenIndex-1].namedEntityType
+#
+#    low = tokenIndex-1
+#    while low > 0 and tokens[low-1].namedEntityType == tips:
+#        low -= 1
+#    high = tokenIndex-1
+#    while high < len(tokens)-1 and tokens[high+1].namedEntityType == tips:
+#        high += 1
+#
+#    phrase = []
+#    for token in tokens[low:high+1]:
+#        phrase.append(token.form)
+#    phrase = " ".join(phrase)
+#    return phrase
 
-    low = tokenIndex-1
-    while low > 0 and tokens[low-1].namedEntityType == tips:
-        low -= 1
-    high = tokenIndex-1
-    while high < len(tokens)-1 and tokens[high+1].namedEntityType == tips:
-        high += 1
-
-    phrase = []
-    for token in tokens[low:high+1]:
-        phrase.append(token.form)
-    phrase = " ".join(phrase)
-    return phrase
-
-# Izvelk frāzi, kas ir konkrētais pieminējums, nevis NER reprezentatīvais vārds
-# Artūrs numurē tokenus sākot ar 1, python masīva elementus - sākot ar 0
 def entityPhraseByNERMention (start, end, tokens):
+    """
+    Izvelk frāzi, kas ir konkrētais pieminējums, nevis NER reprezentatīvais vārds
+    NER/coref numurē tokenus sākot ar 1, python masīva elementus - sākot ar 0
+    """
     phrase = []
     # Riskants risinājums, vajadzētu patiesībā ņemt pēc token.index
     for token in tokens[start-1:end]:
         phrase.append(token.form)
     return " ".join(phrase)
 
-# Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id
-# ja tādas entītijas nav, tad pievieno jaunu sarakstam
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerElementType):
+    """
+    Noformē entītijas vārdu, ja ir dots teikums + entītes galvenā vārda (head) id,
+    ja tādas entītijas nav, tad pievieno jaunu sarakstam
+    """
     # Ja ir jau datos norāde uz entītijas ID (piemēram, kā CV importā), tad to arī atgriežam
     if element.entityID:
         entities[str(element.entityID)]['source'] = 'defined in document'
@@ -308,14 +315,14 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                
                 # Atradās entīte ar pieļaujamu tipu + ir tāda loma, kurā to varam lietot, viss forši
                 if entities[str(entityID)]['type'] in permitedTypes:
-                    entities[str(entityID)]['source'] = 'from NER'
+                    entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref'
                     entityType = entities[str(entityID)]['type']
                     
                 # Atradās mentions ar pieļaujamu tipu, varam uztaisīt no tā jaunu entīti
                 elif mentionType in permitedTypes:
                     entityType = mentionType
                     entityID = makeEntity(entities, mentionPhrase, entityType)
-                    entities[str(entityID)]['source'] = 'from NER mention'
+                    entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref mention'
                 
                 # Tipi nav piemēroti, nomainīs uz defaulto
                 else:
@@ -323,16 +330,16 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
                     if (frame.type, element.name) not in [('People_by_vocation', 'Vocation')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
-                        entities[str(entityID)]['source'] = 'from NER with changed type'
+                        entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref with changed type'
                     #Freimi, kuriem ņem entītes pieminējumu
                     else:
                         entityID = makeEntity(entities, mentionPhrase, entityType)
-                        entities[str(entityID)]['source'] = 'from NER mention with changed type'
+                        entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref mention with changed type'
                     
             if entityID is None and headtoken.pos == 'p': # vietniekvārds, kas nav ne ar ko savilkts
                 entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                 entityID = makeEntity(entities, '_NEKONKRĒTS_', entityType)
-                entities[str(entityID)]['source'] = 'unspecified entity'
+                entities[str(entityID)]['source'] = 'phrase extraction, unspecified entity'
 
             # Pamēģinam paskatīties parent - reizēm freimtageris norāda uz vārdu bet NER ir entītijas galvu ielicis uzvārdam.
             #if entityID is None or (headtoken.form == 'Rīgas' and headtoken.namedEntityType == 'organization'):   # Tas OR ir hacks priekš Rīgas Tehniskās universitātes kuru nosauc par Rīgu..
@@ -349,7 +356,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
             entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
             phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, entityType)
             entityID = makeEntity(entities, phrase, entityType)
-            entities[str(entityID)]['source'] = 'entity built from syntactic tree'
+            entities[str(entityID)]['source'] = 'phrase extraction, entity built from syntactic tree'
             if entityCreationDebuginfo:
                 print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
                     phrase, entityType, element.name, frame.type))
