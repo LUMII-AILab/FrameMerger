@@ -238,7 +238,6 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
             firstToken += 1
         else:
             break
-            
     # Atmet pēdējos tokenus, ja tie ir komati, punkti, domuzīmes vai saikļi
     lastToken = len(phrase)
     for token in reversed(phrase):
@@ -246,9 +245,18 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
             lastToken -= 1
         else:
             break
-            
     phrase = phrase[firstToken:lastToken]
-
+    
+    # Ja grāda entīte satur vārdu "grāds", atmet visu, kas ir pēc vārda "grāds".
+    if entityType == 'qualification':
+        degreeIndex = 0
+        for token in phrase:
+            degreeIndex += 1
+            if token.lemma.lower() == 'grāds':
+                break
+        if degreeIndex is not None:
+            phrase = phrase[:degreeIndex]
+        
     phrase = " ".join(map(lambda t: t.form, phrase))
     if phrase.endswith(' un'):
         phrase = phrase[:-3] # noņemam un
