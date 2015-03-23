@@ -33,7 +33,7 @@ import logging as log
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
@@ -205,8 +205,10 @@ def makeEntity(entities, phrase, namedEntityType):
         entityID = matchingEntity['id']
     return entityID
 
-# Apstaigājam atrastajam galvasvārdam pakļautos vārdus un izveidojam tādu
 def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
+    """
+    Apstaigājam atrastajam galvasvārdam pakļautos vārdus un izveidojam entītes "tekstu".
+    """
     included = {tokenIndex}
     dirty = True # Vai vajag vēl dziļāk apstaigāt
     terminator = False # Vai esam atraduši ko tādu, ka tok dziļāk nelienam
@@ -224,10 +226,30 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
         included = newincluded # šāda maisīšana tādēļ, lai terminators nogriež visu dziļumā x, nevis aiziet pa ciklu līdz teikuma galam
 
     phrase = []
+    included = sorted(included)
     for token in tokens:
         if token.index in included:
-            phrase.append(token.form)
-    phrase = " ".join(phrase)
+            phrase.append(token)
+            
+    # Atmet pirmos tokenus, ja tie ir komati, punkti, domuzīmes vai saikļi
+    firstToken = 0
+    for token in phrase:
+        if token.tag in ('zc', 'zd', 'zs') or token.pos == 'c':
+            firstToken += 1
+        else:
+            break
+            
+    # Atmet pēdējos tokenus, ja tie ir komati, punkti, domuzīmes vai saikļi
+    lastToken = len(phrase)
+    for token in reversed(phrase):
+        if token.tag in ('zc', 'zd', 'zs') or token.pos == 'c':
+            lastToken -= 1
+        else:
+            break
+            
+    phrase = phrase[firstToken:lastToken]
+
+    phrase = " ".join(map(lambda t: t.form, phrase))
     if phrase.endswith(' un'):
         phrase = phrase[:-3] # noņemam un
     if phrase.startswith(', '):
@@ -355,11 +377,18 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
         if entityID is None: 
             entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
             phrase = entityPhraseByTree(tokenIndex, tokens, frame.type, element.name, entityType)
-            entityID = makeEntity(entities, phrase, entityType)
-            entities[str(entityID)]['source'] = 'phrase extraction, entity built from syntactic tree'
-            if entityCreationDebuginfo:
-                print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
-                    phrase, entityType, element.name, frame.type))
+            if (phrase is not None and phrase != ''):
+                entityID = makeEntity(entities, phrase, entityType)
+                entities[str(entityID)]['source'] = 'phrase extraction, entity built from syntactic tree'
+                if entityCreationDebuginfo:
+                    print('No koka uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
+                        phrase, entityType, element.name, frame.type))
+            else:
+                entityID = makeEntity(entities, headtoken.form, entityType)
+                entities[str(entityID)]['source'] = 'phrase extraction, entity built from single token'
+                if entityCreationDebuginfo:
+                    print('No tokena (jo no koka neizdevās) uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
+                        phrase, entityType, element.name, frame.type))
             
 
     headtoken['namedEntityID'] = entityID
