@@ -424,11 +424,11 @@ def filterEntityNames(entities, documentdate):
             return False
         if name.lower() in {'viņš', 'viņs', 'viņa', 'viņam', 'viņu', 'viņā', 'viņas', 'viņai', 'viņās', 'viņi', 'viņiem', 'viņām',
                             'es', 'mēs', 'man', 'mūs', 'mums', 'tu', 'tev', 'jūs', 'jums', 'jūsu',
-                            'tas', 'tā', 'tie', 'tās', 'tajā', 'tam', 'tām', 'to', 'tos', 'tai', 'tiem', 'tur',
+                            'tas', 'tā', 'tie', 'tās', 'tajā', 'tam', 'tām', 'to', 'tos', 'tai', 'tiem', 'tur', 'kur',
                             'kas', 'kam', 'ko', 
                             'sava', 'savu', 'savas', 'savus', 
                             'kurš', 'kuru', 'kura', 'kuram', 'kuri', 'kuras', 'kurai', 'kuriem', 'kurām', 'kurā', 'kurās',
-                            'būs', 'arī', 'jau'}: 
+                            'būs', 'arī', 'jau', 'kā arī', 'kā_arī'}: 
             return False
         if name in {'Var', 'gan'}:
             return False
