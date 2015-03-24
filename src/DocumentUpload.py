@@ -415,11 +415,11 @@ def addDate(frame, documentdate):
 def filterEntityNames(entities, documentdate):
     def updateName(name):
         if name.lower() in {'šodien', 'patlaban', 'tagad', 'pašlaik', 'šonedēļ'}:
-            return documentdate.isoformat()
+            return documentdate.isoformat().split(' ')[0]
         if name.lower() == 'vakar':
-            return (documentdate - datetime.timedelta(days=1)).isoformat()
+            return (documentdate - datetime.timedelta(days=1)).isoformat().split(' ')[0]
         if name.lower() == 'rīt':
-            return (documentdate + datetime.timedelta(days=1)).isoformat()
+            return (documentdate + datetime.timedelta(days=1)).isoformat().split(' ')[0]
         if name.lower() == 'šogad':
             return str(documentdate.year)
         if name.lower() in {'pagājušgad', 'pērn', 'pagājušajā gads', 'pagājušajā gadā'}:

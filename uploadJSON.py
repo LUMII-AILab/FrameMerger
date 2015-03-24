@@ -110,7 +110,7 @@ def main():
                 if document:
                     log.info("Processing document %s", docid)
                     document.id = docid
-                    document.date = datetime.strptime(document.date, '%Y-%m-%d').date() # atpakaļ no serializētā stringa
+                    document.date = datetime.strptime(document.date.split(' ')[0], '%Y-%m-%d').date() # atpakaļ no serializētā stringa
 
                     upload2db(document, api)
                     sys.stdout.write(filename + "\tOK\n") # Feedback par veiksmīgi apstrādātajiem dokumentiem
