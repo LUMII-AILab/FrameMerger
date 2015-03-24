@@ -33,7 +33,7 @@ import logging as log
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
-entityCreationDebuginfo = True # Vai rādīt uz console potenciālās jaunradītās entītijas
+entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
 
 api = None
 
@@ -234,7 +234,7 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
     # Atmet pirmos tokenus, ja tie ir komati, punkti, domuzīmes vai saikļi
     firstToken = 0
     for token in phrase:
-        if token.tag in ('zc', 'zd', 'zs') or token.pos == 'c':
+        if token.tag in ('zc', 'zd', 'zs') or token.tag[0] == 'c' :
             firstToken += 1
         else:
             break
