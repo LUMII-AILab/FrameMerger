@@ -187,7 +187,8 @@ def makeEntity(entities, phrase, namedEntityType):
     matchingEntity = None
     entityID = 1
     for entity in entities.values(): # atrodam max_id +1
-        if entity['representative'] == phrase:
+        if entity['representative'] == phrase and \
+                'type' in entity and entity['type'] == namedEntityType:
             matchingEntity = entity
         if int(entity['id']) >= entityID:
             entityID = int(entity['id']) + 1
@@ -627,6 +628,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
 
     for localID in neededEntities:
         entity = entities[str(localID)]
+        if 'type' not in entity:
+            print (entity['representative'])
         if entity.get('uqid'): # Ja mums jau izejas datos ir iedots unikālais ārējais ID (leta profila # vai personkods vai kas tāds)
             globalid = api.entity_id_by_outer_id(entity.get('uqid'))
             if globalid:
