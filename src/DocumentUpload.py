@@ -344,7 +344,7 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                         headtoken['form'], len(headtoken['mentions'])))
                
                 # Atradās entīte ar pieļaujamu tipu + ir tāda loma, kurā to varam lietot, viss forši
-                if entities[str(entityID)]['type'] in permitedTypes:
+                if 'type' in entities[str(entityID)] and entities[str(entityID)]['type'] in permitedTypes:
                     entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref'
                     entityType = entities[str(entityID)]['type']
                     
