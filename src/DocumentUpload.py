@@ -85,19 +85,19 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                         # te  modificē NE sarakstu, pieliekot freima elementus ja tie tur jau nav
                         # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
                     neededEntities.add(entityid)
-                    #print ("{0} {1}".format(entities[str(entityid)].get('representative'), entityid))
-
+            
         for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
-            neID = token.get('namedEntityID')
-            if neID is not None: # ja šis tokens satur norādi uz entītiju
-                ne = entities[str(neID)]
-                locations = ne.get('locations')
-                if not locations:
-                    locations = []
-                    
-                locations.append([sentenceID+1, token.get('index')])
-                ne['locations'] = locations
-
+            neIDs = token.get('namedEntityID')
+            if neIDs is not None: # ja šis tokens satur norādes uz entītijām
+                for neID in neIDs:
+                    ne = entities[str(neID)]
+                    locations = ne.get('locations')
+                    if not locations:
+                        locations = []
+                        
+                    locations.append([sentenceID+1, token.get('index')])
+                    ne['locations'] = locations
+                                
     for entity in entities.values():
         if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') or (entity.get('type') == 'organization')):
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
@@ -105,10 +105,10 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
 
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
     filterEntityNames(entities, document.date)
-
+                    
     #Katrai entītijai piekārtojam globālo ID
     fetchGlobalIDs(entities, neededEntities, sentences, document.id, api) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
-
+    
     # Tagad vēlreiz apskatam visus freimus, un insertojam tos DB
     requests = []
     for sentenceID, sentence in enumerate(sentences):
@@ -121,14 +121,19 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             filledRoles = set() 
             usedEntities = set()
             for element in frame.elements:
+
                 elementCode = getElementCode(frameType, element.name)
                 if element.entityID:
                     entityID = element.entityID
-                    token_str = None # TODO 
-                else: 
-                    entityID = sentence.tokens[element.tokenIndex-1].namedEntityID  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
+                    token_str = entities[str(entityID)]['representative'] 
+                elif element.localEntityID:
+                    entityID = element.localEntityID
+                    token_str = entities[str(entityID)]['representative'] 
+                else:
+                    entityID = sentence.tokens[element.tokenIndex-1].namedEntityID[0]  # entītija kas atbilst freima elementam - iepriekšējā ciklā 100% visām jābūt korekti saformētām
                     token_str = sentence.tokens[element.tokenIndex-1].form
                 globalID = entities[str(entityID)].get('GlobalID')
+                
                 if globalID is None and realUpload:
                     log.error('Neatradu globalID entītijai %s', entities[str(entityID)].get('representative'))                
                 if elementCode in filledRoles: # Freimu analizators nedrīkstētu iedot 2x vienādas lomas, bet ja nu tomēr, tad lai te nenomirst
@@ -399,8 +404,10 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                     print('No tokena (jo no koka neizdevās) uztaisīja freima {3} elementu vārdā {2} ar tipu {1} un saturu:\t{0}'.format(
                         phrase, entityType, element.name, frame.type))
             
-
-    headtoken['namedEntityID'] = entityID
+    if 'namedEntityID' not in headtoken:
+        headtoken['namedEntityID'] = []
+    headtoken['namedEntityID'].append(entityID)
+    element['localEntityID'] = entityID
     frames = entities[str(entityID)].get("frames")
     if frames is None:
         frames = []
@@ -473,16 +480,17 @@ def filterEntityNames(entities, documentdate):
         return True
 
     for e_id in entities.keys():
-        entity = entities[e_id]        
+        entity = entities[e_id] 
         entity['representative'] = updateName(entity.get('representative'))
         entity['aliases'] = [updateName(alias) for alias in entity.get('aliases')]
-        entity['aliases'] = list(filter((lambda name: goodName(entity.get('type'), name)), entity.get('aliases')))
+        entity['aliases'] = [alias for alias in entity['aliases'] if goodName(entity.get('type'), alias)] #list(filter((lambda name: goodName(entity.get('type'), name)), entity.get('aliases')))
         if not entity.get('aliases'): # Hmm, tātad nekas nebija labs
             entity['aliases'] = ['_NEKONKRĒTS_'] #FIXME - jāsaprot vai nevar labāk to norādīt
             # entity['representative'] = '_NEKONKRĒTS_' 
         if not goodName(entity.get('type'), entity.get('representative')):
             entity['representative'] = entity.get('aliases')[0] # Pieņemam, ka gan jau pirmais derēs
         entities[e_id] = entity
+        
     
 # Boolean f-ja - aliasi kas principā pie entītijas ir pieļaujami, bet pēc kuriem nevajag meklēt citas entītijas
 def goodAlias(name):
@@ -629,7 +637,7 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
     for localID in neededEntities:
         entity = entities[str(localID)]
         if 'type' not in entity:
-            print (entity['representative'])
+            print ("Grib likt datubāzē entīti bez tipa: {0}".format(entity['representative']))
         if entity.get('uqid'): # Ja mums jau izejas datos ir iedots unikālais ārējais ID (leta profila # vai personkods vai kas tāds)
             globalid = api.entity_id_by_outer_id(entity.get('uqid'))
             if globalid:
@@ -722,6 +730,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 entity['GlobalID'] = matchedEntities[0] # klasifikatoriem tāpat daudzmaz vienalga, vai pie kautkā piesaista vai veido jaunu
                 if realUpload and entity.get('type') in {'person', 'organization'}: 
                     api.insertMention(matchedEntities[0], documentId, locations=entity.get('locations'))
+        if 'GlobalID' in entity and showInserts:
+            print ('Entītei piekārtoja globālo ID: {0} ({1}) - {2}'.format(representative, entity['type'], entity['GlobalID']))
 
     mentions = CDC.mentionbag(entities.values()) # TODO - šobrīd mentionbag visiem ir vienāds un tādēļ iekļauj arī pašas disambiguējamās entītijas vārdus
     for tup in toDisambiguate: # tuples - entity, matchedEntities
@@ -729,6 +739,8 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
         matchedEntities = tup[1] 
         entity['GlobalID'] = cdcbags(entity, matchedEntities, mentions, sentences, documentId, api)  
         # entity['GlobalID'] = disambiguateEntity(entity, matchedEntities, entities, api) # izvēlamies ticamāko atbilstošo no šīm entītijām        
+        if 'GlobalID' in entity and showInserts:
+            print ('Entītei piekārtoja globālo ID ar disambiguāciju: {0} ({1}) - {2}'.format(representative, entity['type'], entity['GlobalID']))
 
 def cdcbags(entity, matchedEntities, mentions, sentences, documentId, api=api):
     if showDisambiguation: # debuginfo    
