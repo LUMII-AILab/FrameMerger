@@ -258,7 +258,7 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
         degreeIndex = 0
         for token in phrase:
             degreeIndex += 1
-            if token.lemma.lower() == 'grāds':
+            if token.lemma.lower() in {'grāds', 'izglītība'}:
                 break
         if degreeIndex is not None:
             phrase = phrase[:degreeIndex]
