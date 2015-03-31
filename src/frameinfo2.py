@@ -249,7 +249,7 @@ def getPlausibleTypes(frameCode, elementCode, determinerType):
     'descriptor', bet ne 'profession'.
     """
     try:
-        determiner = getDeterminerElement(frameCode)
+        determiner = determinerElement[frameCode]
         if determinerType is None or determiner is None or determinerType not in determiner[1]:
             types = elementPlausibleEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
         else:
@@ -285,7 +285,7 @@ def getDefaultEnityType(frameCode, elementCode, determinerType):
         if determinerType is None or determiner is None or determinerType not in determiner[1]:
             type = elementPlausibleEntityTypes[frameCode][elementCode-1][0] # -1 jo freimu lomas numurējas no 1
         else:
-            elementName = getElementName(frameCode, elementCode);
+            elementName = getElementName(frameCode, elementCode)
             type = determiner[1][determinerType][elementName][0]           
     except IndexError:
         sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
