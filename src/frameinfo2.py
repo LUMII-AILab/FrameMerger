@@ -253,8 +253,11 @@ def getPlausibleTypes(frameCode, elementCode, determinerType):
         if determinerType is None or determiner is None or determinerType not in determiner[1]:
             types = elementPlausibleEntityTypes[frameCode][elementCode-1] # -1 jo freimu lomas numurējas no 1
         else:
-            elementName = getElementName(frameCode, elementCode);
-            types = determiner[1][determinerType][elementName]
+            elementName = getElementName(frameCode, elementCode)
+            if elementName in determiner[1][determinerType]:
+                types = determiner[1][determinerType][elementName]
+            else:
+                types = elementPlausibleEntityTypes[frameCode][elementCode-1]
     except IndexError:
         sys.stderr.write("Mēģina dabūt lomai pieļaujamos entīšu tipus elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
         types = []
@@ -286,7 +289,10 @@ def getDefaultEnityType(frameCode, elementCode, determinerType):
             type = elementPlausibleEntityTypes[frameCode][elementCode-1][0] # -1 jo freimu lomas numurējas no 1
         else:
             elementName = getElementName(frameCode, elementCode)
-            type = determiner[1][determinerType][elementName][0]           
+            if elementName in determiner[1][determinerType]:
+                type = determiner[1][determinerType][elementName][0]
+            else:
+                type = elementPlausibleEntityTypes[frameCode][elementCode-1][0]
     except IndexError:
         sys.stderr.write("Hmm, mēģinām dabūt defaulto lomu elementam ar nelabu numuru "+str(elementCode)+" freimā "+str(frameCode)+"\n")
         type = ''
