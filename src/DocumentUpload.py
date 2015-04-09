@@ -436,6 +436,10 @@ def filterEntityNames(entities, documentdate):
         return name
     
     def goodName(type, name):
+        """
+        Vārdu saraksti, kas atfiltrē tipiskos gadījumus, kad entītes vārds
+        liecina par nekonkrētu vai aplamu entīti.
+        """
         if len(name) <= 2 and not re.match(r'[A-ZĀČĒĢĪĶĻŅŠŪŽ]+|\d+$', name, re.UNICODE): # tik īsi drīkst būt tikai cipari vai organizāciju (partiju) saīsinājumi
             return False
         if name.lower() in {'viņš', 'viņs', 'viņa', 'viņam', 'viņu', 'viņā', 'viņas', 'viņai', 'viņās', 'viņi', 'viņiem', 'viņām',
@@ -454,7 +458,7 @@ def filterEntityNames(entities, documentdate):
                             'pircēji', 'vīrieši', 'sievietes', 'latvija iedzīvotāji',
                             'savienība biedrs', 'personība', 'viesi', 'viesis',
                             'ieguvējs', 'vide', 'amats', 'amati', 'domas', 'idejas', 'vakars',
-                            'norma', 'elite', 'būtisks', 'tālākie', 'guvēji'}: 
+                            'norma', 'elite', 'būtisks', 'tālākie', 'guvēji', 'valdība'}: 
             return False
         if type != 'relationship' and isRelationshipName(name.lower()):
             return False
