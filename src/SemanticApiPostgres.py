@@ -252,7 +252,7 @@ class SemanticApiPostgres(object):
         return list(map(lambda x: x[0], res)) # kursors iedod sarakstu ar tuplēm, mums vajag sarakstu ar tīriem elementiem
 
     def entity_ids_types_by_name_list(self, name):
-        # Saņem vārdu, atgriež sarakstu ar kortežiem no tipiem un IDiem, kas
+        # Saņem vārdu, atgriež sarakstu ar kotežiem no tipiem un IDiem, kas
         # tiem vārdiem atbilst name - unicode string. Šī meklēšana ir case
         # insensitive, un meklē arī alternatīvajos vārdos.
         # atšķiras no SemanticApi.entity_ids_by_name ar to, ka šis atgriež
@@ -263,14 +263,14 @@ class SemanticApiPostgres(object):
         res = self.api.query(sql, (name.lower().strip(),) )
         return list(map(lambda x: (x[0], x[1]), res)) # tur iedod sarežģītāku struktūru, bet vajag atgriezt tikai tuples
 
-    # Saņem vārdu sarakstu, atgriež sarakstu ar rindām ID-vārds-locījumi
+    # Saņem vārdu sarakstu, atgriež sarakstu ar ID-vārdu pārīšiem
     # name - iterator of unicode strings
     # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
     def entity_id_mapping_by_name_list(self, names):
         names2=[]
         for name in names:
             names2.append(name.lower().strip())
-        sql = "select distinct n.name, e.entityid, e.nameinflections from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false and n.deleted is false"        
+        sql = "select distinct n.name, e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false and n.deleted is false"        
         res = self.api.query(sql, (names2, ) )
 
         return res
