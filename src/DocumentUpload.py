@@ -22,7 +22,7 @@ from frameinfo2 import getFrameCode, getFrameName, \
                        getDefaultEnityType, getPlausibleTypes, \
                        getDeterminerElement
 from Relationships import isRelationshipName
-from InflectEntity import inflectEntity
+from InflectEntity import inflectEntity, normalizeEntity
 #from FrameInfo import FrameInfo
 #f_info = FrameInfo("input/frames-new-modified.xlsx")
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
@@ -208,7 +208,6 @@ def makeEntity(entities, phrase, namedEntityType):
             'representative': phrase, # Te varētu arī nebūt pamatforma; bet to risinās vēlāk - lai freimmarķiera atrastās entītijas apstrādā identiski ar NER atrastajām
             'source': 'framemarker',  # Lai pēc tam debugUI var atšķirt no LVTagger/LVCoref veidotajām entītēm
             'aliases': [phrase],
-            'inflections': inflections
         }
         entities[str(entityID)] = entity
     else:
