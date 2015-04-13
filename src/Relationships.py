@@ -131,13 +131,12 @@ secondary_relations_text = {
 }
 __inverted_relations = None
 __secondary_relations = None
+__relationship_names = None
 
 relation_source = 'Pastarpināto attiecību veidošana'
 
 def isRelationshipName(name):
-    if name in inverted_relations_text or name in secondary_relations_text:
-        return True
-    return False
+    return name.lower() in __relationship_names
 
 def inverted_relations(api):
 	global __inverted_relations
@@ -154,6 +153,9 @@ def inverted_relations(api):
 		if mapping.get(nameid.name):
 			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
 		mapping[nameid.name] = nameid.entityid
+		__relationship_names.append(nameid.name)
+		for inflection in json.loads(nameid.nameinflections).values():
+			__relationship_names.append(inflection)
 
 	def fetch_id(name):
 		if not mapping.get(name):
@@ -183,6 +185,9 @@ def secondary_relations(api):
 		if mapping.get(nameid.name):
 			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
 		mapping[nameid.name] = nameid.entityid
+		__relationship_names.append(nameid.name)
+		for inflection in json.loads(nameid.nameinflections).values():
+			__relationship_names.append(inflection)
 
 	def fetch_id(name):
 		if not mapping.get(name):
