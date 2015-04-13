@@ -199,9 +199,8 @@ def makeEntity(entities, phrase, namedEntityType):
             entityID = int(entity['id']) + 1
 
     if matchingEntity is None:            
-        inflections = json.loads(inflectEntity(phrase, entity.get('type')))
         if entity.get('type') not in ['descriptor','person','organization']:  
-            phrase = inflections.get('Nominatīvs')
+            phrase = normalizeEntity(phrase, entity.get('type'))
 
         entity = {
             'id': entityID,
