@@ -106,10 +106,6 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
     filterEntityNames(entities, document.date)
 
-    #for entity in entities.values():
-    #    if (entity['id'] in neededEntities):
-    #        print ("Pēc filtra {0} {1}".format(entity['representative'], entity['type'])) 
-
     #Katrai entītijai piekārtojam globālo ID
     fetchGlobalIDs(entities, neededEntities, sentences, document.id, api) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
     
@@ -205,7 +201,6 @@ def makeEntity(entities, phrase, namedEntityType):
     if matchingEntity is None:            
         if namedEntityType not in ['descriptor','person','organization']:  
             phrase = normalizeEntity(phrase, namedEntityType)
-            print(phrase)
 
         entity = {
             'id': entityID,
