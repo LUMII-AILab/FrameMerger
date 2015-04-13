@@ -199,12 +199,17 @@ def makeEntity(entities, phrase, namedEntityType):
             entityID = int(entity['id']) + 1
 
     if matchingEntity is None:            
+        inflections = json.loads(inflectEntity(phrase, entity.get('type')))
+        if entity.get('type') not in ['descriptor','person','organization']:  
+            phrase = inflections.get('Nominatīvs')
+
         entity = {
             'id': entityID,
             'type': namedEntityType,  # TODO - te varētu nočekot vai NER iedotais tips iederas šajā lomā
             'representative': phrase, # Te varētu arī nebūt pamatforma; bet to risinās vēlāk - lai freimmarķiera atrastās entītijas apstrādā identiski ar NER atrastajām
             'source': 'framemarker',  # Lai pēc tam debugUI var atšķirt no LVTagger/LVCoref veidotajām entītēm
-            'aliases': [phrase]
+            'aliases': [phrase],
+            'inflections': inflections
         }
         entities[str(entityID)] = entity
     else:
@@ -686,14 +691,14 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
                 representative = insertalias[0] # Organizācijām te var izveidoties pilnāka pamatforma
             else:
                 # Šeit ņemam tikai representative, nevis visus aliasus ko koreferences atrod. Ja ņemtu visus, tad te būtu interesanti jāfiltrē lai nebūtu nekorektas apvienošanas kā direktors -> skolas direktors un gads -> 1983. gads
-                inflections = inflectEntity(representative, entity.get('type'))             
+                inflections = inflectEntity(representative, entity.get('type'))
                 inflections = json.loads(inflections)
                 entity['inflections'] = inflections
                 insertalias = set(inflections.values())
                 insertalias.add(representative)
-                insertalias = list(insertalias)   
-                if entity.get('type') != 'descriptor':              
-                    representative = inflections.get('Nominatīvs')                
+                insertalias = list(insertalias)
+                if entity.get('type') != 'descriptor':  
+                    representative = inflections.get('Nominatīvs')
 
             category = getEntityTypeCode(entity.get('type'))
             outerId = [] # Organizācijām un personām pieliekam random UUID
