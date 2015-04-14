@@ -266,11 +266,15 @@ class SemanticApiPostgres(object):
     # Saņem vārdu sarakstu, atgriež sarakstu ar ID-vārdu pārīšiem
     # name - iterator of unicode strings
     # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
-    def entity_id_mapping_by_name_list(self, names):
+    def entity_id_mapping_by_relationship_name_list(self, names):
         names2=[]
         for name in names:
             names2.append(name.lower().strip())
-        sql = "select distinct n.name, e.entityid from entityothernames n join entities e on n.entityid = e.entityid where lower(n.name) = ANY(%s) and e.deleted is false and n.deleted is false"        
+        sql = """
+            select distinct n.name, e.entityid 
+            from entityothernames n join entities e on n.entityid = e.entityid 
+            where lower(n.name) = ANY(%s) and e.deleted is false and n.deleted is false and e.category = 7
+            """
         res = self.api.query(sql, (names2, ) )
 
         return res
