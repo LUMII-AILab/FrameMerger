@@ -166,7 +166,7 @@ def inverted_relations(api):
 		names.add(val['male'])
 		names.add(val['female'])
 	mapping = {}
-	for nameid in api.entity_id_mapping_by_name_list(names):
+	for nameid in api.entity_id_mapping_by_relationship_name_list(names):
 		if mapping.get(nameid.name):
 			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
 		mapping[nameid.name] = nameid.entityid
@@ -195,7 +195,7 @@ def secondary_relations(api):
 			names.add(val2['result'])
 
 	mapping = {}
-	for nameid in api.entity_id_mapping_by_name_list(names):
+	for nameid in api.entity_id_mapping_by_relationship_name_list(names):
 		if mapping.get(nameid.name):
 			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
 		mapping[nameid.name] = nameid.entityid

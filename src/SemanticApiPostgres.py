@@ -266,6 +266,7 @@ class SemanticApiPostgres(object):
     # Saņem vārdu sarakstu, atgriež sarakstu ar ID-vārdu pārīšiem
     # name - iterator of unicode strings
     # šī meklēšana ir case insensitive, un meklē arī alternatīvajos vārdos
+    # Meklē tikai attiecību kategorijas entītēs
     def entity_id_mapping_by_relationship_name_list(self, names):
         names2=[]
         for name in names:
