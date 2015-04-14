@@ -153,7 +153,7 @@ def isRelationshipName(name):
 		for inflection in json.loads(inflections).values():
 			__relationship_names.append(name)
         
-    return name in __relationship_names
+	return name in __relationship_names
 
 def inverted_relations(api):
 	global __inverted_relations
