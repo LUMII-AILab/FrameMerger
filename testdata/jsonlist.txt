@@ -1,12 +1,2 @@
-./testdata/dombrovskis.json 
-./testdata/idejaslatvijai.json 
-./testdata/melbarde.json 
-./testdata/personibas.json 
-./testdata/seile.json 
-./testdata/test_taube.json 
-./testdata/dombrovskis.json 
-./testdata/idejaslatvijai.json 
-./testdata/melbarde.json 
-./testdata/personibas.json 
-./testdata/seile.json 
-./testdata/test_taube.json 
+./testdata/news.1E2904F4-7D05-4B7B-B0EE-8123B467131D.json 
+./testdata/cliping.765F7A10-C952-4D91-8B93-44FD1C5B49AC.json.gz 

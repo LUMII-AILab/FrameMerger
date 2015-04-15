@@ -34,7 +34,7 @@ realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB da
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
-
+entityFilteringDebuginfo = False # Vai rādīt uz console to, kādas entītes ir pirms vārdu filtrēšanas un kādas - pēc.
 api = None
 
 def connect():
@@ -103,8 +103,18 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
             entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
 
+    if entityFilteringDebuginfo:
+        for entity in entities.values():
+            if (entity['id'] in neededEntities):
+                print ('Pirms filtra: {0} ({1})'.format(entity['representative'], entity['type']))
+
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
     filterEntityNames(entities, document.date)
+
+    if entityFilteringDebuginfo:
+        for entity in entities.values():
+            if (entity['id'] in neededEntities):
+                print ('Pēc filtra: {0} ({1})'.format(entity['representative'], entity['type']))
 
     #Katrai entītijai piekārtojam globālo ID
     fetchGlobalIDs(entities, neededEntities, sentences, document.id, api) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
@@ -300,9 +310,9 @@ def entityPhraseByNERMention (start, end, tokens):
     NER/coref numurē tokenus sākot ar 1, python masīva elementus - sākot ar 0
     """
     phrase = []
-    # Riskants risinājums, vajadzētu patiesībā ņemt pēc token.index
-    for token in tokens[start-1:end]:
-        phrase.append(token.form)
+    for token in tokens:
+        if token.index >= start and token.index <= end:
+            phrase.append(token.form)
     return " ".join(phrase)
 
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerElementType):
@@ -367,7 +377,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                 else:
                     entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
-                    if (frame.type, element.name) not in [('People_by_vocation', 'Vocation')]:
+                    if (frame.type, element.name) not in [('People_by_vocation', 'Vocation'), \
+                            ('Personal_relationship', 'Relationship')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
                         entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref with changed type'
                     #Freimi, kuriem ņem entītes pieminējumu
