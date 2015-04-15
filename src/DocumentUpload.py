@@ -280,6 +280,29 @@ def entityPhraseByTree(tokenIndex, tokens, frameName, roleName, entityType):
                 break
         if degreeIndex is not None:
             phrase = phrase[:degreeIndex]
+    # Ja nodarbošanās vai radniecība satur personu vai organizāciju, to izmet.
+    if entityType in {'profession', 'industry', 'relationship'}:
+        beginOrgPers = -1
+        endOrgPers = -1
+        beginQuot = -1
+        endQuot = -1
+        index = 0
+        for token in phrase:
+            if token.lemma in {'"', "'"}:
+                if beginQuot == -1:
+                    beginQuot = index
+                else: endQuot = index
+            if token.mentions is not None and token.mentions[0].type in {'person', 'organization'}:
+                if beginOrgPers == -1:
+                    beginOrgPers = index
+                    endOrgPers = index
+                else: endOrgPers = index
+            index += 1
+
+        if beginOrgPers != -1 and endOrgPers != -1:
+            if beginOrgPers == beginQuot + 1 and endOrgPers == endQuot - 1:
+                del phrase[beginQuot:endQuot+1]
+            else: del phrase[beginOrgPers:endOrgPers+1]
         
     phrase = " ".join(map(lambda t: t.form, phrase))
     if phrase.endswith(' un'):
