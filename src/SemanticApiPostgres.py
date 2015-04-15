@@ -49,6 +49,13 @@ class PostgresConnection(object):
 
         self.dataset = dataset
 
+        # Version flag - does the database have credibility columns?
+        if self.query("SELECT column_name FROM information_schema.columns WHERE table_name='frames' AND column_name='credibility';", ()):
+            self.has_credibility = True
+        else:
+            self.has_credibility = False
+        log.info('Database contains credibility columns : %s' % (self.has_credibility,))
+
         atexit.register(self.finalize)
 
     # Statistika par DB requestiem to profilēšanai
@@ -356,14 +363,23 @@ class SemanticApiPostgres(object):
 	# sentenceId - teikuma id
 	# targetword - unicode string
 	# date - freima datums - string ISO datumformātā 
-    def insertFrame(self, frametype, elements, document, source=None, sentenceId=None, targetword = None, date=None, approvedTypeID=0):
-        main_sql = "INSERT INTO Frames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime)\
+    def insertFrame(self, frametype, elements, document, source=None, sentenceId=None, targetword = None, date=None, approvedTypeID=0, credibility=None, scores=None):
+        main_sql1 = "INSERT INTO Frames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime)\
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
+        main_sql2 = "INSERT INTO Frames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, ApprowedTypeID, DataSet, Blessed, Hidden, Fdatetime, credibility, scores)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
 
-        res = self.api.insert(main_sql,
-                (frametype, source, sentenceId, document, targetword, approvedTypeID, self.api.dataset, None, False, date),
-                returning = True,
-                commit = False)
+        if self.api.has_credibility:
+            scores2 = Json(scores)
+            if not scores:
+                scores2 = None
+            res = self.api.insert(main_sql2,
+                    (frametype, source, sentenceId, document, targetword, approvedTypeID, self.api.dataset, None, False, date, credibility, scores2),
+                    returning = True, commit = False)
+        else:
+            res = self.api.insert(main_sql1,
+                    (frametype, source, sentenceId, document, targetword, approvedTypeID, self.api.dataset, None, False, date),
+                    returning = True, commit = False)
         frameid = res # insertotā freima id
 
         # element_sql = "INSERT INTO FrameData(FrameID, EntityID, RoleID) VALUES (%s, %s, %s)"
