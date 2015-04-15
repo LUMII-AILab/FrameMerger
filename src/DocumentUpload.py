@@ -34,7 +34,7 @@ realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB da
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
-
+entityFilteringDebuginfo = False # Vai rādīt uz console to, kādas entītes ir pirms vārdu filtrēšanas un kādas - pēc.
 api = None
 
 def connect():
@@ -103,8 +103,18 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
             entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
 
+    if entityFilteringDebuginfo:
+        for entity in entities.values():
+            if (entity['id'] in neededEntities):
+                print ('Pirms filtra: {0} ({1})'.format(entity['representative'], entity['type']))
+
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
     filterEntityNames(entities, document.date)
+
+    if entityFilteringDebuginfo:
+        for entity in entities.values():
+            if (entity['id'] in neededEntities):
+                print ('Pēc filtra: {0} ({1})'.format(entity['representative'], entity['type']))
 
     #Katrai entītijai piekārtojam globālo ID
     fetchGlobalIDs(entities, neededEntities, sentences, document.id, api) # TODO - varbūt jau sākumā pie tās pašas sentenču apstaigāšanas arī jāsaveido entītiju contextbag 
