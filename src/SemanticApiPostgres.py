@@ -175,6 +175,9 @@ class SemanticApiPostgres(object):
              'TargetWord': frame.targetword,
              'ApprovedTypeID': frame.approwedtypeid,
         }
+        if self.api.has_credibility:
+            frame_info['Credibility'] = frame.credibility
+            frame_info['Scores'] = frame.scores
 
         frame_info['FrameData'] = self.frame_elements_by_id(fr_id)
 
@@ -548,6 +551,9 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
 	# targetword - unicode string
 	# date - freima datums - string ISO datumformātā 
     def insert_summary_frame(self, frame, commit):
+        main_sql_c = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
+                         FrameCnt, FrameText, SummaryInfo, Deleted, date, start_date, cvframecategory, credibility, scores)\
+                         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
         main_sql = "INSERT INTO SummaryFrames(FrameTypeID, SourceID, SentenceID, DocumentID, TargetWord, SummaryTypeID, DataSet, Blessed, Hidden,\
                          FrameCnt, FrameText, SummaryInfo, Deleted, date, start_date, cvframecategory)\
                          VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING FrameID;"
@@ -567,12 +573,22 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
             if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
                 frame["IsHidden"] = True
 
-        res = self.api.insert(main_sql,
-                (frame["FrameType"], frame.get("SourceId"), frame.get('SentenceId'), frame.get('DocumentId'), frame.get('TargetWord'), 
-                    merge_type, self.api.dataset, frame.get('IsBlessed'), frame.get('IsHidden'), frame.get('FrameCnt'), frame["FrameText"],
-                    frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate"), Json(frame.get('CVFrameCategory'))),
-                returning = True,
-                commit = False)
+        if self.api.has_credibility:
+            res = self.api.insert(main_sql_c,
+                    (frame["FrameType"], frame.get("SourceId"), frame.get('SentenceId'), frame.get('DocumentId'), frame.get('TargetWord'), 
+                        merge_type, self.api.dataset, frame.get('IsBlessed'), frame.get('IsHidden'), frame.get('FrameCnt'), frame["FrameText"],
+                        frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate"), Json(frame.get('CVFrameCategory')),
+                        frame.get('Credibility'), Json(frame.get('Scores')) ),
+                    returning = True,
+                    commit = False)
+        else:
+            res = self.api.insert(main_sql,
+                    (frame["FrameType"], frame.get("SourceId"), frame.get('SentenceId'), frame.get('DocumentId'), frame.get('TargetWord'), 
+                        merge_type, self.api.dataset, frame.get('IsBlessed'), frame.get('IsHidden'), frame.get('FrameCnt'), frame["FrameText"],
+                        frame["SummaryInfo"], frame.get('IsDeleted'), frame.get("Date"), frame.get("StartDate"), Json(frame.get('CVFrameCategory'))),
+                    returning = True,
+                    commit = False)
+
         frameid = res # insertotā freima id
 
         element_sql = "INSERT INTO SummaryFrameRoleData(FrameID, EntityID, RoleID, WordIndex) VALUES (%s, %s, %s, %s)"
