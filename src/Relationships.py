@@ -153,12 +153,13 @@ def isRelationshipName(name):
 		for inflection in json.loads(inflections).values():
 			__relationship_names.append(name)
 
-	for result in secondary_relations_text.values():
-		name = result.get('result')
-		__relationship_names.append(name)
-		inflections = inflectEntity(name, 'relationship')
-		for inflection in json.loads(inflections).values():
+	for primary in secondary_relations_text.values():
+		for secondary in primary.values():
+		name = secondary.get('result')
 			__relationship_names.append(name)
+			inflections = inflectEntity(name, 'relationship')
+			for inflection in json.loads(inflections).values():
+				__relationship_names.append(name)
         
 	return name in __relationship_names
 
