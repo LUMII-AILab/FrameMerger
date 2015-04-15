@@ -34,7 +34,7 @@ realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB da
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
-entityFilteringDebuginfo = False # Vai rādīt uz console to, kādas entītes ir pirms vārdu filtrēšanas un kādas - pēc.
+entityFilteringDebuginfo = True # Vai rādīt uz console to, kādas entītes ir pirms vārdu filtrēšanas un kādas - pēc.
 api = None
 
 def connect():
