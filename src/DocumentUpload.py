@@ -310,9 +310,9 @@ def entityPhraseByNERMention (start, end, tokens):
     NER/coref numurē tokenus sākot ar 1, python masīva elementus - sākot ar 0
     """
     phrase = []
-    # Riskants risinājums, vajadzētu patiesībā ņemt pēc token.index
-    for token in tokens[start-1:end]:
-        phrase.append(token.form)
+    for token in tokens:
+        if token.index >= start and token.index <= end:
+            phrase.append(token.form)
     return " ".join(phrase)
 
 def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerElementType):
@@ -377,7 +377,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                 else:
                     entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
-                    if (frame.type, element.name) not in [('People_by_vocation', 'Vocation')]:
+                    if (frame.type, element.name) not in [('People_by_vocation', 'Vocation'), \
+                            ('Personal_relationship', 'Relationship')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
                         entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref with changed type'
                     #Freimi, kuriem ņem entītes pieminējumu
