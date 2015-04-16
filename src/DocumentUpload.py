@@ -505,14 +505,14 @@ def filterEntityNames(entities, documentdate):
         if type not in {'descriptor', 'profession'} and name.lower() in {
                 'skolēni', 'studenti'}:
             return False
-        if name.lower() in {'kompānija', 'firma', 'firmas', 'tiesa', 'dome',
-                            'komisija', 'apvienība', 'organizācija', 
+        if name.lower() in {'tiesa', 'dome', 'komisija', 'apvienība', 
                             'studentu sabiedrība', 'sabiedrība'}: 
             return False
         if type not in {'descriptor', 'industry', 'profession'} and name.lower() in {
                 'uzņēmums', 'aģentūra', 'portāls', 'banka', 'koncerns',
                 'partija', 'birojs', 'augstskola', 'žurnāls', 'skola',
-                'studija', 'frakcija', 'iestāde', 'fonds', 'korporācija'}:
+                'studija', 'frakcija', 'iestāde', 'fonds', 'korporācija',
+                'kompānija', 'firma', 'firmas', 'organizācija', 'holdings'}:
             return False
         if name.lower() in {'gads', 'gada'}: 
             return False
