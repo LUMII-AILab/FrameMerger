@@ -107,12 +107,12 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
 
     if forbidMediaEntities:
         for entity in entities.values():
-            if 'type' in entity and entity['type'] == 'media':
+            if entity['id'] in neededEntities and 'type' in entity and entity['type'] == 'media':
                 entity['type'] = 'organization'
 
     if entityFilteringDebuginfo:
         for entity in entities.values():
-            if (entity['id'] in neededEntities):
+            if entity['id'] in neededEntities:
                 print ('Pirms filtra: {0} ({1})'.format(entity['representative'], entity['type']))
 
     # Entītiju nosaukumu filtrs - aizvietojam relatīvos laikus ('vakar'); likvidējam nekonkrētos aliasus ('viņš').
