@@ -101,7 +101,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     ne['locations'] = locations
                                 
     for entity in entities.values():
-        if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') or (entity.get('type') == 'organization')):
+        if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') \
+             or (entity.get('type') == 'organization')):
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
             entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
 
@@ -413,7 +414,8 @@ def makeEntityIfNeeded(entities, tokens, tokenIndex, frame, element, determinerE
                     entityType = getDefaultEnityType(frameCode, elementCode, determinerElementType)
                     #Freimi, kuriem ņem entītes reprezentatīvo frāzi.
                     if (frame.type, element.name) not in [('People_by_vocation', 'Vocation'), \
-                            ('Personal_relationship', 'Relationship')]:
+                            ('Personal_relationship', 'Relationship'), \
+                            ('People_by_origin', 'Origin'), ('People_by_origin', 'Ethnicity')]:
                         entityID = makeEntity(entities, representativePhrase, entityType)
                         entities[str(entityID)]['source'] = 'phrase extraction, from NER/coref with changed type'
                     #Freimi, kuriem ņem entītes pieminējumu
