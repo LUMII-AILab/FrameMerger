@@ -31,6 +31,8 @@ import CDC
 import logging as log
 
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
+forbidMediaEntities = True # Visas medijus pārtaisīt par organizācijām.
+
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
 entityCreationDebuginfo = False # Vai rādīt uz console potenciālās jaunradītās entītijas
@@ -102,6 +104,11 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
         if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') or (entity.get('type') == 'organization')):
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
             entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
+
+    if forbidMediaEntities:
+        for entity in entities.values():
+            if 'type' in entity and entity['type'] == 'media':
+                entity['type'] = 'organization'
 
     if entityFilteringDebuginfo:
         for entity in entities.values():
