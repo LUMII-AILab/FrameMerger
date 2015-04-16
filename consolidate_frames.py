@@ -59,6 +59,7 @@ def consolidate_frames(entity_list, api):
                 frames += Relationships.build_relations(api, entity.entity.get('EntityId'), frames, mentioned_entities)
 
                 EF.normalize_frames(frames, api, mentioned_entities)
+                EF.normalize_summary_frames(entity.blessed_summary_frames, api, mentioned_entities)
 
                 frames = c.apply(frames, entity.blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))

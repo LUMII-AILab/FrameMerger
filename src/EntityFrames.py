@@ -285,6 +285,7 @@ def normalize_frames(frames, api, mentioned_entities):
                     partner1ID = fd.get('Value').get('Entity')
                 if fd.get('Key') == 2:
                     partner2ID = fd.get('Value').get('Entity')
+
             if partner1ID and partner2ID and vaiRelaacijaIrNoMainaamajaam and partner2ID < partner1ID:
                 # print('Invertojam %s --[%s]--> %s' % (mentioned_entities[partner1ID]['Name'], mentioned_entities[relation]['Name'], mentioned_entities[partner2ID]['Name']))
                 for fd in frame.get('FrameData'):
@@ -305,6 +306,47 @@ def normalize_frames(frames, api, mentioned_entities):
                         fd.get('Value')['Entity'] = partner2ID
                     if fd.get('Key') == 2:
                         fd.get('Value')['Entity'] = partner1ID
+
+
+def normalize_summary_frames(frames, api, mentioned_entities):
+    # Normalizējam attiecību freimus (sieva <> vīrs), ka 'pareizais' pāris ir ar Partner1 #ID mazāku par Partner2 #ID.
+    relations = Relationships.inverted_relations(api)
+    for frame in frames:                    
+        if frame.get('FrameType') == 3:
+            # FIXME - ja datiem būtu normāla struktūra nevis tas FrameData bullshit, tad kods būtu 5x vienkāršāks
+            vaiRelaacijaIrNoMainaamajaam = False
+            partner1ID = None
+            partner2ID = None
+            for fd in frame.get('FrameData'):
+                if fd.get('roleid') == 4:
+                    vaiRelaacijaIrNoMainaamajaam = fd.get('entityid') in relations
+                    relation = fd.get('entityid')
+                if fd.get('roleid') == 1:
+                    partner1ID = fd.get('entityid')
+                if fd.get('roleid') == 2:
+                    partner2ID = fd.get('entityid')
+
+            if partner1ID and partner2ID and vaiRelaacijaIrNoMainaamajaam and partner2ID < partner1ID:
+                # print('Invertojam %s --[%s]--> %s' % (mentioned_entities[partner1ID]['Name'], mentioned_entities[relation]['Name'], mentioned_entities[partner2ID]['Name']))
+                for fd in frame.get('FrameData'):
+                    if fd.get('roleid') == 4:
+                        inverse_relation = relations[fd.get('entityid')]
+                        gender = 'male'
+                        inflections = json.loads(mentioned_entities[partner1ID].get('NameInflections'))
+                        # print(inflections)
+                        if inflections.get('Dzimte') == 'Sieviešu':
+                            gender = 'female'
+                        fd['entityid'] = inverse_relation[gender] 
+                        if inverse_relation[gender] not in mentioned_entities:
+                            entity_r_data = api.entity_data_by_id(inverse_relation[gender])
+                            if entity_r_data:
+                                mentioned_entities[inverse_relation[gender]] = entity_r_data
+                        # print('Sanāca %s --[%s]--> %s' % (mentioned_entities[partner2ID]['Name'], mentioned_entities[inverse_relation[gender]]['Name'], mentioned_entities[partner1ID]['Name']))
+                    if fd.get('roleid') == 1:
+                        fd['entityid'] = partner2ID
+                    if fd.get('roleid') == 2:
+                        fd['entityid'] = partner1ID
+
 
 def test_frame_fns():
 
