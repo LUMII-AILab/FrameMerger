@@ -128,10 +128,10 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             frameType = getFrameCode(frame.type)
 
             elements = {} # dict no elementu lomas koda uz attiecīgās entītes ID
+            scores = {} # scores lauka aizpildījums, ja jsonā ir šādi dati
             filledRoles = set() 
             usedEntities = set()
             for element in frame.elements:
-
                 elementCode = getElementCode(frameType, element.name)
                 if element.entityID:
                     entityID = element.entityID
@@ -155,6 +155,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     elements[elementCode] = globalID
                     filledRoles.add(elementCode)
                     usedEntities.add(globalID)
+                    if element.get('score'):
+                        scores[globalID] = element.get('score')
                     
             if showInserts:
                 print('Gribētu insertot freimu', frame.type, elements)
@@ -176,7 +178,10 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     if (sentenceID+1) in blessed_sentences:
                         continue # Ja šajā CV teikumā jau cilvēks ir blesojis faktus, tad to neliekam DB
 
-                api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat(), approvedTypeID=approvalType)
+                api.insertFrame(frameType, elements, document.id, source, sentenceID+1, targetword, document.date.isoformat(), 
+                    approvedTypeID=approvalType, 
+                    credibility=frame.get('credibility'),
+                    scores = scores)
 
     if realUpload: 
         for entity in entities.values():
