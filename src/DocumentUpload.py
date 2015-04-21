@@ -32,6 +32,7 @@ import logging as log
 
 realUpload = True # Vai lādēt DB pa īstam - lai testu laikā nečakarē DB datus
 forbidMediaEntities = True # Visas medijus pārtaisīt par organizācijām.
+ignoreSomeFrames = False # Neapstrādāt freimus People_by_age, Being_named, Statement
 
 showInserts = False # Vai rādīt uz console to, ko mēģina insertot DB
 showDisambiguation = False # Vai rādīt uz console entītiju disambiguācijas debug
@@ -63,6 +64,10 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
 
     neededEntities = set() # Savācam entītijas, kuras dokumentā piemin kāds freims
     for sentenceID, sentence in enumerate(sentences):
+        # Ja ir uztādīts, ka "neinteresantos" freimus nevaja ielādēt, tad te tos izmet
+        if ignoreSomeFrames:
+            newframes = [frame for frame in sentence.frames if frame.type not in {'People_by_age', 'Being_named', 'Statement'}]
+            sentence.frames = newframes
         for frame in sentence.frames:
             addDate(frame, document.date) # Fills the Time attribute for selected frames from document metadata, if it is empty
             frame['sentence'] = sentence # backpointer tālākai apstrādei
