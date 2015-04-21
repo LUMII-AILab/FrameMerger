@@ -318,12 +318,16 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 							continue
 
 						result_relation = next_relations.get(relation_bc)
-						if result_relation:														
+						if result_relation:		
+							if result_relation.get('blessed'):
+								is_blessed = True
+							else:
+								is_blessed = None
 							result.append ( {'FrameData':[
 								{'Key':1,'Value': {'Entity': entity_a}},
 								{'Key':2,'Value': {'Entity': entity_c}},
 								{'Key':4,'Value': {'Entity': result_relation.get('result')}}
-								], 'IsBlessed':result_relation.get('blessed'), 'FrameType' : 3, 'SourceId' : relation_source, 'IsHidden' : False} )
+								], 'IsBlessed':is_blessed, 'FrameType' : 3, 'SourceId' : relation_source, 'IsHidden' : False} )
 							# Ja pievilktā attiecību veida entītija nav listē, tad viņas dati jāpaņem, lai ir korekta verbalizācija
 							ensure_entity(result_relation.get('result'), mentioned_entities, api)
 
