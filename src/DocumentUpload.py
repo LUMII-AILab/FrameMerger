@@ -170,6 +170,9 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     usedEntities.add(globalID)
                     if element.get('score'):
                         scores[globalID] = element.get('score')
+
+            if not elements:
+                continue
                     
             if showInserts:
                 print('Gribētu insertot freimu', frame.type, elements)
