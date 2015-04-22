@@ -92,7 +92,8 @@ def main():
                 filename = os.path.join(basedir, filename)
             basename = os.path.basename(filename)
             docid = os.path.splitext(basename)[0]
-            docid = os.path.splitext(docid)[0] # .json.gz gadījumam
+            if docid.endswith('.json'):
+                docid = os.path.splitext(docid)[0] # .json.gz gadījumam
             
             log.info("Looking at filename %s", filename)
             #api.reprocessDoc([docid]) # temporary for testing - uztaisam ierakstu ka šo dokumentu vispār vajag apstrādāt
