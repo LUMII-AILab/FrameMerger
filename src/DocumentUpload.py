@@ -199,6 +199,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                     credibility=frame.get('credibility'),
                     scores = scores)
 
+    dirtyEntities = []
+
     if realUpload: 
         for entity in entities.values():
             hidden = entity.get('hidden')
@@ -206,6 +208,7 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                 hidden = hideEntity(entity['representative'], entity.get('type'))
             if hidden == False and ((entity.get('type') == 'person') or (entity.get('type') == 'organization')):
                 api.dirtyEntity(entity.get('GlobalID'))
+                dirtyEntities.append(entity.get('GlobalID'))
         api.insertDocument(document.id, document.date.isoformat(), document.get('type'), compact_document(document))
         api.api.commit
 
@@ -215,6 +218,8 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
             frame.pop('sentence', None)
     for entity in entities.values():
         entity.pop('frames', None)
+
+    return dirtyEntities
 
 # Uztaisa entītiju ar atbilstošo tekstu un ieliek to entities sarakstā
 def makeEntity(entities, phrase, namedEntityType):
