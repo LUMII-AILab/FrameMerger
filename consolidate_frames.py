@@ -27,7 +27,8 @@ from FrameInfo import FrameInfo
 from TextGenerator import get_mentioned_entities, get_frame_data
 import Relationships
 
-f_info = FrameInfo("input/frames-new-modified.xlsx")
+f_info = FrameInfo(os.path.join(os.path.dirname(__file__), "input/frames-new-modified.xlsx"))
+#f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
 
 def get_entity_frames(e_id_list, api):

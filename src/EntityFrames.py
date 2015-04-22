@@ -23,7 +23,9 @@ import Relationships
 # TODO:
 #  - pass the filename in as a parameter
 
-f_info = FrameInfo("input/frames-new-modified.xlsx")
+import os
+f_info = FrameInfo(os.path.join(os.path.dirname(__file__), "../input/frames-new-modified.xlsx"))
+#f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 class EntityFrames(object):
     def __init__(self, api, entity_id):

@@ -27,7 +27,7 @@ with open(pidfile, 'w') as f:
 
 
 
-sys.path.append("./src")
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 # from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
