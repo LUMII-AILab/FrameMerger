@@ -164,6 +164,9 @@ def consolidate_entity(name, entityid):
     try:
         api = get_db(name)
         process_entities([entityid], out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Consolidate error:', str(e).strip())
         traceback.print_exc()
@@ -182,7 +185,11 @@ def consolidate_entities(name):
     entityids = [int(entityid.strip()) for entityid in entityids.split(',')]
     try:
         api = get_db(name)
+        print('consolidating', len(entityids), 'entities')
         process_entities(entityids, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Consolidate error:', str(e).strip())
         traceback.print_exc()
@@ -247,6 +254,9 @@ def upload(name):
         if consolidate:
             print('consolidating document', id, 'entities (%i dirty entities)' % len(dirtyEntities))
             process_entities(dirtyEntities, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Upload error:', str(e).strip())
         traceback.print_exc()
@@ -290,6 +300,9 @@ def upload_id(name, id):
         if consolidate:
             print('consolidating document', id, 'entities (%i dirty entities)' % len(dirtyEntities))
             process_entities(dirtyEntities, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Upload error:', str(e).strip())
         traceback.print_exc()
