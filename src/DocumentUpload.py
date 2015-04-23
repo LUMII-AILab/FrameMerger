@@ -93,23 +93,38 @@ def upload2db(document, api=api): # document -> dict ar pilniem dokumenta+ner+fr
                         # te pie esošajām entītijām pieliek norādi uz freimiem, kuros entītija piedalās - TODO: pēc tam novākt, lai nečakarē json seivošanu
                     neededEntities.add(entityid)
             
-        for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
-            neIDs = token.get('namedEntityID')
-            if neIDs is not None: # ja šis tokens satur norādes uz entītijām
-                for neID in neIDs:
-                    ne = entities[str(neID)]
-                    locations = ne.get('locations')
-                    if not locations:
-                        locations = []
-                        
-                    locations.append([sentenceID+1, token.get('index')])
-                    ne['locations'] = locations
+        # entīšu pieminējumu vietu aprēķins pārvietots zemāk!
+        # iepriekš locations netiek aprēķināts visām entītēm - tas nav pareizi, tā nevarēs UI nodrošināt vajadzīgo attēlojumu!
                                 
     for entity in entities.values():
         if ((entity['id'] not in neededEntities) and (entity.get('type') == 'person') \
              or (entity.get('type') == 'organization')):
             neededEntities.add(entity['id']) # personas un organizācijas insertojam vienmēr, lai piefiksētu tās, kas dokumentā ir pieminētas bet nav freimos
             entity['notReallyNeeded'] = True  # UI noslēpsim tos šādi pieliktos, kam nav neviena freima; manuprāt jāfiltrē tikai pēc visu dok. importa bet 2014.06.05 seminārā lēma šādi. TODO - review.
+
+    empty = []
+    allowedTypes = ('person', 'organizaton')    # atļautie tipi neatkarīgi ne no kā
+    for sentenceID, sentence in enumerate(sentences):
+        for token in sentence.tokens: # Pie reizes arī savācam entītiju pieminējumu vietas, kuras insertot datubāzē
+            neIDs = token.get('namedEntityID')
+            if neIDs is not None: # ja šis tokens satur norādes uz entītijām
+                for neID in neIDs:
+                    ne = entities[str(neID)]
+                    # NOTE: set(), lai nebūtu dublikāti; set() šeit, jo nezinu locations avotus
+                    locations = ne.get('locations', empty)
+                    if type(locations) is not set:
+                        ne['locations'] = locations = set(tuple(entry) for entry in locations)
+                    locations.add((sentenceID+1, token.get('index')))
+            # mentions var būt arī entītēm, kuras nav lomas, uz vienu tokenu laikam var būt pat vairākas entītes, kas var nepārklāties ar iepriekšējo
+            for mention in token.get('mentions', empty):
+                entity = entities[str(mention['id'])]
+                if entity.get('type') in allowedTypes or entity.get('globalId', -1) != -1:
+                    # NOTE: set(), lai nebūtu dublikāti; set() šeit, jo nezinu locations avotus
+                    locations = entity.get('locations', empty)
+                    if type(locations) is not set:
+                        entity['locations'] = locations = set(tuple(entry) for entry in locations)
+                    locations.add((sentenceID+1, token.get('index')))
+
 
     if forbidMediaEntities:
         for entity in entities.values():
@@ -792,11 +807,19 @@ def fetchGlobalIDs(entities, neededEntities, sentences, documentId, api=api):
             if inWhitelist: # Šajā gadījumā neskatamies kā disambiguēt
                 continue 
 
-            if len(matchedEntities) > 1 and entity.get('type') in {'person', 'organization'}: 
+            # !!! Šis kods ir nekonsekvents: ja tiek izveidota jauna entītija, kuras tips nav ne persona, ne organizācija,
+            # kas ir iespējams gadījumā, ja entīte ir freima loma, tad tai tiek pievienoti mentions,
+            # bet, ja entīte jau eksistē, tai netiek pievienoti mentions, kas noved pie tā, ka vienā dokumentā viena aktrise ir 
+            # ar norādi uz aktrises entīti, bet turpat nākamajā teikumā tā pati aktrise vairs nav ar norādi uz aktrises entīti.
+            # Personu, organizāciju filtrs jau ir pievienots izsaucošajā funkcijā!
+
+            # if len(matchedEntities) > 1 and entity.get('type') in {'person', 'organization'}: # skat piezīmi !!! augstāk
+            if len(matchedEntities) > 1:
                 toDisambiguate.append( (entity, matchedEntities) ) # pieglabājam tuple, lai apstrādātu tad kad visām viennozīmīgajām entītijām būs globalid atrasti
             else:
                 entity['GlobalID'] = matchedEntities[0] # klasifikatoriem tāpat daudzmaz vienalga, vai pie kautkā piesaista vai veido jaunu
-                if realUpload and entity.get('type') in {'person', 'organization'}: 
+                # if realUpload and entity.get('type') in {'person', 'organization'}: # skat piezīmi !!! augstāk
+                if realUpload:
                     api.insertMention(matchedEntities[0], documentId, locations=entity.get('locations'))
         if 'GlobalID' in entity and showInserts:
             print ('Entītei piekārtoja globālo ID: {0} ({1}) - {2}'.format(representative, entity['type'], entity['GlobalID']))

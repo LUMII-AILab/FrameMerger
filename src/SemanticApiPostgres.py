@@ -737,6 +737,8 @@ WHERE blessed IS TRUE"""
         cursor.execute("delete from entitymentions where entityid = %s and documentid = %s", (entityID, documentID) )
         locationsstr = None
         if locations:
+            if type(locations) is not list:
+                locations = list(locations)
             locationsstr = json.dumps(locations, separators=(',', ':'))
 
         cursor.execute("insert into entitymentions (entityid, documentid, chosen, cos_similarity, blessed, unclear, locations)\
