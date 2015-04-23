@@ -9,7 +9,7 @@
 import sys, os, glob, fnmatch, json, codecs, traceback, gzip
 from datetime import date, datetime
 
-sys.path.append("./src")
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from DocumentUpload import upload2db
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from db_config import api_conn_info, instance_name, log_dir
@@ -88,8 +88,9 @@ def main():
                 log.info('Skipping file %s' % filename)
                 continue                
 
-            if not os.path.isabs(filename):
-                filename = os.path.join(basedir, filename)
+            # Tiek kropļots īstais ceļš uz failu:
+            # if not os.path.isabs(filename):
+            #     filename = os.path.join(basedir, filename)
             basename = os.path.basename(filename)
             docid = os.path.splitext(basename)[0]
             if docid.endswith('.json'):

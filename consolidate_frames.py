@@ -7,8 +7,8 @@
 # All rights reserved.
 from __future__ import unicode_literals
 
-import sys
-sys.path.append("./src")
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from pprint import pprint
 import logging as log

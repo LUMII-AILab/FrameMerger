@@ -126,7 +126,7 @@ app = Bottle()
 # TODO: vajag labāku noformējumu
 @app.get('/')
 def root():
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.status = 200
     return """<!doctype html>
 <html>
@@ -159,7 +159,7 @@ API: <br/>
 @app.get('/databases/<name>/consolidate/<entityid:int>')
 @app.post('/databases/<name>/consolidate/<entityid:int>')
 def consolidate_entity(name, entityid):
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     try:
         api = get_db(name)
@@ -179,7 +179,7 @@ def consolidate_entity(name, entityid):
 
 @app.post('/databases/<name>/consolidate')
 def consolidate_entities(name):
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     entityids = request.body.read().decode('utf8', errors='ignore')
     entityids = [int(entityid.strip()) for entityid in entityids.split(',')]
@@ -226,8 +226,8 @@ def upload(name):
     if request.method == 'OPTIONS':
         return ''
     consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
-    # response.conent_type = 'text/html; charset=utf-8'
-    response.conent_type = 'application/json; charset=utf-8'
+    # response.content_type = 'text/html; charset=utf-8'
+    response.content_type = 'application/json; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     # response.add_header('access-control-allow-credentials', 'true')
     # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
@@ -271,8 +271,8 @@ def upload_id(name, id):
     if request.method == 'OPTIONS':
         return ''
     consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
-    # response.conent_type = 'text/html; charset=utf-8'
-    response.conent_type = 'application/json; charset=utf-8'
+    # response.content_type = 'text/html; charset=utf-8'
+    response.content_type = 'application/json; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     # response.add_header('access-control-allow-credentials', 'true')
     # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
