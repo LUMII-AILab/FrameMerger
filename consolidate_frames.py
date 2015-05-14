@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf8 -*-
 # 
 # © 2013-2014 Institute of Mathematics and Computer Science, University of Latvia
@@ -7,8 +7,8 @@
 # All rights reserved.
 from __future__ import unicode_literals
 
-import sys
-sys.path.append("./src")
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 
 from pprint import pprint
 import logging as log
@@ -27,7 +27,8 @@ from FrameInfo import FrameInfo
 from TextGenerator import get_mentioned_entities, get_frame_data
 import Relationships
 
-f_info = FrameInfo("input/frames-new-modified.xlsx")
+f_info = FrameInfo(os.path.join(os.path.dirname(__file__), "input/frames-new-modified.xlsx"))
+#f_info = FrameInfo("input/frames-new-modified.xlsx")
 processID = instance_name + ' ' + str(os.getpid())
 
 def get_entity_frames(e_id_list, api):

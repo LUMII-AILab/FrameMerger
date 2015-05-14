@@ -24,7 +24,9 @@ import sys
 if sys.version_info >= (3, 0, 0):
     basestring = str # python3 compatibility...
 
-f_info = FrameInfo("input/frames-new-modified.xlsx")
+import os
+f_info = FrameInfo(os.path.join(os.path.dirname(__file__), "../input/frames-new-modified.xlsx"))
+#f_info = FrameInfo("input/frames-new-modified.xlsx")
 
 # pašpietiekama funkcija, kas verbalizē izolētu *summary* freimu, paņemot visu vajadzīgo no DB
 def verbalizeframe(api, frameID):

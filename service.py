@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 
-import sys, os
+import sys, os, gzip
 import signal
 
 pidfile = 'service.pid'
@@ -27,7 +27,7 @@ with open(pidfile, 'w') as f:
 
 
 
-sys.path.append("./src")
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 # from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
@@ -126,7 +126,7 @@ app = Bottle()
 # TODO: vajag labāku noformējumu
 @app.get('/')
 def root():
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.status = 200
     return """<!doctype html>
 <html>
@@ -159,11 +159,14 @@ API: <br/>
 @app.get('/databases/<name>/consolidate/<entityid:int>')
 @app.post('/databases/<name>/consolidate/<entityid:int>')
 def consolidate_entity(name, entityid):
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     try:
         api = get_db(name)
         process_entities([entityid], out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Consolidate error:', str(e).strip())
         traceback.print_exc()
@@ -176,13 +179,17 @@ def consolidate_entity(name, entityid):
 
 @app.post('/databases/<name>/consolidate')
 def consolidate_entities(name):
-    response.conent_type = 'text/html; charset=utf-8'
+    response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     entityids = request.body.read().decode('utf8', errors='ignore')
     entityids = [int(entityid.strip()) for entityid in entityids.split(',')]
     try:
         api = get_db(name)
+        print('consolidating', len(entityids), 'entities')
         process_entities(entityids, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Consolidate error:', str(e).strip())
         traceback.print_exc()
@@ -218,13 +225,22 @@ from datetime import date, datetime
 def upload(name):
     if request.method == 'OPTIONS':
         return ''
-    response.conent_type = 'text/html; charset=utf-8'
+    consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
+    # response.content_type = 'text/html; charset=utf-8'
+    response.content_type = 'application/json; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     # response.add_header('access-control-allow-credentials', 'true')
     # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
     response.add_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT')
     response.add_header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
+    data = request.body.read()
+    try:
+        data = gzip.decompress(data)
+    except:
+        pass
+    data = data.decode('utf8', errors='ignore')
+    document = json.loads(data, object_hook=Dict)
+    # document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
     try:
         if not document.date:
             document.date = datetime.now().strftime("%Y-%m-%d")
@@ -233,7 +249,14 @@ def upload(name):
         if not document.id:
             raise Exception("No document id")
         api = get_db(name)
-        upload2db(document, api)
+        print('uploading document', id)
+        dirtyEntities = upload2db(document, api)
+        if consolidate:
+            print('consolidating document', id, 'entities (%i dirty entities)' % len(dirtyEntities))
+            process_entities(dirtyEntities, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Upload error:', str(e).strip())
         traceback.print_exc()
@@ -241,19 +264,28 @@ def upload(name):
         response.status = 500
         return result
     response.status = 200
-    return 'OK'
+    return json.dumps(dirtyEntities)
 
 @app.route('/databases/<name>/upload/<id>', method=['OPTIONS', 'POST'])
 def upload_id(name, id):
     if request.method == 'OPTIONS':
         return ''
-    response.conent_type = 'text/html; charset=utf-8'
+    consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
+    # response.content_type = 'text/html; charset=utf-8'
+    response.content_type = 'application/json; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     # response.add_header('access-control-allow-credentials', 'true')
     # response.add_header('access-control-allow-headers', 'x-prototype-version,x-requested-with')
     response.add_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PUT')
     response.add_header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
+    data = request.body.read()
+    try:
+        data = gzip.decompress(data)
+    except:
+        pass
+    data = data.decode('utf8', errors='ignore')
+    document = json.loads(data, object_hook=Dict)
+    # document = json.loads(request.body.read().decode('utf8', errors='ignore'), object_hook=Dict)
     try:
         if not document.date:
             document.date = datetime.now().strftime("%Y-%m-%d")
@@ -263,7 +295,14 @@ def upload_id(name, id):
         # if not document.id:
         #     raise Exception("No document id")
         api = get_db(name)
-        upload2db(document, api)
+        print('uploading document', id)
+        dirtyEntities = upload2db(document, api)
+        if consolidate:
+            print('consolidating document', id, 'entities (%i dirty entities)' % len(dirtyEntities))
+            process_entities(dirtyEntities, out_dir, api)
+    except KeyboardInterrupt:
+        print('interrupted')
+        quit()
     except Exception as e:
         print('Upload error:', str(e).strip())
         traceback.print_exc()
@@ -272,7 +311,7 @@ def upload_id(name, id):
         # result = traceback.format_exc()
         return result
     response.status = 200
-    return 'OK'
+    return json.dumps(dirtyEntities)
 
 
 

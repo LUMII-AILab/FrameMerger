@@ -205,8 +205,9 @@ class BaseConsolidator(object):
                 item["SummaryInfo"] = get_info_str(self)
 
                 # get target words
-                c = Counter(f["TargetWord"] for f in res_buf[key])
-                item["TargetWord"] = c.most_common(1)[0][0]
+                c = Counter(f["TargetWord"] for f in res_buf[key] if f.get('TargetWord'))
+                if c:
+                    item["TargetWord"] = c.most_common(1)[0][0]
                 res.append(item)
 
         return res

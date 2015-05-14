@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 # 
 # © 2013-2014 Institute of Mathematics and Computer Science, University of Latvia
@@ -6,9 +6,9 @@
 #
 # All rights reserved.
 
-import sys
+import sys, os
 
-sys.path.append("./src")
+sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 from TextGenerator import verbalizeframe
@@ -23,7 +23,6 @@ api = SemanticApiPostgres(conn)
 app = Bottle()
 
 # info par servisu
-# TODO: vajag labāku noformējumu
 @app.get('/')
 def root():
     response.conent_type = 'text/html; charset=utf-8'
