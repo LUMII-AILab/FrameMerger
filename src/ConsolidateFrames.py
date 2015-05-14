@@ -179,7 +179,7 @@ class BaseConsolidator(object):
 
                 item = deepcopy(res_buf[key][0])
 
-                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key] if f["FrameId"]]
+                item["SummarizedFrames"] = [f["FrameId"] for f in res_buf[key] if f.get('FrameId')]
 
                 if res_cnt[key] > 1:
                     item["MergeType"] = "M"

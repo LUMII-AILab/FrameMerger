@@ -55,11 +55,13 @@ def consolidate_frames(entity_list, api):
                 frames = list(filter(lambda x: x["FrameData"] is not None and not x['IsUnfinished'], entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 
+                # show_frame_debuginfo(frames, '2406184', 'pirms normalizācijas')
                 # Pievienojam sekundāro relāciju freimus
                 frames += Relationships.build_relations(api, entity.entity.get('EntityId'), frames, mentioned_entities)
 
                 EF.normalize_frames(frames, api, mentioned_entities)
-                EF.normalize_summary_frames(entity.blessed_summary_frames, api, mentioned_entities)
+                EF.normalize_summary_frames(entity.blessed_summary_frames, api, mentioned_entities)                
+                # show_frame_debuginfo(frames, '2406184', 'peec normalizācijas')
 
                 frames = c.apply(frames, entity.blessed_summary_frames)
                 log.info("Finished consolidating frames. Result frame count: %s\n", len(frames))
@@ -358,6 +360,14 @@ def start_logging(log_level = log.ERROR):
 #    )
 
     log.getLogger("SemanticApiPostgres").level = log.INFO
+
+def show_frame_debuginfo(frames, frameid, text = 'DEBUG'):
+    print('----', text)
+    for frame in frames:
+        if frameid in str(frame):
+            print(frame)
+    print('')
+
 
 # ---------------------------------------- 
 
