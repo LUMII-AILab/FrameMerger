@@ -24,6 +24,8 @@ import sys
 py   = sys.version_info
 py3k = py >= (3, 0, 0)
 
+from Relationships import relation_source
+
 # no FAQ - lai simbolus atgriež kā python unicode tipu
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE)
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODEARRAY)
@@ -570,7 +572,7 @@ where fr_data.entityid = %s and (fr.blessed is null or fr.blessed = false);"
             frame["FrameCnt"] = 0
 
         if frame["IsBlessed"] is None:
-            if frame["FrameCnt"]<2 and not "LETA CV" in frame["SourceId"]:
+            if frame["FrameCnt"]<2 and not ("LETA CV" in frame["SourceId"] or relation_source in frame["SourceId"]):
                 frame["IsHidden"] = True
 
         if self.api.has_credibility:
