@@ -227,14 +227,13 @@ def secondary_relations(api):
 
 # Ja entītijas dati nav listē, tad viņas dati jāpaņem no DB, lai ir korekta verbalizācija
 def ensure_entity(entity_id, mentioned_entities, api):
-	if entity_id not in mentioned_entities:
+	if entity_id and (entity_id not in mentioned_entities):
 		entity_data = api.entity_data_by_id(entity_id)
 		if entity_data:
 			mentioned_entities[entity_id] = entity_data
 		else: 
 			print("Neizdevās iegūt entītijas datus ar id %s" % (entity_id,), file=sys.stderr)
 			raise Exception
-
 
 def build_relations(api, entity_a, frames, mentioned_entities):
 	# print(entity, frames, blessed_summary_frames, mentioned_entities)
@@ -312,7 +311,7 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 								if inflections.get('Dzimte') == 'Sieviešu':
 								    gender = 'female'
 								relation_bc = inverse_relation[gender]
-						ensure_entity(relation_bc, mentioned_entities, api) # FIXME - šis nepieciešams tikai debugam, ātrdardībai var ņemt ārā
+						ensure_entity(relation_bc, mentioned_entities, api) # FIXME - šis nepieciešams tikai debuginfo rādīšanai, ātrdarbības dēļ var arī ņemt ārā
 
 						if entity_a == entity_c:
 							continue
