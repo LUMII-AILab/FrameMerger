@@ -182,7 +182,8 @@ def valid_frame(frame):
 
     return True 
 
-def save_entity_frames_to_api(api, entity_list):    
+def save_entity_frames_to_api(api, entity_list):   
+    already_inserted_keys = set() 
     for entity in entity_list:
 
         # delete previous summary frames
@@ -196,7 +197,7 @@ def save_entity_frames_to_api(api, entity_list):
         to_save = entity.cons_frames
         log.info("Save_entity_frames_to_api - summary frames to save for entity %s: %s", entity.entity_id, len(to_save))
 
-        for frame in to_save:                 
+        for frame in to_save:             
             summary_frame_id = frame.get("SummaryFrameID")
             if summary_frame_id:
                 # FIXME - frametext, date un startdate principā te nav jāaiztiek - tas ir tāpēc, lai verbalizācijas utml uzlabojumi nonāktu līdz konsolidētajiem faktiem
@@ -204,6 +205,12 @@ def save_entity_frames_to_api(api, entity_list):
                 summary_frame_ids.append(summary_frame_id)
                 # print('apdeitoju freimu # %s "%s"' % (summary_frame_id,frame.get('FrameText')))
             else:
+                key = frame.get('MergeKey')
+                if key and key in already_inserted_keys:
+                    # Ja ir jauns blesots konsolidējamais fakts un tiek vienā batch konsolidētas vairākas entītijas ar šo faktu, tad sanāk race condition ka ne-pirmās entītijas konsolidācija neredz, ka jau šādu nupat saražoja
+                    # lai nerastos dublikāti, šādi pārbaudam
+                    continue
+                already_inserted_keys.add(key)
                 frame_id = api.insert_summary_frame(frame, commit=False)
                 summary_frame_ids.append(frame_id)
                 # print('insertoju freimu # %s "%s"' % (frame_id,frame.get('FrameText')))
