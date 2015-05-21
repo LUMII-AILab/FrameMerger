@@ -132,7 +132,7 @@ class BaseConsolidator(object):
             anti_bless = [frame for frame in res_buf[key] if frame["IsBlessed"] == False]  # NOTE: frame["IsBlessed"] can be None
 
             if len(blessed) > 0 and len(anti_bless) > 0:
-                log.error("Both blessed and anti-blessed frames present when summarizing (skipping this key):\n - blessed: %r\n - anti-blessed: %r\n",  
+                log.warning("Both blessed and anti-blessed frames present when summarizing (skipping this key):\n - blessed: %r\n - anti-blessed: %r\n",  
                     blessed, anti_bless)
 
                 # ignore this key, skip to next
@@ -145,6 +145,7 @@ class BaseConsolidator(object):
 
                 item["MergeType"] = "O"
                 item["FrameCnt"] = res_cnt.get(key)
+                item["MergeKey"] = key
 
                 item["SummaryInfo"] = get_info_str(self) + " + blessed"
                 if (item.get('FrameId')):
@@ -161,6 +162,7 @@ class BaseConsolidator(object):
 
                 item["MergeType"] = "O"
                 item["FrameCnt"] = res_cnt.get(key)
+                item["MergeKey"] = key
 
                 item["SummaryInfo"] = get_info_str(self) + " + anti_bless"
                 if (item.get('FrameId')):
@@ -201,7 +203,7 @@ class BaseConsolidator(object):
                     item["MergeType"] = "O"
 
                 item["FrameCnt"] = res_cnt[key]
-
+                item["MergeKey"] = key
                 item["SummaryInfo"] = get_info_str(self)
 
                 # get target words
