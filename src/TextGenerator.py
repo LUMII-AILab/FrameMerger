@@ -856,8 +856,8 @@ def get_cv_frame_category(mentioned_entities, frame):
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 4: # attiecību veids
                         attieciibas = mentioned_entities[element2["Value"]["Entity"]]
-                if attieciibas and attieciibas.get('Name').lower() == 'struktūrvienība':
-                    category = 115 # Struktūrvienības
+                        if attieciibas and attieciibas.get('Name').lower() == 'struktūrvienība':
+                            category = 115 # Struktūrvienības
             elif frame_type == 18: # Īpašums
                 owner = None
                 category = 114 # Default value - 'other'
