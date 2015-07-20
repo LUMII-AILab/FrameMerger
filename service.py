@@ -104,20 +104,24 @@ log_dir = 'log' # default
 if hasattr(config, 'log_dir'):
     log_dir = config.log_dir
 
-# make it relative to script dir
-if not log_dir.startswith('./') and not log_dir.startswith('../') and not log_dir.startswith('/'):
-    log_dir = os.path.join(os.path.dirname(__file__), log_dir)
+if log_dir is not None:
+    # make it relative to script dir
+    if not log_dir.startswith('./') and not log_dir.startswith('../') and not log_dir.startswith('/'):
+        log_dir = os.path.join(os.path.dirname(__file__), log_dir)
 
-if not os.path.isdir(log_dir):
-    os.makedirs(log_dir)
+    if log_dir and not os.path.isdir(log_dir):
+        os.makedirs(log_dir)
 
-print('Log dir:', log_dir)
+    print('Log dir:', log_dir)
 
-log_filename = os.path.join(log_dir, os.path.splitext(os.path.basename(__file__))[0]+datetime.now().strftime("-%Y_%m_%d-%H_%M.log"))
+    log_filename = os.path.join(log_dir, os.path.splitext(os.path.basename(__file__))[0]+datetime.now().strftime("-%Y_%m_%d-%H_%M.log"))
 
-print('Log filename:', log_filename)
+    print('Log filename:', log_filename)
 
-logf = open(log_filename, 'wt')
+    logf = open(log_filename, 'wt')
+else:
+    print('Logging disabled')
+    logf = open(os.devnull, 'wt')
 
 def now():
     return datetime.now().strftime("[%Y-%m-%d %H:%M.%f]")
