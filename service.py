@@ -125,6 +125,9 @@ def now():
 def log(*args, **kargs):
     print(*args, file=logf, **kargs)
 
+def log_flush():
+    print(end='', file=logf, flush=True)
+
 
 log(now(), "Starting...", flush=True)
 
@@ -204,11 +207,11 @@ def consolidate_entity(name, entityid):
         traceback.print_exc()
         print(now(), 'Consolidate error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
-        log(flush=True)
+        log_flush()
         response.status = 500
         result = 'Error in consolidating entity '+str(entityid)+': '+str(e)
         return result
-    log(flush=True)
+    log_flush()
     response.status = 200
     return str(entityid) + ' OK'
 
@@ -232,7 +235,7 @@ def consolidate_entities(name):
         traceback.print_exc()
         print(now(), 'Consolidate error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
-        log(flush=True)
+        log_flush()
         response.status = 500
         result = 'Error in consolidating entities '+','.join(str(x) for x in entityids)+': '+str(e)
         return result
@@ -243,7 +246,7 @@ def consolidate_entities(name):
     # else: # result = None - freims nav atrasts
     #     response.code = 404
     #     return 'Entity not found'
-    log(flush=True)
+    log_flush()
     response.status = 200
     return ','.join(str(x) for x in entityids) + ' OK'
 
@@ -301,12 +304,12 @@ def upload(name):
         print(now(), 'Upload error:', str(e).strip())
         traceback.print_exc()
         print(now(), 'Upload error:', str(e).strip(), file=logf)
-        log(flush=True)
+        log_flush()
         traceback.print_exc(file=logf)
         result = 'Upload error: ' + str(e)
         response.status = 500
         return result
-    log(flush=True)
+    log_flush()
     response.status = 200
     return json.dumps(dirtyEntities)
 
@@ -353,12 +356,12 @@ def upload_id(name, id):
         traceback.print_exc()
         print(now(), 'Upload error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
-        log(flush=True)
+        log_flush()
         result = 'Upload error: ' + str(e)
         response.status = 500
         # result = traceback.format_exc()
         return result
-    log(flush=True)
+    log_flush()
     response.status = 200
     return json.dumps(dirtyEntities)
 
