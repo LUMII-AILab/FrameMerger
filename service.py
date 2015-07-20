@@ -135,7 +135,8 @@ def log_flush():
 
 log(now(), "Starting...", flush=True)
 
-start_logging(consolidate_log.DEBUG)
+# start_logging(consolidate_log.DEBUG)
+start_logging()
 
 
 def get_db(name):
