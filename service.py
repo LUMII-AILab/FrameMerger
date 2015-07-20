@@ -34,7 +34,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), "src"))
 # from db_config import api_conn_info
 from SemanticApiPostgres import SemanticApiPostgres, PostgresConnection
 
-from consolidate_frames import consolidate_frames, process_entities
+from consolidate_frames import consolidate_frames, process_entities, start_logging, log as consolidate_log
 from DocumentUpload import upload2db
 import json, traceback
 
@@ -134,6 +134,8 @@ def log_flush():
 
 
 log(now(), "Starting...", flush=True)
+
+start_logging(consolidate_log.DEBUG)
 
 
 def get_db(name):
