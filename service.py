@@ -304,8 +304,8 @@ def upload(name):
         print(now(), 'Upload error:', str(e).strip())
         traceback.print_exc()
         print(now(), 'Upload error:', str(e).strip(), file=logf)
-        log_flush()
         traceback.print_exc(file=logf)
+        log_flush()
         result = 'Upload error: ' + str(e)
         response.status = 500
         return result
