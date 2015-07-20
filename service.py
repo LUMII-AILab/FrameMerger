@@ -126,7 +126,7 @@ def log(*args, **kargs):
     print(*args, file=logf, **kargs)
 
 
-log("Starting...")
+log(now(), "Starting...", flush=True)
 
 
 def get_db(name):
@@ -190,6 +190,7 @@ API: <br/>
 @app.get('/databases/<name>/consolidate/<entityid:int>')
 @app.post('/databases/<name>/consolidate/<entityid:int>')
 def consolidate_entity(name, entityid):
+    log(now(), request.method, request.path)
     response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     try:
@@ -203,15 +204,18 @@ def consolidate_entity(name, entityid):
         traceback.print_exc()
         print(now(), 'Consolidate error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
+        log(flush=True)
         response.status = 500
         result = 'Error in consolidating entity '+str(entityid)+': '+str(e)
         return result
+    log(flush=True)
     response.status = 200
     return str(entityid) + ' OK'
 
 
 @app.post('/databases/<name>/consolidate')
 def consolidate_entities(name):
+    log(now(), request.method, request.path)
     response.content_type = 'text/html; charset=utf-8'
     response.add_header('Access-Control-Allow-Origin', '*')
     entityids = request.body.read().decode('utf8', errors='ignore')
@@ -228,6 +232,7 @@ def consolidate_entities(name):
         traceback.print_exc()
         print(now(), 'Consolidate error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
+        log(flush=True)
         response.status = 500
         result = 'Error in consolidating entities '+','.join(str(x) for x in entityids)+': '+str(e)
         return result
@@ -238,6 +243,7 @@ def consolidate_entities(name):
     # else: # result = None - freims nav atrasts
     #     response.code = 404
     #     return 'Entity not found'
+    log(flush=True)
     response.status = 200
     return ','.join(str(x) for x in entityids) + ' OK'
 
@@ -258,6 +264,7 @@ def enable_cors():
 def upload(name):
     if request.method == 'OPTIONS':
         return ''
+    log(now(), request.method, request.path)
     consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
     # response.content_type = 'text/html; charset=utf-8'
     response.content_type = 'application/json; charset=utf-8'
@@ -294,10 +301,12 @@ def upload(name):
         print(now(), 'Upload error:', str(e).strip())
         traceback.print_exc()
         print(now(), 'Upload error:', str(e).strip(), file=logf)
+        log(flush=True)
         traceback.print_exc(file=logf)
         result = 'Upload error: ' + str(e)
         response.status = 500
         return result
+    log(flush=True)
     response.status = 200
     return json.dumps(dirtyEntities)
 
@@ -305,6 +314,7 @@ def upload(name):
 def upload_id(name, id):
     if request.method == 'OPTIONS':
         return ''
+    log(now(), request.method, request.path)
     consolidate = request.query.get('consolidate', '').lower().strip() in ['true', '1', 't', 'y', 'yes']
     # response.content_type = 'text/html; charset=utf-8'
     response.content_type = 'application/json; charset=utf-8'
@@ -343,10 +353,12 @@ def upload_id(name, id):
         traceback.print_exc()
         print(now(), 'Upload error:', str(e).strip(), file=logf)
         traceback.print_exc(file=logf)
+        log(flush=True)
         result = 'Upload error: ' + str(e)
         response.status = 500
         # result = traceback.format_exc()
         return result
+    log(flush=True)
     response.status = 200
     return json.dumps(dirtyEntities)
 
