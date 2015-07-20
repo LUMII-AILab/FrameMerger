@@ -8,6 +8,9 @@
 import sys, os, gzip
 import signal
 
+from datetime import date, datetime
+
+
 pidfile = 'service.pid'
 pidfile = os.path.join(os.path.dirname(__file__), pidfile)  # relative to script directory
 
@@ -96,6 +99,34 @@ print('Databases:', ', '.join(database_names))
 print()
 
 
+log_dir = 'log' # default
+
+if hasattr(config, 'log_dir'):
+    log_dir = config.log_dir
+
+# make it relative to script dir
+if not log_dir.startswith('./') and not log_dir.startswith('../') and not log_dir.startswith('/'):
+    log_dir = os.path.join(os.path.dirname(__file__), log_dir)
+
+if not os.path.isdir(log_dir):
+    os.makedirs(log_dir)
+
+print('Log dir:', log_dir)
+
+log_filename = os.path.join(log_dir, os.path.splitext(os.path.basename(__file__))[0]+datetime.now().strftime("-%Y_%m_%d-%H_%M.log"))
+
+print('Log filename:', log_filename)
+
+logf = open(log_filename, 'wt')
+
+def now():
+    return datetime.now().strftime("[%Y-%m-%d %H:%M.%f]")
+
+def log(*args, **kargs):
+    print(*args, file=logf, **kargs)
+
+
+log("Starting...")
 
 
 def get_db(name):
@@ -168,8 +199,10 @@ def consolidate_entity(name, entityid):
         print('interrupted')
         quit()
     except Exception as e:
-        print('Consolidate error:', str(e).strip())
+        print(now(), 'Consolidate error:', str(e).strip())
         traceback.print_exc()
+        print(now(), 'Consolidate error:', str(e).strip(), file=logf)
+        traceback.print_exc(file=logf)
         response.status = 500
         result = 'Error in consolidating entity '+str(entityid)+': '+str(e)
         return result
@@ -191,8 +224,10 @@ def consolidate_entities(name):
         print('interrupted')
         quit()
     except Exception as e:
-        print('Consolidate error:', str(e).strip())
+        print(now(), 'Consolidate error:', str(e).strip())
         traceback.print_exc()
+        print(now(), 'Consolidate error:', str(e).strip(), file=logf)
+        traceback.print_exc(file=logf)
         response.status = 500
         result = 'Error in consolidating entities '+','.join(str(x) for x in entityids)+': '+str(e)
         return result
@@ -218,8 +253,6 @@ def enable_cors():
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
-
-from datetime import date, datetime
 
 @app.route('/databases/<name>/upload', method=['OPTIONS', 'POST'])
 def upload(name):
@@ -258,8 +291,10 @@ def upload(name):
         print('interrupted')
         quit()
     except Exception as e:
-        print('Upload error:', str(e).strip())
+        print(now(), 'Upload error:', str(e).strip())
         traceback.print_exc()
+        print(now(), 'Upload error:', str(e).strip(), file=logf)
+        traceback.print_exc(file=logf)
         result = 'Upload error: ' + str(e)
         response.status = 500
         return result
@@ -304,8 +339,10 @@ def upload_id(name, id):
         print('interrupted')
         quit()
     except Exception as e:
-        print('Upload error:', str(e).strip())
+        print(now(), 'Upload error:', str(e).strip())
         traceback.print_exc()
+        print(now(), 'Upload error:', str(e).strip(), file=logf)
+        traceback.print_exc(file=logf)
         result = 'Upload error: ' + str(e)
         response.status = 500
         # result = traceback.format_exc()
