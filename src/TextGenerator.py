@@ -258,7 +258,7 @@ def get_frame_data(mentioned_entities, frame):
 
             iestaade = ''    
             if elem('Iestāde') is not None:
-                iestaade = ' ' + elem('Iestāde', iestaadeslociijums)    
+                iestaade = ' ' + (elem('Iestāde', iestaadeslociijums) or elem('Iestāde'))   # FIXME: fallback uz noklusēto locījumu
 
             return laiks + vieta + ' ' + elem('Students') + verbs + iestaade + graads + nozare
 
@@ -297,7 +297,7 @@ def get_frame_data(mentioned_entities, frame):
                 laiks = laiks + ' līdz ' + elem('Beigas', 'Datīvs') # ' 2002. gadā no janvāra līdz maijam'
             darbavieta = ''
             if elem('Darbavieta') is not None:
-                darbavieta = ' ' + elem('Darbavieta', 'Lokatīvs')
+                darbavieta = ' ' + (elem('Darbavieta', 'Lokatīvs') or elem('Darbavieta'))   # FIXME: fallback uz noklusēto locījumu
             if elem('Amats', 'Ģenitīvs') is not None:
                 return laiks + ' ' + elem('Darbinieks') + ' bija' + statuss + ' ' + elem('Amats','Ģenitīvs') + ' amatā' + darbavieta + vieta
             else:
@@ -928,7 +928,7 @@ def get_cv_frame_category(mentioned_entities, frame):
                 item = None
                 for element2 in frame["FrameData"]:
                     if element2.get('Key') == 2: # pats īpašums
-                        item = mentioned_entities[element2["Value"]["Entity"]]
+                        item = mentioned_entities.get(element2["Value"]["Entity"]) # FIXME: nomainīts uz get(), lai nav KeyError, ar to pietiek ?
                 if item and item.get('Category') == 2: # ... ja pieder organizācija
                     category = 6 # Uzņēmējdarbība
             elif frame_type in [19]: # Parāds

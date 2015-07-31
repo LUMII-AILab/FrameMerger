@@ -131,6 +131,8 @@ class SemanticApiPostgres(object):
 
     def entity_frames_by_id(self, e_id):
         # TODO - te sanāk vairāki nestēti DB izsaukumi, visticamāk šeit ir consolidate_frames lēnākā daļa
+        return [x for x in (self.frame_by_id(fr_id) for fr_id in self.frame_ids_by_entity(e_id)) if x]
+
         res = []
 
         for fr_id in self.frame_ids_by_entity(e_id):
@@ -156,6 +158,7 @@ class SemanticApiPostgres(object):
 """
         sql = "select * from frames where frameid = %s"
         res = self.api.query(sql, (fr_id,) )
+        if not res: return
         frame = res[0]  #FIXME - te nav pārbaudes vai rezultāts ir atrasts
 
         fdatetime = frame.fdatetime
