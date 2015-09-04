@@ -188,13 +188,20 @@ class BaseConsolidator(object):
 
                     # TODO: remove elements that do not make sense in a summary
 
-                    all_docs = set(f["DocumentId"] for f in res_buf[key])
+
+                    # NOTE: automātiskajos attiecību freimos iztrūkst daudzi lauki, tādēļ ir papildus jāpārbauda,
+                    # kā tas tiek darīts visās pārējās vietās
+                    # šie freimi tiek veidoti consolidate_frames.py funkcijā consolidate_frames(...) findā:
+                    # frames += Relationships.build_relations(api, entity.entity.get('EntityId'), frames, mentioned_entities)
+                    # NOTE: zemāko esošo izteiksmju vērtības netiek lietotas, tādēļ aizkomentēju
+
+                    # all_docs = set(f["DocumentId"] for f in res_buf[key] if 'DocumentId' in f)
                     # PP - vajag lai ir vismaz kautkāds links tur ir uz pirmavotu, tas ļoti palīdz freimera debugam
                     # if len(all_docs) > 1:
                     #     item["DocumentId"] = ""
                     #item["SentenceId"] = ""
 
-                    all_docs = set(f["SourceId"] for f in res_buf[key])
+                    # all_docs = set(f["SourceId"] for f in res_buf[key] if 'SourceId' in f)
                     # if len(all_docs) > 1:
                     #     item["SourceId"] = ""
                     pass
