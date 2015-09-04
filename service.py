@@ -136,7 +136,11 @@ def log_flush():
 log(now(), "Starting...", flush=True)
 
 # start_logging(consolidate_log.DEBUG)
-start_logging()
+start_logging(consolidate_log.WARNING)
+handler = consolidate_log.StreamHandler()
+handler.setFormatter(consolidate_log.Formatter(datefmt= "%Y-%m-%d %H:%M:%S", fmt = "%(asctime)s: %(name)s: %(levelname)s: %(message)s"))
+consolidate_log.getLogger().addHandler(handler)
+
 
 
 def get_db(name):

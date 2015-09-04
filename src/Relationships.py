@@ -11,6 +11,10 @@ from __future__ import print_function
 import sys, json
 from InflectEntity import inflectEntity
 
+import logging
+log = logging.getLogger(__name__)
+# log.addHandler(logging.NullHandler())
+
 inverted_relations_text = {
 'brālis' : {'male' : 'brālis', 'female' : 'māsa'},
 'māsa' : {'male' : 'brālis', 'female' : 'māsa'},
@@ -163,27 +167,50 @@ def isRelationshipName(name):
         
 	return name in __relationship_names
 
+
+__relationship_entities = None
+
+def relationship_entities(api):
+    global __relationship_entities
+    if __relationship_entities:
+        return __relationship_entities
+
+    names = list(set(inverted_relations_text.keys()) | set(r['result'] for rs in secondary_relations_text.values() for r in rs.values()))
+
+    __relationship_entities = {}
+    for entities in api.entity_id_mapping_by_relationship_name_list_2(names):
+        if len(entities.ids) == 0:
+            continue
+        if len(entities.ids) > 1:
+            log.warning("More than one entity for relationship '%s' found: %s %s should be merged into entity %i"
+                % (entities.name, (len(entities.ids) == 2 and 'entity') or 'entities', ','.join(str(id) for id in entities.ids[1:]), entities.ids[0]))
+        __relationship_entities[entities.name] = entities.ids[0]
+
+    return __relationship_entities
+
 def inverted_relations(api):
 	global __inverted_relations
 	if __inverted_relations:
 		return __inverted_relations
 
-	names = set()
-	for rel, val in inverted_relations_text.items():
-		names.add(rel)
-		names.add(val['male'])
-		names.add(val['female'])
-	mapping = {}
-	for nameid in api.entity_id_mapping_by_relationship_name_list(names):
-		if mapping.get(nameid.name):
-			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
-		mapping[nameid.name] = nameid.entityid
+	fetch_id = relationship_entities(api).get
 
-	def fetch_id(name):
-		if not mapping.get(name):
-			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav atbilstoša entītija" % (name, ))
-		return mapping[name]			
-
+	# names = set()
+	# for rel, val in inverted_relations_text.items():
+	# 	names.add(rel)
+	# 	names.add(val['male'])
+	# 	names.add(val['female'])
+	# mapping = {}
+	# for nameid in api.entity_id_mapping_by_relationship_name_list(names):
+	# 	if mapping.get(nameid.name):
+	# 		raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
+	# 	mapping[nameid.name] = nameid.entityid
+    #
+	# def fetch_id(name):
+	# 	if not mapping.get(name):
+	# 		raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav atbilstoša entītija" % (name, ))
+	# 	return mapping[name]
+ 
 	__inverted_relations = {}
 	for rel, val in inverted_relations_text.items():
 		__inverted_relations[ fetch_id(rel) ] = {'male' : fetch_id(val['male']), 'female' : fetch_id(val['female'])}
@@ -195,24 +222,26 @@ def secondary_relations(api):
 	if __secondary_relations:
 		return __secondary_relations
 
-	names = set()
-	for rel, val in secondary_relations_text.items():
-		names.add(rel)
-		for rel2, val2 in val.items():
-			names.add(rel2)
-			names.add(val2['result'])
+	fetch_id = relationship_entities(api).get
 
-	mapping = {}
-	for nameid in api.entity_id_mapping_by_relationship_name_list(names):
-		if mapping.get(nameid.name):
-			raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
-		mapping[nameid.name] = nameid.entityid
-
-	def fetch_id(name):
-		if not mapping.get(name):
-			print("'%s' nav atbilstoša entītija, insertojam" % (name, ), file=sys.stderr)
-			mapping[name] = api.insertEntity(name, [name], 7, outerids=[], inflections = inflectEntity(name, 'relationship'))
-		return mapping[name]			
+	# names = set()
+	# for rel, val in secondary_relations_text.items():
+	# 	names.add(rel)
+	# 	for rel2, val2 in val.items():
+	# 		names.add(rel2)
+	# 		names.add(val2['result'])
+    #
+	# mapping = {}
+	# for nameid in api.entity_id_mapping_by_relationship_name_list(names):
+	# 	if mapping.get(nameid.name):
+	# 		raise Exception("Netiekam galā ar attiecību veidiem - '%s' nav viennozīmīga entītija" % (nameid.name, ))
+	# 	mapping[nameid.name] = nameid.entityid
+    #
+	# def fetch_id(name):
+	# 	if not mapping.get(name):
+	# 		print("'%s' nav atbilstoša entītija, insertojam" % (name, ), file=sys.stderr)
+	# 		mapping[name] = api.insertEntity(name, [name], 7, outerids=[], inflections = inflectEntity(name, 'relationship'))
+	# 	return mapping[name]
 
 	__secondary_relations = {}
 	for rel, val in secondary_relations_text.items():

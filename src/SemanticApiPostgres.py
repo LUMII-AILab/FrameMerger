@@ -236,7 +236,7 @@ class SemanticApiPostgres(object):
         if len(res) == 1:
             res = res[0]
         else:
-            log.error('Entity ID '+str(e_id)+'not found in entity_data_by_id')
+            log.error('Entity ID '+str(e_id)+' not found in entity_data_by_id')
             return None
 
         entity_info = {
@@ -294,6 +294,23 @@ class SemanticApiPostgres(object):
         res = self.api.query(sql, (names2, ) )
 
         return res
+
+    def entity_id_mapping_by_relationship_name_list_2(self, names):
+        sql = """
+            SELECT name, array_agg(entityid ORDER BY entityid) AS ids FROM 
+            (
+            SELECT lower(name) AS name, entityid FROM entities
+            WHERE lower(name) = ANY(%s) AND deleted IS NOT TRUE AND category = 7
+            UNION
+            (SELECT lower(entityothernames.name) AS name, entityothernames.entityid AS entityid FROM entityothernames
+            JOIN entities ON entities.entityid = entityothernames.entityid
+            WHERE lower(entityothernames.name) = ANY(%s) AND entityothernames.deleted IS NOT TRUE
+                AND entities.deleted IS NOT TRUE AND entities.category = 7)
+            ) t GROUP BY name;
+        """
+        # TODO: force dataset ? dataset = 7 ?
+        names = [name.lower().strip() for name in names]
+        return self.api.query(sql, (names, names))
 
     # Atgriež entītes id pēc tās ārējā id (datos - LETA UQID vai personaskods/uzņēmuma reģistrācijas nr)
     def entity_id_by_outer_id(self, outer_id):
