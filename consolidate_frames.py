@@ -50,9 +50,40 @@ def consolidate_frames(entity_list, api):
 
     mentioned_entities = get_mentioned_entities(entity_list, api) # Ielasam visu freimos pieminēto (ne tikai galveno) entītiju vārdus un locījumus
 
+    relationship_entityids = set(Relationships.relationship_entities(api).values())
+
     for entity in entity_list:
         if entity.entity is not None and entity.frames is not None:
             try:
+                # autoheal: check for corrupted summary relationship frames, if found unbless and delete
+                if hasattr(entity, 'blessed_summary_frames'):
+                    frames = entity.blessed_summary_frames
+                    # print(len(entity.frames), entity.frames)
+                    i = 0
+                    while i < len(frames):
+                        frame = frames[i]
+                        if frame.get('FrameType') != 3:
+                            i += 1
+                            continue
+                        partner1ID = None
+                        partner2ID = None
+                        for fd in frame.get('FrameData', tuple()):
+                            if fd.get('roleid') == 1:
+                                partner1ID = fd.get('entityid')
+                            if fd.get('roleid') == 2:
+                                partner2ID = fd.get('entityid')
+                        if partner1ID in relationship_entityids or partner2ID in relationship_entityids:
+                            # unbless this frame if was blessed
+                            frameID = frame.get('FrameId', -1)
+                            log.warning('removing corrupted relationship frame %i' % (frameID,))
+                            if frameID != -1:
+                                if frame.get('Blessed') and not frame.get('IsHidden'):
+                                    api.unblessSummaryFact(frameID)
+                                api.delete_summary_frames([frameID], commit=True)
+                            frames.pop(i)
+                            continue
+                        i += 1
+
                 frames = list(filter(lambda x: x["FrameData"] is not None and not x['IsUnfinished'], entity.frames))
                 log.info("Found %s frames for entity %s", len(frames), entity.entity)
 

@@ -131,14 +131,7 @@ class SemanticApiPostgres(object):
 
     def entity_frames_by_id(self, e_id):
         # TODO - te sanāk vairāki nestēti DB izsaukumi, visticamāk šeit ir consolidate_frames lēnākā daļa
-        return [x for x in (self.frame_by_id(fr_id) for fr_id in self.frame_ids_by_entity(e_id)) if x]
-
-        res = []
-
-        for fr_id in self.frame_ids_by_entity(e_id):
-            res.append(self.frame_by_id(fr_id))
-
-        return res
+        return [frame for frame in (self.frame_by_id(fr_id) for fr_id in self.frame_ids_by_entity(e_id)) if frame]
 
     def frame_by_id(self, fr_id):
         """
@@ -832,6 +825,10 @@ WHERE blessed IS TRUE"""
 
     def denySummaryFact(self, frameID):
         self.api.insert("UPDATE SummaryFrames SET blessed = FALSE where frameid = %s", (frameID, ) )
+        self.api.commit()
+
+    def unblessSummaryFact(self, frameID):
+        self.api.insert("UPDATE SummaryFrames SET blessed = FALSE, hidden = NULL where frameid = %s", (frameID, ) )
         self.api.commit()
 
     # Atgriež entītijas crossdocumentcoreference wordbagus pēc padotā entītijas ID
