@@ -260,9 +260,12 @@ def ensure_entity(entity_id, mentioned_entities, api):
 		entity_data = api.entity_data_by_id(entity_id)
 		if entity_data:
 			mentioned_entities[entity_id] = entity_data
+			return True
 		else: 
-			print("Neizdevās iegūt entītijas datus ar id %s" % (entity_id,), file=sys.stderr)
-			raise Exception
+			log.warning("Neizdevās iegūt entītijas datus ar id %s" % (entity_id,))
+			return False
+			# print("Neizdevās iegūt entītijas datus ar id %s" % (entity_id,), file=sys.stderr)
+			# raise Exception
 
 def build_relations(api, entity_a, frames, mentioned_entities):
 	# print(entity, frames, blessed_summary_frames, mentioned_entities)
@@ -298,7 +301,9 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 					gender = 'male'
 					if entity_b not in mentioned_entities:
 						log.warning('mentioned entities list is missing entity %i (frame %i), will try to fetch' % (entity_b, frame.get('FrameId', -1)))
-						ensure_entity(entity_b, mentioned_entities, api)
+						if not ensure_entity(entity_b, mentioned_entities, api):
+							log.warning('skipping relationship because of information insufficiency')
+							continue
 					inflections = json.loads(mentioned_entities[entity_b].get('NameInflections'))
 					if inflections.get('Dzimte') == 'Sieviešu':
 					    gender = 'female'
@@ -342,7 +347,9 @@ def build_relations(api, entity_a, frames, mentioned_entities):
 								if entity_c not in mentioned_entities:
 									log.warning('mentioned entities list is missing entity %i (frame %i), will try to fetch'
 										% (entity_c, frame_b.get('FrameId', -1)))
-									ensure_entity(entity_c, mentioned_entities, api)
+									if not ensure_entity(entity_c, mentioned_entities, api):
+										log.warning('skipping relationship because of information insufficiency')
+										continue
 								inflections = json.loads(mentioned_entities[entity_c].get('NameInflections'))
 								if inflections.get('Dzimte') == 'Sieviešu':
 								    gender = 'female'
